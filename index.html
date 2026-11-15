@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!--
+  index.html：入口ページの骨組み（自己紹介・ツール一覧の場所・LINEボタンの場所・注意書き）だけを書くファイル。
+  見た目は css/style.css、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
+  データの検査は js/tools_validate.js、カードの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、流れは js/main.js。
+  ブラウザで直接開くだけで動く（サーバー・インターネット接続は不要。外部のファイルは読み込まない）。
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yu｜AI仮想会社の社長</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <!-- 自己紹介。文言を変えるときは、ここを直す -->
+  <header class="card profile">
+    <h1>Yu｜AI仮想会社の社長</h1>
+    <p class="profile-text">会社員エンジニア（国家資格あり）。AIで仮想会社を設立し、AI役員にお金と人生を相談しています。うまくいかない日も全部記録。毎日19時投稿／22時ライブ</p>
+    <!-- URLは js/site_config.js から main.js が入れる。正しいURLがあるときだけ表示される -->
+    <a id="tiktok-button" class="button button-sub" target="_blank" rel="noopener" hidden>TikTokを見る</a>
+  </header>
+
+  <!-- ツール一覧。カードは js/tools_view.js が作って、この中に並べる -->
+  <section>
+    <h2>無料ツール</h2>
+    <div id="tool-list" class="tool-list"></div>
+  </section>
+
+  <!-- LINEボタン。上がメイン（オープンチャット）、下がサブ（公式アカウント）。URLは js/site_config.js -->
+  <section id="line-area" class="line-area">
+    <a id="line-openchat" class="button button-line-main" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
+    <a id="line-official" class="button button-line-sub" target="_blank" rel="noopener" hidden>LINEで友だち追加</a>
+  </section>
+
+  <!-- 共通の注意書き。文言を変えるときは、ここを直す -->
+  <footer class="note disclaimer">
+    このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。
+  </footer>
+</div>
+
+<!-- 読み込む順番に意味がある：設定とデータ → 検査 → 表示 → 最後に流れ（main.js） -->
+<script src="js/site_config.js"></script>
+<script src="js/tools_data.js"></script>
+<script src="js/tools_validate.js"></script>
+<script src="js/tools_view.js"></script>
+<script src="js/link_button.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
