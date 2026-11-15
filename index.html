@@ -3,21 +3,24 @@
 <head>
 <meta charset="utf-8">
 <!--
-  index.html：入口ページの骨組みだけを書くファイル（上から ①ヒーロー ②ツールのパネルの場所 ②' 最新の日記 ③LINEのパネル ④注意書き）。
+  index.html：入口ページの骨組みだけを書くファイル（上から ①ヒーロー ②ツールのパネルの場所 ②' 最新の日記 ③LINEのパネル ③' Yuの道具箱 ④注意書き）。
   見た目は css/variables.css（色・大きさの値）・css/style.css（共通）・css/hero.css（ヒーロー）・css/diary.css（日記）、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
   データの検査は js/tools_validate.js、パネルの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、
   肖像の画像は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
-  URLの # の場所への移動は js/hash_jump.js、最新の日記は js/diary_latest_panel.js（と diary_*.js）、流れは js/main.js。
+  URLの # の場所への移動は js/hash_jump.js、最新の日記は js/diary_latest_panel.js（と diary_*.js）、
+  道具箱は js/toolbox_data.js（データ）・toolbox_validate.js（検査）・toolbox_link.js（リンクの出し方）・toolbox_beacon.js（計測用画像）・toolbox_view.js（表示）と css/toolbox.css、流れは js/main.js。
   最新の日記は diary/entries/ のデータを読み込むので、公開サイト（https）か手元のサーバーで開いたときだけ出る。
   ブラウザで直接開くだけで動く（サーバー・インターネット接続は不要。外部のファイルは読み込まない）。
+  例外は道具箱の紹介リンクのカードに置く、ASPの計測用の小さな画像（1×1）だけ（js/site_config.js の ASP_LIST のホストに限る。読み込めなくても表示は崩れない）。
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Yu｜AI仮想会社の社長</title>
-<!-- 変数（variables.css）を先に読み込む。ほかの2つがその値を使うため -->
+<!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/hero.css">
 <link rel="stylesheet" href="css/diary.css">
+<link rel="stylesheet" href="css/toolbox.css">
 </head>
 <body>
 
@@ -80,6 +83,19 @@
       <a class="btn btn-sub" id="line-official" target="_blank" rel="noopener" hidden>LINEで友だち追加</a>
     </div>
   </section>
+
+  <!-- ③' Yuの道具箱。カードは js/toolbox_view.js が作って入れる。表示できる道具が0件ならパネルごと隠したまま -->
+  <section class="panel toolbox-panel" id="toolbox" aria-labelledby="toolbox-title" hidden>
+    <div class="panel-body reveal">
+      <p class="eyebrow">Yuの道具箱</p>
+      <h2 class="panel-title" id="toolbox-title">実際に使っている物だけ。</h2>
+      <!-- PR表示：紹介リンクが1件以上あるときだけ toolbox_view.js が出す -->
+      <p class="tb-pr-notice" id="toolbox-pr" hidden><span class="tb-pr" aria-hidden="true">PR</span><span>この区画には広告（PR）を含みます</span></p>
+      <div class="tb-genres" id="toolbox-genres"></div>
+      <!-- 道具箱の注意書き。文は toolbox_view.js が、表示中の道具に合わせて入れる -->
+      <p class="tb-disclaimer" id="toolbox-disclaimer"></p>
+    </div>
+  </section>
 </main>
 
 <!-- ④ 共通の注意書き。文言を変えるときは、ここを直す -->
@@ -105,6 +121,11 @@
 <script src="js/diary_load.js"></script>
 <script src="js/diary_parts.js"></script>
 <script src="js/diary_latest_panel.js"></script>
+<script src="js/toolbox_data.js"></script>
+<script src="js/toolbox_validate.js"></script>
+<script src="js/toolbox_link.js"></script>
+<script src="js/toolbox_beacon.js"></script>
+<script src="js/toolbox_view.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

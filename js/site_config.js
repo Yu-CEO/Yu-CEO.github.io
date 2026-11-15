@@ -1,8 +1,8 @@
 /*
- * site_config.js：設定値（LINE・TikTok のURL）をまとめたファイル
+ * site_config.js：設定値（LINE・TikTok のURLと、道具箱で使うアフィリエイトサービスの一覧 ASP_LIST）をまとめたファイル
  * URLを変えるときは、このファイルの該当する1行だけを書き換える。
  * 空（""）にしたり、https:// で始まらない文字にしたりすると、そのボタンは表示されない（link_button.js が判定する）。
- * main.js から使われる。
+ * main.js から使われる（ASP_LIST は toolbox_view.js・toolbox_validate.js も使う）。
  */
 
 const SITE_CONFIG = {
@@ -14,8 +14,29 @@ const SITE_CONFIG = {
   TIKTOK_URL: "https://www.tiktok.com/@yu_from_l2w"
 };
 
+// 道具箱で使うアフィリエイトサービス（ASP：紹介リンクを発行する会社）の一覧。toolbox_validate.js・toolbox_view.js が使う。
+// 1件ごとに id（toolbox_data.js の asp に書く名前）・name（注意書きに出す名前）・
+// linkHosts（紹介リンクとして認めるホスト名）・beaconHosts（計測用画像として認めるホスト名）を書く。
+// ここにないホストの紹介リンク・計測用画像は表示しない（知らない外部のサイトと通信しないため）。
+// 「*.a8.net」のような広い書き方はせず、ホスト名を1つずつ書く。ASPを増やすときは1件足すだけでよい。
+const ASP_LIST = [
+  {
+    id: "a8",
+    name: "A8.net",
+    linkHosts: ["px.a8.net"],
+    // 仮置き：A8.net の計測用画像のホストは番号違いが複数ある。提携が承認され、タグを発行したら確認して実際のホスト名に直す
+    beaconHosts: ["www10.a8.net"]
+  },
+  {
+    id: "moshimo",
+    name: "もしもアフィリエイト",
+    linkHosts: ["af.moshimo.com"],
+    beaconHosts: ["i.moshimo.com"]
+  }
+];
+
 // Node.js（ブラウザの外でJavaScriptを動かす仕組み。テストに使う）から require（別のファイルを読み込む命令）で
 // 使えるようにする。module（Node.jsでファイルの外に渡すものを入れる箱）はブラウザにはないので、ブラウザでは何もしない
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { SITE_CONFIG };
+  module.exports = { SITE_CONFIG, ASP_LIST };
 }

@@ -139,4 +139,31 @@
   --av-size-lg:48px;              /* 今日の一言 */
   --av-size-sm:26px;              /* 一覧・パネル・今日の参加の小さな顔 */
   --av-overlap:6px;               /* 小さな顔を重ねる幅 */
+
+  /* ===== 道具箱（css/toolbox.css で使う） ===== */
+  --tb-card-bg:#ffffff;           /* 道具カードの背景 */
+  --tb-card-border:#e3e5e9;       /* 道具カードの細い枠・注意書きの区切り線（日記のカードと同じ） */
+  --tb-card-shadow:0 2px 10px rgba(16,18,24,.05); /* カードの薄い影 */
+  --tb-genre-mark:#2563a8;        /* ジャンル見出しの左の短い線（日記の差し色と同じ青） */
+  --tb-pr-bg:#fff4e0;             /* 「PR」の印・PR表示の背景（うすい琥珀色。LINEの緑と取り合わないよう緑は使わない） */
+  --tb-pr-border:#e8c88f;         /* 同じく、枠 */
+  --tb-pr-text:#7a4300;           /* 「PR」の文字。背景 #fff4e0 に対して約7.6:1（読みやすさの基準4.5:1以上） */
+  --tb-btn-bg:#ffffff;            /* カードのボタン（白地＋枠。LINEのメインボタンより控えめにするため） */
+  --tb-btn-text:#16171a;
+  --tb-btn-border:#c9ccd3;        /* ボタンの枠（白の上で輪郭が分かる濃さ） */
+  --fs-tb-title:clamp(26px, 7vw, 44px); /* 道具箱の見出し（文字数が多いので、ほかの見出しより一段小さく） */
+  --fs-tb-genre:13px;             /* ジャンルの見出し */
+  --fs-tb-name:clamp(16px, 4.4vw, 18px); /* 道具の名前 */
+  --fs-tb-note-text:clamp(14px, 3.9vw, 16px); /* Yuの一言 */
+  --fs-tb-pr-notice:clamp(15px, 4.1vw, 17px); /* PR表示（本文とほぼ同じ大きさ。広告の表示を小さくしないため） */
+  --fs-tb-pr-badge:12px;          /* カードの「PR」の印 */
+  --fs-tb-btn:14px;               /* カードのボタン */
+  --fs-tb-disclaimer:13px;        /* 道具箱の注意書き（ページ最下部の12pxより少し大きく） */
+  --tb-max:680px;                 /* 道具箱の中身の最大幅（ほかのパネルと同じ） */
+  --tb-card-radius:14px;          /* カードの角丸 */
+  --tb-card-pad:16px;             /* カードの内側の余白 */
+  --tb-card-gap:12px;             /* カードとカードのあいだ */
+  --tb-genre-gap:28px;            /* ジャンルとジャンルのあいだ */
+  --tb-btn-height:44px;           /* カードのボタンの高さ（指で押せる最小の大きさ） */
+  --tb-btn-radius:10px;           /* ボタンの角丸 */
 }

@@ -145,3 +145,40 @@ test("AC-2・AC-39・AC-29：外部へのリンクはすべて新しいタブ・
     assert.ok(tag.includes('rel="noopener"'), "rel=\"noopener\" がありません：" + tag);
   });
 });
+
+test("道具箱 AC-1・AC-2：道具箱パネルは LINE パネルの次・注意書きの前にあり、見出しは決まった文言。ヒーローと固定バーに道具箱へのリンクがない", function () {
+  const linePosition = INDEX_HTML.indexOf('id="line-panel"');
+  const toolboxPosition = INDEX_HTML.indexOf('id="toolbox"');
+  const notePosition = INDEX_HTML.indexOf('id="note"');
+  assert.ok(linePosition > 0 && toolboxPosition > linePosition && notePosition > toolboxPosition, "道具箱の置き場所が違います");
+  assert.ok(stripTags(INDEX_HTML).includes("実際に使っている物だけ。"));
+  assert.ok(stripTags(INDEX_HTML).includes("この区画には広告（PR）を含みます"));
+  assert.ok(!INDEX_HTML.includes('href="#toolbox"'), "道具箱へのリンクがあります");
+  // 道具箱パネルは最初は隠しておく（表示できる道具があるときだけ toolbox_view.js が出す）
+  assert.ok(/<section [^>]*id="toolbox"[^>]*hidden/.test(INDEX_HTML));
+  assert.ok(INDEX_HTML.includes('href="css/toolbox.css"'));
+});
+
+test("道具箱 AC-18：外部の <script>・<iframe> がなく、計測用画像はHTMLに直接書かない（JSが検査のあとで置く）", function () {
+  const htmlFiles = [INDEX_HTML,
+    fs.readFileSync(path.join(PORTAL_FOLDER, "diary", "index.html"), "utf8"),
+    fs.readFileSync(path.join(PORTAL_FOLDER, "diary", "entry.html"), "utf8")];
+  htmlFiles.forEach(function (html) {
+    assert.ok(!/<iframe/i.test(html), "<iframe> があります");
+    (html.match(/<script[^>]*>/g) || []).forEach(function (tag) {
+      // 日記のページは1つ上のフォルダの js/ を読む（../js/）
+      assert.ok(/src="(\.\.\/)?js\//.test(tag), "js/ 以外の <script> があります：" + tag);
+    });
+    assert.ok(!/a8\.net|moshimo\.com/.test(html), "HTMLにASPの場所が書かれています");
+  });
+  readAllScripts().forEach(function (script) {
+    assert.ok(!/createElement\(\s*["'](script|iframe)/.test(script.code), script.fileName + " で script・iframe を作っています");
+  });
+});
+
+test("道具箱 AC-3：日記のページは道具箱のファイルを読み込まない", function () {
+  ["index.html", "entry.html"].forEach(function (fileName) {
+    const html = fs.readFileSync(path.join(PORTAL_FOLDER, "diary", fileName), "utf8");
+    assert.ok(!html.includes("toolbox"), "diary/" + fileName + " に道具箱があります");
+  });
+});

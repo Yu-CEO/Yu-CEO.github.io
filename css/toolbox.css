@@ -1,0 +1,91 @@
+/*
+ * toolbox.css：「Yuの道具箱」パネルの見た目（カード・PRの印・PR表示・ボタン・計測用画像の置き方・注意書き）
+ * 色や大きさの値は css/variables.css の「道具箱」の節にまとめている。値を変えるときはそちらを直す。
+ * スマホ幅（360px）は1列、640px以上は2列。横スクロールは出さない。
+ * index.html から読み込まれる。中身（カード）は js/toolbox_view.js が作る。
+ */
+
+/* パネル：ほかのパネルと同じ全画面の形。道具が多いときは高さが伸びてよい（中身を上から並べる） */
+.toolbox-panel .panel-body{justify-content:flex-start;max-width:var(--tb-max)}
+.toolbox-panel .panel-title{font-size:var(--fs-tb-title)}
+
+/* PR表示：見出しのすぐ下。本文と同じくらいの大きさ・濃い文字にする（広告であることを隠さないため） */
+.tb-pr-notice{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin:18px auto 0;padding:10px 14px;
+  max-width:100%;
+  border:1px solid var(--tb-pr-border);border-radius:12px;
+  background:var(--tb-pr-bg);
+  color:var(--color-text);
+  font-size:var(--fs-tb-pr-notice);font-weight:600;line-height:1.5;
+  text-align:left;
+}
+.tb-pr-notice .tb-pr{flex:none}
+
+/* 「PR」の印（カード・PR表示で共通の見た目。どこが広告かを結びつけやすくするため） */
+.tb-pr{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:34px;height:24px;padding:0 8px;
+  border:1px solid var(--tb-pr-border);border-radius:6px;
+  background:var(--tb-pr-bg);color:var(--tb-pr-text);
+  font-size:var(--fs-tb-pr-badge);font-weight:800;letter-spacing:.08em;line-height:1;
+}
+
+/* ジャンルのまとまり（見出し＋カードの一覧） */
+.tb-genres{margin-top:28px;text-align:left}
+.tb-genre + .tb-genre{margin-top:var(--tb-genre-gap)}
+.tb-genre-title{
+  display:flex;align-items:center;gap:10px;
+  margin:0 0 12px;
+  font-size:var(--fs-tb-genre);font-weight:700;letter-spacing:.12em;
+  color:var(--color-text-sub);
+}
+.tb-genre-title::before{content:"";width:16px;height:2px;border-radius:2px;background:var(--tb-genre-mark)}
+.tb-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:var(--tb-card-gap)}
+/* 640px以上（タブレット・パソコン幅）では2列に並べる */
+@media (min-width:640px){ .tb-list{grid-template-columns:1fr 1fr} }
+
+/* 道具のカード（名前・Yuの一言・下の行に「PR」とボタン） */
+.tb-card{
+  position:relative;                /* 計測用画像を角に重ねて置くため（レイアウトに影響させない） */
+  display:flex;flex-direction:column;
+  min-width:0;                      /* 長い名前でもカードが横にはみ出さないようにする */
+  padding:var(--tb-card-pad);
+  background:var(--tb-card-bg);
+  border:1px solid var(--tb-card-border);
+  border-radius:var(--tb-card-radius);
+  box-shadow:var(--tb-card-shadow);
+}
+.tb-name{margin:0;font-size:var(--fs-tb-name);font-weight:700;line-height:1.5;overflow-wrap:anywhere}
+.tb-note{margin:6px 0 0;font-size:var(--fs-tb-note-text);line-height:1.75;color:var(--color-text-sub);overflow-wrap:anywhere}
+
+/* 下の行：左に「PR」、右にボタン。リンクなしの道具では行ごと作らない（ボタンの場所を空けないため） */
+.tb-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:12px}
+.tb-foot .tb-btn{margin-left:auto}
+.tb-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:var(--tb-btn-height);padding:0 16px;
+  border:1.5px solid var(--tb-btn-border);border-radius:var(--tb-btn-radius);
+  background:var(--tb-btn-bg);color:var(--tb-btn-text);
+  font-size:var(--fs-tb-btn);font-weight:700;text-decoration:none;letter-spacing:.03em;
+  transition:border-color .15s;
+}
+.tb-btn:hover{border-color:var(--color-text)}
+.tb-btn:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
+/* 新しいタブで開く印（右上向きの矢印「↗」）。画像を読み込まず、CSSの線だけで描く */
+.tb-btn::after{
+  content:"";width:8px;height:8px;margin-left:2px;
+  border-right:2px solid currentColor;border-top:2px solid currentColor;
+  background:linear-gradient(to top right, transparent 42%, currentColor 42%, currentColor 58%, transparent 58%);
+}
+
+/* 計測用画像（1×1）：カードの右下の角に重ねて置く。画像があってもなくても、カードの高さ・ボタンの位置は変わらない */
+.tb-beacon{position:absolute;right:0;bottom:0;width:1px;height:1px;border:0;pointer-events:none}
+
+/* 道具箱の注意書き（パネルの下部） */
+.tb-disclaimer{
+  margin:32px 0 0;padding-top:18px;
+  border-top:1px solid var(--tb-card-border);
+  font-size:var(--fs-tb-disclaimer);line-height:1.85;
+  color:var(--color-text-sub);text-align:left;
+}
