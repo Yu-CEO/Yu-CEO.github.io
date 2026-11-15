@@ -1,0 +1,142 @@
+/*
+ * variables.css：入口ページのデザインの変数（色・文字の大きさ・余白・ボタン・肖像・スクリーンショットの値）
+ * index.html から最初に読み込まれ、style.css・hero.css が var(...) で使う。値はデザインの確定版に合わせている。
+ * 色・大きさを変えるときは、このファイルだけを直す（ほかのCSSには色や文字の大きさを直接書かない）。
+ */
+
+/* ===== ① デザインの変数（色・大きさを変えるときはここだけ直す） ===== */
+:root{
+  /* 色：明るいパネル */
+  --color-white:#ffffff;          /* パネルの背景（白） */
+  --color-gray:#f2f3f5;           /* パネルの背景（薄いグレー）。白と交互に使う */
+  --color-text:#16171a;           /* 明るいパネルの文字（ほぼ黒） */
+  --color-text-sub:#5b5f66;       /* 説明文・注意書き（白・グレーの上でもコントラスト4.5:1以上） */
+  --color-line:#d9dbe0;           /* 白ボタン・状態ラベルの枠 */
+  /* 色：固定バー */
+  --bar-bg:rgba(10,11,14,.62);    /* 半透明の黒。後ろのパネルが少し透ける */
+  --bar-text:#ffffff;
+  /* 色：ヒーロー（夜の紺の面） */
+  --hero-bg-dark:#0a0e17;         /* 背景（夜の紺に近い黒） */
+  --hero-text:#ffffff;            /* 文字 */
+  --hero-text-sub:#c3c8d2;        /* 説明文（背景に対して約11:1） */
+  --hero-accent:#7cc4ff;          /* 差し色（小見出し・細い線・再生の三角）。背景に対して約10:1 */
+  --hero-grid:rgba(150,185,255,.08);    /* 背景のグリッド線 */
+  --hero-glow:rgba(124,196,255,.20);    /* ほのかな光（青） */
+  --hero-glow-2:rgba(150,130,255,.14);  /* ほのかな光（紫） */
+  --color-hero-fallback:#1a2234;  /* 肖像の画像が読めないときの、枠の中の色（明るい側） */
+  --color-hero-fallback-2:#0d1220;/* 同じく、枠の中の色（暗い側）。2色でななめのグラデーションにする */
+  --hero-frame-border:rgba(124,196,255,.38);  /* 肖像の枠の細い線 */
+  --hero-frame-halo:rgba(124,196,255,.05);    /* 肖像の枠の外側のうっすらした光 */
+  --hero-frame-shadow:rgba(0,0,0,.55);        /* 肖像の下の影 */
+  --hero-pill-border:rgba(255,255,255,.38);   /* 丸い「TikTokを見る」の枠 */
+  --hero-pill-bg:rgba(255,255,255,.04);       /* 丸い「TikTokを見る」の背景（ほぼ透明） */
+  --hero-pill-bg-hover:rgba(255,255,255,.12); /* 同じく、マウスを乗せたとき */
+  /* 色：ボタン */
+  --color-btn-main:#16171a;       /* 主ボタン（黒塗り） */
+  --color-btn-main-text:#ffffff;
+  --color-btn-sub:#ffffff;        /* 2つ目のボタン（白） */
+  --color-btn-sub-text:#16171a;
+  --hero-btn-main:#ffffff;        /* ヒーローの主ボタン（暗い背景の上なので白塗り） */
+  --hero-btn-main-text:#16171a;
+  --hero-btn-sub-bg:rgba(255,255,255,.04);     /* ヒーローの副ボタンの背景（ほぼ透明） */
+  --hero-btn-sub-text:#ffffff;
+  --hero-btn-sub-border:rgba(255,255,255,.7);  /* ヒーローの副ボタンの白い枠 */
+  --color-line-green:#00843d;     /* LINEパネルの緑（濃いめ）。白文字で約4.8:1。LINEパネルの中だけで使う */
+  --color-line-green-text:#ffffff;
+  --color-published:#127a3e;      /* 状態「公開中」の点と文字 */
+  --color-focus:#3b82f6;          /* キーボード操作のときの枠の色 */
+  /* 影 */
+  --shot-shadow:0 6px 20px rgba(16,18,24,.12), 0 1px 3px rgba(16,18,24,.08); /* スクリーンショットの薄い影 */
+  /* 文字の大きさ（スマホ基準。PC幅では clamp（最小・画面幅に比例・最大の3つで決める書き方）で大きくなる） */
+  --fs-bar-logo:18px;             /* 固定バーの「Yu」 */
+  --fs-bar-link:14px;             /* 固定バーの「TikTokを見る」 */
+  --fs-hero-eyebrow:12px;         /* ヒーローの小見出し「@yu_from_l2w」 */
+  --fs-hero-title:clamp(27px, 7.4vw, 52px);
+  --fs-hero-profile:clamp(14px, 3.9vw, 17px);
+  --fs-pill:14px;                 /* 丸い「TikTokを見る」 */
+  --fs-button:16px;               /* 横長のボタン */
+  --fs-line-mark:15px;            /* LINEの目印の中の文字 */
+  --hero-title-weight:300;        /* 表示名は細め。端末に細字がなければ標準の太さになる */
+  --hero-title-track:.08em;       /* 表示名の字間 */
+  --fs-eyebrow-track:.22em;       /* 英字の小見出しの字間 */
+  --fs-panel-title:clamp(30px, 8vw, 56px);
+  --fs-body:clamp(15px, 4.1vw, 19px);
+  --fs-label:13px;                /* 小見出し・状態 */
+  --fs-note:12px;                 /* 注意書き */
+  /* 余白 */
+  --bar-height:52px;              /* 固定バーの高さ */
+  --gutter:24px;                  /* 左右の余白（スマホ） */
+  --panel-pad-top:48px;           /* 固定バーの下からパネルの中身までの余白（デザインの値） */
+  --panel-pad-bottom:40px;        /* パネルの下端からボタンまで */
+  --hero-pad-top:28px;            /* ヒーローは中身が多いので、上の余白をパネルより小さくする */
+  --hero-pad-bottom:32px;
+  --content-max:680px;            /* PC幅で文章が横に伸びすぎないための上限 */
+  --hero-grid-size:32px;          /* 背景のグリッドの間隔（デザインの値） */
+  /* ボタン */
+  --btn-height:52px;              /* 指で押しやすいよう44px以上 */
+  --btn-radius:12px;
+  --btn-max:300px;                /* PC幅で横に2つ並べるときの1つの幅 */
+  --pill-height:44px;             /* ヒーロー中央の丸い「TikTokを見る」。指で押せる最小の44px */
+  /* ヒーローの肖像（縦長3:4の角丸フレーム）。画面の高さに合わせて縮み、ヒーローを1画面に収める
+     552px＝固定バー・上下の余白・小見出し・表示名・プロフィール文・「TikTokを見る」・下のボタン2つの高さの合計の目安。
+     画面の高さからこれを引いた残りを肖像に使う。
+     116px＝顔がYuだと判別できる最小の高さ／240px＝名刺サイズの上限（これより大きいと写真が主役になってしまう） */
+  --portrait-h:clamp(116px, calc(100svh - 552px), 240px);
+  --portrait-h-fallback:clamp(116px, calc(100vh - 552px), 240px); /* svh が使えないブラウザ用 */
+  --portrait-radius:18px;
+  --portrait-corner:14px;         /* 肖像の左上・右下の角の飾り線の長さ */
+  /* ツールのスクリーンショット。高さの上限は「画面の高さ − 見出し・説明・状態・ボタンの分（約470px）」で、パネルを1画面に収める
+     160px＝何のツールか見てわかる最小の高さ／420px＝PC幅で大きくなりすぎない上限 */
+  --shot-radius:14px;
+  --shot-max-h:clamp(160px, calc(100svh - 470px), 420px);
+  --shot-max-h-fallback:clamp(160px, calc(100vh - 470px), 420px); /* svh が使えないブラウザ用 */
+
+  /* ===== 日記（一覧・1件のページ・入口の「最新の日記」パネル） ===== */
+  /* 色 */
+  --diary-accent:#2563a8;         /* 明るい面の差し色（Day N・読む・節の番号・Yuの名前）。白で約6:1 */
+  --diary-card-bg:#ffffff;        /* カードの背景 */
+  --diary-card-border:#e3e5e9;    /* カードの細い枠 */
+  --diary-card-shadow:0 2px 10px rgba(16,18,24,.06); /* カードの薄い影 */
+  --diary-yu-bg:#0f1626;          /* Yu（人間）の吹き出し・顔の背景＝ヒーローと同じ夜の紺 */
+  --diary-yu-text:#ffffff;
+  --diary-glass:rgba(255,255,255,.06);        /* 紺の帯の中の箱（今日の一言・今日の決定） */
+  --diary-glass-border:rgba(124,196,255,.30); /* 同じく、細い枠 */
+  --av-ring:#ffffff;              /* 小さな顔を重ねるときの白いふち */
+  /* 話者の色（名前の文字・顔の丸の背景）。白・グレーの上でどれもコントラスト4.5:1以上 */
+  --sp-secretary:#5b5f66;         /* 秘書 */
+  --sp-aoi:#b4236b;               /* アオイ */
+  --sp-cmo:#a14a00;               /* CMO（失敗・学びの線にも使う） */
+  --sp-producer:#6d28d9;          /* プロデューサー */
+  --sp-brand:#0f766e;             /* ブランドディレクター */
+  --sp-cfo:#466f0d;               /* CFO（LINEの緑と見分けるため黄みのオリーブ） */
+  --sp-cto:#1d4ed8;               /* CTO */
+  --sp-ciso:#9f1239;              /* CISO */
+  --sp-yu:#7cc4ff;                /* Yu（紺の面の上で使うとき） */
+  /* 文字の大きさ */
+  --fs-diary-day:clamp(40px, 12vw, 72px);         /* 1件のページの「Day N」（細字） */
+  --fs-diary-h1:clamp(22px, 6vw, 34px);           /* 一覧・1件の見出し */
+  --fs-diary-card-title:clamp(17px, 4.6vw, 20px); /* カードの見出し・節の見出し */
+  --fs-diary-body:clamp(15px, 4.1vw, 17px);       /* 本文・抜粋・吹き出し */
+  --fs-diary-pick:clamp(16px, 4.5vw, 19px);       /* 今日の一言のセリフ */
+  --fs-diary-notice-title:clamp(20px, 5.4vw, 26px);   /* 0件・読み込み失敗の見出し */
+  --fs-diary-notfound-title:clamp(22px, 6vw, 32px);   /* 「見つかりませんでした」の見出し */
+  --fs-diary-meta:13px;           /* Day N・日付・凡例・名前 */
+  --fs-diary-link:14px;           /* 「戻る」リンク・1件のページの日付 */
+  --fs-diary-read:15px;           /* 一覧のカードの「読む」 */
+  --fs-diary-small:12px;          /* 小さな補足（今日の一言の名前・+N・節の番号） */
+  --fs-diary-role:11px;           /* 名前の横の役の説明・つかみの小見出し */
+  /* 余白・形 */
+  --diary-section-gap:40px;       /* 1件のページの節と節のあいだ */
+  --diary-card-radius:16px;       /* カード */
+  --diary-line-radius:14px;       /* 吹き出し */
+  --diary-line-indent:28px;       /* 吹き出しの反対側に空ける幅（Yuは右寄せ・AIは左寄せ） */
+  --diary-card-max:520px;         /* 入口のパネルのカードの最大幅 */
+  --diary-summary-lines:3;        /* 抜粋の最大の行数（入口のパネル）。はみ出す分は…で省略 */
+  --diary-summary-lines-list:2;   /* 抜粋の最大の行数（一覧のカード） */
+  --back-height:44px;             /* 「戻る」リンクの高さ（指で押せる最小） */
+  /* 話者の顔アイコン */
+  --av-size:40px;                 /* 吹き出しの横 */
+  --av-size-lg:48px;              /* 今日の一言 */
+  --av-size-sm:26px;              /* 一覧・パネル・今日の参加の小さな顔 */
+  --av-overlap:6px;               /* 小さな顔を重ねる幅 */
+}

@@ -1,0 +1,251 @@
+/*
+ * diary_entry.css：日記1件のページ（diary/entry.html）だけで使う見た目
+ * 紺の帯の中の Day N・冒頭のつかみ（今日の一言・今日の決定・今日の参加）、節（議題・役員の一言・決定・失敗と学び）、
+ * 顔つきの吹き出し、本文の最後のオープンチャットへの出口、見つからないときの表示。
+ * diary/entry.html から読み込まれる。色・大きさの値は variables.css、共通の見た目は diary.css。
+ */
+
+/* ===== 紺の帯：Day N・日付・記録者 ===== */
+.d-entry-head .d-day-big{
+  display:block;
+  margin:0;
+  font-size:var(--fs-diary-day);
+  line-height:1.1;
+  font-weight:300;                  /* 細字（ヒーローの表示名とそろえる） */
+  letter-spacing:.08em;
+}
+.d-entry-head .d-date{margin:6px 0 18px;font-size:var(--fs-diary-link);color:var(--hero-text-sub);letter-spacing:.06em}
+/* 日付の下の短い線（ヒーローの細い線とそろえる） */
+.d-entry-head .d-date::after{
+  content:"";
+  display:block;
+  width:24px;
+  height:1px;
+  margin-top:14px;
+  background:var(--hero-accent);
+  opacity:.8;
+}
+.d-byline{margin:14px 0 0;font-size:var(--fs-diary-meta);color:var(--hero-text-sub)}
+.d-byline b{color:var(--hero-text);font-weight:700}
+
+/* ===== 冒頭のつかみ（紺の帯の中） ===== */
+.d-hook{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.d-pick{
+  position:relative;
+  display:grid;
+  grid-template-columns:var(--av-size-lg) minmax(0, 1fr); /* 左に顔、右にセリフ */
+  gap:12px;
+  align-items:start;
+  padding:16px;
+  background:var(--diary-glass);
+  border:1px solid var(--diary-glass-border);
+  border-radius:var(--diary-card-radius);
+}
+.d-pick .hook-label,
+.d-dec .hook-label{
+  display:block;
+  margin-bottom:4px;
+  font-size:var(--fs-diary-role);
+  font-weight:700;
+  letter-spacing:.16em;
+  color:var(--hero-accent);
+}
+.d-pick .pick-quote{
+  margin:0;
+  font-size:var(--fs-diary-pick);
+  line-height:1.65;
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+.d-pick .pick-quote::before{content:"「"}
+.d-pick .pick-quote::after{content:"」"}
+.d-pick .pick-speaker{margin:6px 0 0;font-size:var(--fs-diary-small);color:var(--hero-text-sub)}
+.d-dec{
+  position:relative;
+  padding:14px 16px 14px 46px;      /* 左はチェックの印の分を空ける */
+  background:var(--diary-glass);
+  border:1px solid var(--diary-glass-border);
+  border-radius:var(--diary-card-radius);
+}
+/* チェックの印（CSSの線だけで描く） */
+.d-dec::before{
+  content:"";
+  position:absolute;
+  left:18px;
+  top:22px;
+  width:12px;
+  height:7px;
+  border-left:2px solid var(--hero-accent);
+  border-bottom:2px solid var(--hero-accent);
+  transform:rotate(-45deg);
+}
+.d-dec p{
+  margin:0;
+  font-size:var(--fs-diary-body);
+  line-height:1.7;
+  font-weight:600;
+  overflow-wrap:anywhere;
+}
+.d-dec .decision-rest{
+  display:block;
+  margin-top:2px;
+  font-size:var(--fs-diary-small);
+  font-weight:400;
+  color:var(--hero-text-sub);
+}
+.d-who-came{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:6px;
+  font-size:var(--fs-diary-small);
+  color:var(--hero-text-sub);
+}
+
+/* ===== 本文の節 ===== */
+.d-body{max-width:var(--content-max);margin:0 auto;padding:36px var(--gutter) 8px}
+.d-sec + .d-sec{margin-top:var(--diary-section-gap)}
+/* 節の見出し：番号＋細い線＋名前 */
+.d-sec-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 16px;
+  font-size:var(--fs-diary-card-title);
+  font-weight:700;
+  letter-spacing:.04em;
+}
+.d-sec-title .section-number{font-size:var(--fs-diary-small);font-weight:600;letter-spacing:.18em;color:var(--diary-accent)}
+.d-sec-title .section-number::after{
+  content:"";
+  display:inline-block;
+  width:18px;
+  height:1px;
+  margin-left:10px;
+  vertical-align:middle;
+  background:currentColor;
+}
+.d-sec ol,
+.d-sec ul{margin:0;padding:0;list-style:none}
+.d-sec li{font-size:var(--fs-diary-body);line-height:1.8;overflow-wrap:anywhere}
+/* 議題：丸の中に番号 */
+.d-agenda li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.d-agenda li + li{margin-top:10px}
+.d-agenda .agenda-number{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  margin-top:1px;
+  border-radius:50%;
+  border:1px solid var(--diary-accent);
+  color:var(--diary-accent);
+  font-size:var(--fs-diary-meta);
+  font-weight:700;
+}
+
+/* ===== 役員の一言：AI役員は「顔＋名前＋グレーの吹き出し」を左寄せ、Yu（人間）は右寄せの紺の吹き出し ===== */
+.d-legend{margin:-6px 0 16px;font-size:var(--fs-diary-meta);color:var(--color-text-sub)}
+.d-lines{display:flex;flex-direction:column;gap:14px}
+.d-line{
+  display:grid;
+  grid-template-columns:var(--av-size) minmax(0, 1fr); /* 左に顔、右に名前と吹き出し */
+  gap:10px;
+  align-items:start;
+  margin:0 var(--diary-line-indent) 0 0;               /* 右側を空けて、左寄せに見せる */
+}
+.d-line .speaker-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:2px 8px;
+  margin:0 0 4px 2px;
+  font-size:var(--fs-diary-meta);
+  line-height:1.4;
+}
+.d-line .speaker-name{font-weight:700;color:var(--sp, var(--sp-secretary))}
+.d-line .role{color:var(--color-text-sub);font-size:var(--fs-diary-role)}
+.d-line .bubble{
+  margin:0;
+  padding:10px 14px;
+  background:var(--color-gray);
+  border-radius:4px var(--diary-line-radius) var(--diary-line-radius) var(--diary-line-radius); /* 顔の側の角だけ小さく */
+  font-size:var(--fs-diary-body);
+  line-height:1.75;
+  overflow-wrap:anywhere;
+}
+.d-line.is-yu{grid-template-columns:minmax(0, 1fr) var(--av-size);margin:0 0 0 var(--diary-line-indent)}
+.d-line.is-yu .avatar{grid-column:2;grid-row:1}
+.d-line.is-yu .speech{grid-column:1;grid-row:1;text-align:right}
+.d-line.is-yu .speaker-row{justify-content:flex-end;margin:0 2px 4px 0}
+.d-line.is-yu .bubble{
+  display:inline-block;
+  text-align:left;
+  background:var(--diary-yu-bg);
+  color:var(--diary-yu-text);
+  border-radius:var(--diary-line-radius) 4px var(--diary-line-radius) var(--diary-line-radius);
+}
+.d-line.is-yu .speaker-name{color:var(--diary-accent)} /* 白い面の上なので、Yuの名前は明るい面の差し色にする */
+/* 画面には見せず、読み上げ・コピーだけに残す文字（「話者：」の部分） */
+.screen-reader-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  margin:-1px;
+  padding:0;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* ===== 決定・失敗と学び ===== */
+.d-decisions li{
+  position:relative;
+  padding:12px 14px 12px 44px;      /* 左はチェックの印の分を空ける */
+  background:var(--color-white);
+  border:1px solid var(--diary-card-border);
+  border-radius:12px;
+}
+.d-decisions li + li{margin-top:8px}
+.d-decisions li::before{
+  content:"";
+  position:absolute;
+  left:16px;
+  top:20px;
+  width:12px;
+  height:7px;
+  border-left:2px solid var(--color-published);
+  border-bottom:2px solid var(--color-published);
+  transform:rotate(-45deg);
+}
+.d-none{
+  margin:0;
+  padding:12px 14px;
+  border:1px dashed var(--color-line);
+  border-radius:12px;
+  font-size:var(--fs-diary-body);
+  color:var(--color-text-sub);
+}
+.d-lessons li{position:relative;padding-left:22px}
+.d-lessons li + li{margin-top:10px}
+/* 左の短い線 */
+.d-lessons li::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.9em;
+  width:12px;
+  height:2px;
+  background:var(--sp-cmo);
+}
+
+/* ===== 本文の最後：オープンチャットへの出口 ===== */
+.d-cta{max-width:var(--content-max);margin:44px auto 0;padding:0 var(--gutter)}
+.d-cta-box{padding:24px 20px;border-radius:var(--diary-card-radius);background:var(--color-gray);text-align:center}
+.d-cta-box p{margin:0 0 16px;font-size:var(--fs-diary-body);color:var(--color-text-sub)}
+.d-cta-box .actions{gap:10px}
+
+/* ===== 見つからないとき ===== */
+.d-notfound .panel-title{font-size:var(--fs-diary-notfound-title)}

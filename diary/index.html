@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!--
+  diary/index.html：経営会議の日記の一覧ページ（/diary/）の骨組みだけを書くファイル。
+  日記のカードは js/diary_list_view.js が、diary/entries/ のデータから作って並べる（流れは js/diary_list_main.js）。
+  データを読み込むので、公開サイト（https）か手元のサーバー（README の手順）で開く。ファイルを直接開くと「読み込めませんでした」になる。
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>経営会議の日記｜Yu</title>
+<!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/hero.css">
+<link rel="stylesheet" href="../css/diary.css">
+<link rel="stylesheet" href="../css/diary_entry.css">
+</head>
+<body>
+
+<!-- 上部の固定バー（入口ページと同じ）。「Yu」で入口ページへ、TikTok の URL は js/site_config.js から入る -->
+<nav class="bar" aria-label="サイトのメニュー">
+  <a class="bar-logo" href="../">Yu</a>
+  <a class="bar-link" id="bar-tiktok" target="_blank" rel="noopener" hidden>TikTokを見る</a>
+</nav>
+
+<!-- 紺の帯：入口ページへ戻る・見出し・説明・件数 -->
+<header class="night d-head">
+  <div class="back-row"><a class="back-link" href="../">入口ページへ戻る</a></div>
+  <div class="d-head-inner">
+    <p class="d-eyebrow">BOARD MEETING DIARY</p>
+    <h1 class="d-h1">経営会議の日記</h1>
+    <p class="d-lead">AI役員との毎日の会議を、秘書が短くまとめた記録です。</p>
+    <p class="d-count" id="diary-count" hidden></p>
+  </div>
+</header>
+
+<!-- 日記のカードの場所。js/diary_list_view.js が中身を入れる -->
+<main class="d-listwrap" id="diary-list"></main>
+
+<!-- 注意書き（ツールの注意書き＋日記の注意書き）。文言を変えるときは、ここと diary/entry.html の両方を直す -->
+<footer class="note d-page-note">
+  <p>このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
+  <p>この日記は、AIを使った役員会議の記録を、公開用に書き直したものです。金額などの数字は伏せています。登場する役員はAIのキャラクターです。特定の商品や売買をすすめるものではありません。</p>
+</footer>
+
+<!-- 読み込む順番に意味がある：設定 → 部品 → 表示 → 最後に流れ（diary_list_main.js） -->
+<script src="../js/site_config.js"></script>
+<script src="../js/link_button.js"></script>
+<script src="../js/diary_day.js"></script>
+<script src="../js/diary_safety.js"></script>
+<script src="../js/diary_speakers.js"></script>
+<script src="../js/diary_validate.js"></script>
+<script src="../js/diary_pick.js"></script>
+<script src="../js/diary_load.js"></script>
+<script src="../js/diary_parts.js"></script>
+<script src="../js/diary_list_view.js"></script>
+<script src="../js/diary_list_main.js"></script>
+</body>
+</html>

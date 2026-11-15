@@ -1,0 +1,229 @@
+/*
+ * diary.css：経営会議の日記の共通の見た目（入口の「最新の日記」パネル・一覧ページ・話者の顔・紺の見出しの帯）
+ * index.html と diary/ のページから読み込まれる。色・大きさの値は variables.css。
+ * 1件のページだけで使う見た目（節・吹き出し・冒頭のつかみ）は diary_entry.css。
+ * 夜の紺の背景（.night）は hero.css、ボタン・注意書きの形は style.css と共通。
+ * クラス名の頭の「d-」は「diary（日記）」の印（ほかのページの見た目と名前がぶつからないようにするため）。
+ */
+
+/* ===== Day N と日付の小さな行（パネル・一覧で共通） ===== */
+.d-meta{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:4px 10px;
+  margin:0;
+  font-size:var(--fs-diary-meta);
+  color:var(--color-text-sub);
+}
+.d-day{font-weight:700;letter-spacing:.12em;color:var(--diary-accent)}
+
+/* 抜粋：決まった行数まで。はみ出した分は「…」で省略する（-webkit-line-clamp＝行数で切る指定） */
+.d-summary{
+  margin:8px 0 0;
+  font-size:var(--fs-diary-body);
+  line-height:1.75;
+  color:var(--color-text-sub);
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:var(--diary-summary-lines);
+  line-clamp:var(--diary-summary-lines);
+  overflow:hidden;
+  overflow-wrap:anywhere;           /* 長い英数字でも横にはみ出さない */
+}
+
+/* ===== 話者の顔アイコン（丸。背景が話者の色。絵は assets/speakers.svg） ===== */
+.avatar{
+  position:relative;
+  display:inline-block;
+  flex:none;
+  width:var(--av-size);
+  height:var(--av-size);
+  border-radius:50%;
+  overflow:hidden;
+  background:var(--sp, var(--sp-secretary));
+}
+.avatar svg{display:block;width:100%;height:100%}
+/* Yu（人間）の顔の背景は夜の紺。細い枠でほかの役員と見分ける */
+.avatar.sp-yu{background:var(--diary-yu-bg);box-shadow:inset 0 0 0 1.5px var(--hero-frame-border)}
+.avatar-large{width:var(--av-size-lg);height:var(--av-size-lg)}
+.avatar-small{width:var(--av-size-sm);height:var(--av-size-sm);box-shadow:0 0 0 2px var(--av-ring)}
+/* 話者ごとの色（--sp に入れ、顔の背景・名前の文字で使う） */
+.sp-secretary{--sp:var(--sp-secretary)}
+.sp-aoi{--sp:var(--sp-aoi)}
+.sp-cmo{--sp:var(--sp-cmo)}
+.sp-producer{--sp:var(--sp-producer)}
+.sp-brand{--sp:var(--sp-brand)}
+.sp-cfo{--sp:var(--sp-cfo)}
+.sp-cto{--sp:var(--sp-cto)}
+.sp-ciso{--sp:var(--sp-ciso)}
+.sp-yu{--sp:var(--sp-yu)}
+/* 登場した話者の小さな顔を、少し重ねて並べる */
+.faces{display:flex;align-items:center;padding-left:var(--av-overlap)}
+.faces .avatar{margin-left:calc(var(--av-overlap) * -1)}
+.faces .faces-more{margin-left:6px;font-size:var(--fs-diary-small);font-weight:700;color:var(--color-text-sub)}
+.night .faces .avatar-small{box-shadow:0 0 0 2px var(--hero-bg-dark)}
+.night .faces .faces-more{color:var(--hero-text-sub)}
+
+/* ===== 入口ページの「最新の日記」パネル（ほかのパネルと同じ全画面の形） ===== */
+.diary-panel .panel-body{align-items:center}
+.diary-card{
+  position:relative;
+  width:100%;
+  max-width:var(--diary-card-max);
+  margin:26px auto 0;
+  padding:20px 20px 22px;
+  text-align:left;
+  background:var(--diary-card-bg);
+  border:1px solid var(--diary-card-border);
+  border-radius:var(--diary-card-radius);
+  box-shadow:var(--diary-card-shadow);
+}
+/* カードの上の短い線（日誌の目印。差し色） */
+.diary-card::before{
+  content:"";
+  position:absolute;
+  left:20px;
+  top:-1px;
+  width:32px;
+  height:2px;
+  background:var(--diary-accent);
+  border-radius:2px;
+}
+.diary-card h3{
+  margin:8px 0 0;
+  font-size:var(--fs-diary-card-title);
+  line-height:1.5;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+.diary-card .faces{margin-top:14px}
+.diary-panel .actions{margin-top:28px}
+
+/* ===== 「戻る」リンク（一覧・1件の上部） ===== */
+.back-row{max-width:var(--content-max);margin:0 auto;padding:calc(var(--bar-height) + 8px) var(--gutter) 0}
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:var(--back-height);
+  font-size:var(--fs-diary-link);
+  font-weight:600;
+  text-decoration:none;
+  color:var(--hero-text-sub);
+}
+/* 左向きの矢印（CSSの線だけで描く） */
+.back-link::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-left:1.5px solid currentColor;
+  border-bottom:1.5px solid currentColor;
+  transform:rotate(45deg);
+}
+.back-link:hover{text-decoration:underline}
+
+/* ===== 一覧・1件の見出しの帯（夜の紺の中身） ===== */
+.d-head{padding:0 0 36px}
+.d-head-inner{max-width:var(--content-max);margin:0 auto;padding:16px var(--gutter) 0}
+.d-eyebrow{
+  margin:0 0 10px;
+  font-size:var(--fs-hero-eyebrow);
+  font-weight:600;
+  letter-spacing:var(--fs-eyebrow-track);
+  color:var(--hero-accent);
+}
+.d-h1{
+  margin:0;
+  font-size:var(--fs-diary-h1);
+  line-height:1.45;
+  font-weight:600;
+  letter-spacing:.04em;
+  overflow-wrap:anywhere;
+}
+.d-lead{
+  margin:12px 0 0;
+  font-size:var(--fs-diary-body);
+  line-height:1.85;
+  color:var(--hero-text-sub);
+  overflow-wrap:anywhere;
+}
+.d-count{margin:16px 0 0;font-size:var(--fs-diary-meta);color:var(--hero-text-sub);letter-spacing:.04em}
+
+/* ===== 一覧ページ ===== */
+.d-listwrap{background:var(--color-gray);padding:28px var(--gutter) 8px}
+.d-list{
+  list-style:none;
+  margin:0 auto;
+  padding:0;
+  max-width:var(--content-max);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.d-month{
+  margin:14px 0 -2px;
+  font-size:var(--fs-label);
+  font-weight:700;
+  letter-spacing:.1em;
+  color:var(--color-text-sub);
+}
+.d-month:first-child{margin-top:0}
+/* カード全体が1つのリンク（どこを押しても開ける＝指で押しやすい） */
+.d-item a{
+  display:block;
+  padding:18px 18px 16px;
+  background:var(--diary-card-bg);
+  border:1px solid var(--diary-card-border);
+  border-radius:var(--diary-card-radius);
+  box-shadow:var(--diary-card-shadow);
+  text-decoration:none;
+  color:inherit;
+  transition:border-color .15s;
+}
+.d-item a:hover{border-color:var(--diary-accent)}
+.d-item a:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
+.d-item h2{
+  margin:6px 0 0;
+  font-size:var(--fs-diary-card-title);
+  line-height:1.5;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+.d-item .d-summary{-webkit-line-clamp:var(--diary-summary-lines-list);line-clamp:var(--diary-summary-lines-list)}
+/* カードの下の行：左に登場した話者の小さな顔、右に「読む」 */
+.d-read{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:8px;
+}
+.d-read .read-label{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:44px;                  /* 指で押せる高さ */
+  padding:0 4px 0 12px;
+  font-size:var(--fs-diary-read);
+  font-weight:700;
+  color:var(--diary-accent);
+}
+/* 右向きの矢印（CSSの線だけで描く） */
+.d-read .read-label::after{
+  content:"";
+  width:7px;
+  height:7px;
+  border-right:2px solid currentColor;
+  border-top:2px solid currentColor;
+  transform:rotate(45deg);
+}
+/* 0件・読み込み失敗のときの案内 */
+.d-empty{max-width:var(--content-max);margin:0 auto;padding:40px 8px 48px;text-align:center}
+.d-empty h2{margin:0;font-size:var(--fs-diary-notice-title);font-weight:600;letter-spacing:.04em}
+.d-empty p{margin:12px auto 0;max-width:26em;font-size:var(--fs-diary-body);color:var(--color-text-sub)}
+.d-empty .actions{margin-top:24px}
+
+/* ===== 日記のページの注意書き（2段落） ===== */
+.d-page-note{border-top:1px solid var(--diary-card-border);margin-top:32px}
+.note p + p{margin-top:10px}

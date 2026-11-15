@@ -79,13 +79,13 @@ jobs:
       - uses: actions/checkout@v5
 
       # 公開するファイルだけを _site フォルダにまとめる
-      # 入れるもの：index.html・css/・js/（assets/・images/ があればそれも）
-      # 入れないもの：tests/・ci/・README.md・docs/・.github/
+      # 入れるもの：index.html・css/・js/・diary/（日記のページとデータ）（assets/・images/ があればそれも）
+      # 入れないもの：tests/・ci/・tools/・README.md・docs/・.github/
       - name: 公開するファイルをまとめる
         run: |
           mkdir _site
           cp index.html _site/
-          for dir in css js assets images; do
+          for dir in css js diary assets images; do
             if [ -d "$dir" ]; then cp -r "$dir" _site/; fi
           done
           # 何を公開するかをログに残す（確認用）

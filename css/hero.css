@@ -1,0 +1,180 @@
+/*
+ * hero.css：最初の全画面パネル（ヒーロー）の見た目
+ * 夜の紺の背景（グリッド線とほのかな光をCSSだけで描く）・表示名・縦長の角丸フレームの肖像・丸い「TikTokを見る」。
+ * index.html と日記のページから読み込まれる。色・大きさの値は variables.css。ボタンの共通の形は style.css の「⑤ ボタン」。
+ * 夜の紺の背景（グリッド線・光）は、日記の見出しの帯（.night）でも同じものを使う。
+ */
+
+/* ===== ④ ヒーロー（夜の紺の面＋縦長の角丸フレームの肖像） ===== */
+.hero{
+  color:var(--hero-text);
+  background:var(--hero-bg-dark);
+  overflow:hidden;
+  isolation:isolate;
+  padding-top:calc(var(--bar-height) + var(--hero-pad-top));
+  padding-bottom:var(--hero-pad-bottom);
+}
+/* 背景のグリッド線。CSSだけで描き、中央だけ見えて端は消えるようにする */
+.hero::before,
+.night::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(var(--hero-grid) 1px, transparent 1px) 0 0 / var(--hero-grid-size) var(--hero-grid-size),
+    linear-gradient(90deg, var(--hero-grid) 1px, transparent 1px) 0 0 / var(--hero-grid-size) var(--hero-grid-size);
+  -webkit-mask-image:radial-gradient(ellipse 85% 60% at 50% 42%, #000 20%, transparent 78%);
+  mask-image:radial-gradient(ellipse 85% 60% at 50% 42%, #000 20%, transparent 78%); /* マスクの #000 は「見せる範囲」の印で、色ではない */
+}
+/* ほのかな光（青と紫のぼかし） */
+.hero::after,
+.night::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 36%, var(--hero-glow), transparent 42%),
+    radial-gradient(circle at 85% 92%, var(--hero-glow-2), transparent 40%);
+}
+.hero > *,
+.night > *{position:relative;z-index:2}
+/* 日記の見出しの帯：ヒーローと同じ夜の紺の面（グリッド線と光は上の ::before・::after） */
+.night{
+  position:relative;
+  color:var(--hero-text);
+  background:var(--hero-bg-dark);
+  overflow:hidden;
+  isolation:isolate;
+}
+.hero-eyebrow{
+  margin:auto 0 10px;
+  font-size:var(--fs-hero-eyebrow);
+  font-weight:600;
+  letter-spacing:var(--fs-eyebrow-track);
+  color:var(--hero-accent);
+}
+.hero-title{
+  margin:0;
+  font-size:var(--fs-hero-title);
+  line-height:1.35;
+  font-weight:var(--hero-title-weight);
+  letter-spacing:var(--hero-title-track);
+}
+.hero-title span{display:inline-block}            /* 「Yu｜」「AI仮想会社の社長」の切れ目で改行させる */
+.hero-title span:first-child{font-weight:600}
+.hero-profile{
+  text-wrap:pretty;                 /* 最後の行が1文字だけにならないようにする */
+  margin:18px auto 0;
+  max-width:30em;
+  font-size:var(--fs-hero-profile);
+  line-height:1.85;
+  color:var(--hero-text-sub);
+}
+.hero-spacer{min-height:24px}
+.hero > .actions{margin-top:auto} /* 上の余白と同じだけ下にも余白をとり、中身を真ん中寄りに置く */
+
+/* 肖像：外側の箱に角の細い線、内側の箱で画像を切り抜く */
+.hero-portrait{
+  margin:22px auto 0;
+  position:relative;
+  height:var(--portrait-h-fallback);
+  height:var(--portrait-h);         /* 高さは画面の高さに合わせて伸び縮みする（①の説明） */
+  aspect-ratio:3/4;                 /* 幅は高さから決まる（縦長の名刺サイズ） */
+}
+.hero-portrait-clip{
+  position:absolute;
+  inset:0;
+  overflow:hidden;                  /* 枠からはみ出した部分の画像を隠す */
+  border-radius:var(--portrait-radius);
+  border:1px solid var(--hero-frame-border);
+  background:linear-gradient(160deg, var(--color-hero-fallback), var(--color-hero-fallback-2)); /* 画像が読めないときに見える色 */
+  box-shadow:0 0 0 6px var(--hero-frame-halo), 0 18px 48px var(--hero-frame-shadow);
+}
+/* 画像ファイルは加工せず、表示の大きさと位置だけで、顔と上半身がフレームに入るようにする */
+.hero-portrait img{
+  position:absolute;
+  max-width:none;
+  height:auto;
+  width:180%;    /* 枠の幅の1.8倍に拡大する（元の画像は部屋全体が写っていて、そのままだと顔が小さいため） */
+  left:-48.5%;   /* 左へずらして、顔を枠の左右の真ん中に置く */
+  top:-46%;      /* 上へずらして、顔と上半身を枠の中に入れる */
+}
+.hero-portrait::before,
+.hero-portrait::after{
+  content:"";
+  position:absolute;
+  width:var(--portrait-corner);
+  height:var(--portrait-corner);
+  z-index:1;
+  pointer-events:none;
+}
+.hero-portrait::before{
+  left:-7px;
+  top:-7px;
+  border-left:1.5px solid var(--hero-accent);
+  border-top:1.5px solid var(--hero-accent);
+}
+.hero-portrait::after{
+  right:-7px;
+  bottom:-7px;
+  border-right:1.5px solid var(--hero-accent);
+  border-bottom:1.5px solid var(--hero-accent);
+}
+
+/* ヒーロー中央の「TikTokを見る」：丸い小さめのボタン（下の2つのボタンより控えめ） */
+.btn-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  align-self:center;
+  min-height:var(--pill-height);
+  margin-top:18px;
+  padding:0 22px;
+  border-radius:999px;              /* 両端を丸くする */
+  font-size:var(--fs-pill);
+  font-weight:600;
+  letter-spacing:.06em;
+  text-decoration:none;
+  color:var(--hero-text);
+  border:1px solid var(--hero-pill-border);
+  background:var(--hero-pill-bg);
+  transition:background .15s;
+}
+.btn-pill:hover{background:var(--hero-pill-bg-hover)}
+/* 再生の三角（画像を使わず、CSSの枠線だけで描く） */
+.btn-pill::before{
+  content:"";
+  width:0;
+  height:0;
+  border-style:solid;
+  border-width:5px 0 5px 8px;
+  border-color:transparent transparent transparent var(--hero-accent);
+}
+
+/* 丸いボタン2つ（「TikTokを見る」「会議の日記」）を横に並べる行。行は増やさない（ヒーローの高さを変えないため） */
+.hero-pills{
+  display:flex;
+  flex-wrap:wrap;                   /* 幅が足りない端末では2行に折り返す */
+  justify-content:center;
+  gap:8px;
+  margin-top:18px;
+}
+.hero-pills .btn-pill{margin-top:0;padding:0 18px}
+/* 丸いボタンが2つとも隠れているときは、行ごと隠す（場所が空いて見えないようにする） */
+.hero-pills:not(:has(.btn-pill:not([hidden]))){display:none}
+/* 「会議の日記」の印：小さなノートの形（画像を使わず、CSSの線だけで描く。再生の三角の代わり） */
+.pill-diary::before{
+  border:0;
+  width:9px;
+  height:11px;
+  border-radius:1.5px;
+  background:
+    linear-gradient(var(--hero-accent), var(--hero-accent)) 2px 3px / 5px 1px no-repeat,
+    linear-gradient(var(--hero-accent), var(--hero-accent)) 2px 6px / 5px 1px no-repeat;
+  box-shadow:inset 0 0 0 1.2px var(--hero-accent);
+}

@@ -4,7 +4,7 @@
  */
 const test = require("node:test");
 const assert = require("node:assert");
-const { isNonEmptyText, findToolProblems, validateTools } = require("../js/tools_validate.js");
+const { isNonEmptyText, findToolProblems, findImageProblem, validateTools } = require("../js/tools_validate.js");
 
 /**
  * テスト用の、形が正しいツール1件を作る。毎回新しく作るのは、テスト同士で中身を書き換え合わないようにするため。
@@ -105,4 +105,51 @@ test("配列でないデータや、{ } でない項目でも止まらずに報�
   const result = validateTools([null, "文字", makeValidTool("ok")]);
   assert.strictEqual(result.validTools.length, 1);
   assert.strictEqual(result.problemReports.length, 2);
+});
+
+test("AC-33：image がない・空の文字の項目は、問題なし（画像なしで表示する）", function () {
+  assert.strictEqual(findImageProblem(undefined), "");
+  assert.strictEqual(findImageProblem(""), "");
+  const result = validateTools([makeValidTool("a")]);
+  assert.strictEqual(result.validTools.length, 1);
+  assert.deepStrictEqual(result.imageProblemReports, []);
+});
+
+test("AC-31：assets/ の中の画像は、問題なしでそのまま残る", function () {
+  assert.strictEqual(findImageProblem("assets/tool_simulator.jpg"), "");
+  const tool = makeValidTool("a");
+  tool.image = "assets/tool_simulator.jpg";
+  const result = validateTools([tool]);
+  assert.strictEqual(result.validTools[0].image, "assets/tool_simulator.jpg");
+});
+
+test("AC-34：外部URL・assets/ で始まらないパス・「..」を含むパスは、画像が不正になる", function () {
+  const badImages = [
+    "https://example.com/a.jpg",
+    "http://example.com/a.jpg",
+    "//example.com/a.jpg",
+    "data:image/png;base64,AAAA",
+    "javascript:alert(1)",
+    "img/a.jpg",
+    "/assets/a.jpg",
+    "assets/../secret.jpg",
+    123
+  ];
+  badImages.forEach(function (image) {
+    assert.notStrictEqual(findImageProblem(image), "", String(image) + " が不正になっていません");
+  });
+});
+
+test("AC-34：画像が不正な項目は消さずに画像なしで残し、何件目かを報告する（元のデータは書き換えない）", function () {
+  const tool = makeValidTool("a");
+  tool.image = "https://example.com/a.jpg";
+  tool.imageAlt = "説明";
+  const result = validateTools([makeValidTool("first"), tool]);
+  assert.strictEqual(result.validTools.length, 2);
+  assert.strictEqual(result.validTools[1].image, undefined);
+  assert.strictEqual(result.validTools[1].name, "a");
+  assert.deepStrictEqual(result.problemReports, []);
+  assert.strictEqual(result.imageProblemReports.length, 1);
+  assert.strictEqual(result.imageProblemReports[0].position, 2);
+  assert.strictEqual(tool.image, "https://example.com/a.jpg");
 });

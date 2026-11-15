@@ -3,49 +3,108 @@
 <head>
 <meta charset="utf-8">
 <!--
-  index.html：入口ページの骨組み（自己紹介・ツール一覧の場所・LINEボタンの場所・注意書き）だけを書くファイル。
-  見た目は css/style.css、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
-  データの検査は js/tools_validate.js、カードの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、流れは js/main.js。
+  index.html：入口ページの骨組みだけを書くファイル（上から ①ヒーロー ②ツールのパネルの場所 ②' 最新の日記 ③LINEのパネル ④注意書き）。
+  見た目は css/variables.css（色・大きさの値）・css/style.css（共通）・css/hero.css（ヒーロー）・css/diary.css（日記）、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
+  データの検査は js/tools_validate.js、パネルの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、
+  肖像の画像は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
+  URLの # の場所への移動は js/hash_jump.js、最新の日記は js/diary_latest_panel.js（と diary_*.js）、流れは js/main.js。
+  最新の日記は diary/entries/ のデータを読み込むので、公開サイト（https）か手元のサーバーで開いたときだけ出る。
   ブラウザで直接開くだけで動く（サーバー・インターネット接続は不要。外部のファイルは読み込まない）。
 -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Yu｜AI仮想会社の社長</title>
+<!-- 変数（variables.css）を先に読み込む。ほかの2つがその値を使うため -->
+<link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/diary.css">
 </head>
 <body>
-<div class="wrap">
-  <!-- 自己紹介。文言を変えるときは、ここを直す -->
-  <header class="card profile">
-    <h1>Yu｜AI仮想会社の社長</h1>
-    <p class="profile-text">会社員エンジニア（国家資格あり）。AIで仮想会社を設立し、AI役員にお金と人生を相談しています。うまくいかない日も全部記録。毎日19時投稿／22時ライブ</p>
-    <!-- URLは js/site_config.js から main.js が入れる。正しいURLがあるときだけ表示される -->
-    <a id="tiktok-button" class="button button-sub" target="_blank" rel="noopener" hidden>TikTokを見る</a>
+
+<!-- 上部の固定バー：左に「Yu」（ページの先頭へ）、右に TikTok。URLは js/site_config.js から main.js が入れる -->
+<nav class="bar" aria-label="サイトのメニュー">
+  <a class="bar-logo" href="#top">Yu</a>
+  <a class="bar-link" id="bar-tiktok" target="_blank" rel="noopener" hidden>TikTokを見る</a>
+</nav>
+
+<main>
+  <!-- ① ヒーロー：小見出し・表示名・肖像・プロフィール文・中央の「TikTokを見る」・下部のボタン2つ。文言を変えるときはここを直す -->
+  <header class="panel hero" id="top">
+    <p class="hero-eyebrow">@yu_from_l2w</p>
+    <h1 class="hero-title"><span>Yu｜</span><span>AI仮想会社の社長</span></h1>
+    <figure class="hero-portrait">
+      <div class="hero-portrait-clip">
+        <img id="hero-image" src="assets/yu.jpg" alt="夜の部屋でパソコンに向かうYu（AIで作ったアバター）">
+      </div>
+    </figure>
+    <p class="hero-profile">会社員エンジニア（国家資格あり）。AIで仮想会社を設立し、AI役員にお金と人生を相談しています。うまくいかない日も全部記録。<span class="nowrap-unit">毎日19時投稿／22時ライブ</span></p>
+    <!-- 中央の控えめな丸いボタン2つ。TikTok は URL が正しいときだけ、日記は最新の日記を出せたときだけ表示される -->
+    <div class="hero-pills">
+      <a class="btn-pill" id="hero-tiktok" target="_blank" rel="noopener" hidden>TikTokを見る</a>
+      <a class="btn-pill pill-diary" id="hero-diary" href="#diary-latest" hidden>会議の日記</a>
+    </div>
+    <div class="hero-spacer"></div>
+    <div class="actions">
+      <!-- 行き先（最初のツールのパネル、または「ただいま準備中です」）は main.js が入れる -->
+      <a class="btn btn-hero-main" id="hero-tools" href="#tool-area">無料ツールを見る</a>
+      <a class="btn btn-hero-sub" id="hero-openchat" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
+    </div>
   </header>
 
-  <!-- ツール一覧。カードは js/tools_view.js が作って、この中に並べる -->
-  <section>
-    <h2>無料ツール</h2>
-    <div id="tool-list" class="tool-list"></div>
+  <!-- ② ツールのパネル。1件1枚のパネルは js/tools_view.js が作って、この中に並べる -->
+  <div id="tool-area"></div>
+
+  <!-- ②' 最新の日記。中身は js/diary_latest_panel.js が入れる。日記を出せないときは隠したまま -->
+  <section class="panel diary-panel" id="diary-latest" aria-labelledby="diary-latest-title" hidden>
+    <div class="panel-body reveal">
+      <p class="eyebrow">DIARY</p>
+      <h2 class="panel-title" id="diary-latest-title"><span>経営会議の</span><span>日記</span></h2>
+      <article class="diary-card" id="diary-latest-card"></article>
+    </div>
+    <div class="actions">
+      <a class="btn btn-main" id="diary-latest-read" href="diary/">読む</a>
+      <a class="btn btn-sub" href="diary/">一覧を見る</a>
+    </div>
   </section>
 
-  <!-- LINEボタン。上がメイン（オープンチャット）、下がサブ（公式アカウント）。URLは js/site_config.js -->
-  <section id="line-area" class="line-area">
-    <a id="line-openchat" class="button button-line-main" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
-    <a id="line-official" class="button button-line-sub" target="_blank" rel="noopener" hidden>LINEで友だち追加</a>
+  <!-- ③ LINEのパネル。上がメイン（オープンチャット）、下がサブ（公式アカウント）。2つとも出せないときはパネルごと隠す -->
+  <section class="panel" id="line-panel" aria-labelledby="line-title">
+    <div class="panel-body reveal">
+      <div class="line-mark" aria-hidden="true">LINE</div>
+      <p class="eyebrow">COMMUNITY</p>
+      <h2 class="panel-title" id="line-title"><span>AI役員会議の、</span><span>その先へ。</span></h2>
+      <p class="panel-desc"><span class="nowrap-unit">会議の裏側や新しいツールのお知らせを届けます。</span><span class="nowrap-unit">見るだけの参加もOK。</span></p>
+    </div>
+    <div class="actions">
+      <a class="btn btn-line" id="line-openchat" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
+      <a class="btn btn-sub" id="line-official" target="_blank" rel="noopener" hidden>LINEで友だち追加</a>
+    </div>
   </section>
+</main>
 
-  <!-- 共通の注意書き。文言を変えるときは、ここを直す -->
-  <footer class="note disclaimer">
-    このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。
-  </footer>
-</div>
+<!-- ④ 共通の注意書き。文言を変えるときは、ここを直す -->
+<footer class="note" id="note">
+  <p>このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
+</footer>
 
-<!-- 読み込む順番に意味がある：設定とデータ → 検査 → 表示 → 最後に流れ（main.js） -->
+<!-- 読み込む順番に意味がある：設定とデータ → 検査 → 表示の部品 → 最後に流れ（main.js） -->
 <script src="js/site_config.js"></script>
 <script src="js/tools_data.js"></script>
 <script src="js/tools_validate.js"></script>
+<script src="js/hero_image.js"></script>
 <script src="js/tools_view.js"></script>
 <script src="js/link_button.js"></script>
+<script src="js/panel_tone.js"></script>
+<script src="js/reveal_motion.js"></script>
+<script src="js/hash_jump.js"></script>
+<script src="js/diary_day.js"></script>
+<script src="js/diary_safety.js"></script>
+<script src="js/diary_speakers.js"></script>
+<script src="js/diary_validate.js"></script>
+<script src="js/diary_pick.js"></script>
+<script src="js/diary_load.js"></script>
+<script src="js/diary_parts.js"></script>
+<script src="js/diary_latest_panel.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
