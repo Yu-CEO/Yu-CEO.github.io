@@ -38,14 +38,23 @@ test("AC-23：toolbox_data.js の全部の道具が検査を通る（計測用�
   assert.strictEqual(result.validItems.length, TOOLBOX_DATA.length);
 });
 
-test("公開時の状態：紹介リンクは本の1件だけ（もしもアフィリエイト・計測用画像つき）、ほかは公式リンク", function () {
+test("公開時の状態：紹介リンクは3件（本＝もしもアフィリエイト・計測用画像つき／ココナラ＝A8.net・計測用画像つき／楽天市場＝A8.net・計測用画像なし）、ほかは公式リンク", function () {
   const affiliates = TOOLBOX_DATA.filter(function (item) {
     return item.linkType === "affiliate";
   });
-  assert.strictEqual(affiliates.length, 1);
-  assert.strictEqual(affiliates[0].name, "田中渓『億までの人 億からの人』");
-  assert.strictEqual(affiliates[0].asp, "moshimo");
-  assert.ok(affiliates[0].beaconUrl.startsWith("https://i.moshimo.com/"));
+  assert.deepStrictEqual(affiliates.map(function (item) { return item.name; }).sort(),
+    ["ココナラ", "楽天市場", "田中渓『億までの人 億からの人』"].sort());
+  const book = findByName("田中渓『億までの人 億からの人』");
+  assert.strictEqual(book.asp, "moshimo");
+  assert.ok(book.beaconUrl.startsWith("https://i.moshimo.com/"));
+  const coconala = findByName("ココナラ");
+  assert.strictEqual(coconala.asp, "a8");
+  assert.ok(coconala.url.startsWith("https://px.a8.net/"));
+  assert.ok(coconala.beaconUrl.startsWith("https://www18.a8.net/"));
+  const rakuten = findByName("楽天市場");
+  assert.strictEqual(rakuten.asp, "a8");
+  assert.ok(rakuten.url.startsWith("https://rpx.a8.net/"));
+  assert.strictEqual(rakuten.beaconUrl, undefined);
   TOOLBOX_DATA.filter(function (item) {
     return item.linkType !== "affiliate";
   }).forEach(function (item) {
@@ -54,9 +63,9 @@ test("公開時の状態：紹介リンクは本の1件だけ（もしもアフ�
   });
 });
 
-test("AC-1：7つの道具が決まったジャンルに入っている", function () {
+test("AC-1：9つの道具が決まったジャンルに入っている", function () {
   const expected = {
-    "SBI証券": "money", "楽天証券": "money", "Gemini": "ai", "Microsoft Copilot": "ai", "VS Code": "ai",
+    "SBI証券": "money", "楽天証券": "money", "Gemini": "ai", "Microsoft Copilot": "ai", "VS Code": "ai", "ココナラ": "ai", "楽天市場": "life",
     "田中渓『億までの人 億からの人』": "life", "FIT-EASYの酸素ルーム": "life"
   };
   Object.keys(expected).forEach(function (name) {

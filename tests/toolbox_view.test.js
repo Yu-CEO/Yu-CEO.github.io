@@ -20,7 +20,7 @@ const OFFICIAL_ITEM = { genre: "ai", name: "VS Code", note: "このサイトは�
 const NONE_ITEM = { genre: "life", name: "テスト", note: "使っています", linkType: "none" };
 const A8_ITEM = {
   genre: "money", name: "テスト口座", note: "テスト用に使っています", linkType: "affiliate", asp: "a8",
-  url: "https://px.a8.net/svt/ejp?a8mat=TEST", beaconUrl: "https://www10.a8.net/0.gif?a8mat=TEST"
+  url: "https://px.a8.net/svt/ejp?a8mat=TEST", beaconUrl: "https://www18.a8.net/0.gif?a8mat=TEST"
 };
 const MOSHIMO_ITEM = {
   genre: "life", name: "テストの本", note: "愛読書です", linkType: "affiliate", asp: "moshimo",
@@ -130,15 +130,15 @@ test("AC-10：提携前（公式・なしだけ）は、PR表示・PRの印・�
   assert.ok(!parts.disclaimer.textContent.includes("アフィリエイト"));
 });
 
-test("AC-15：実際のデータ（本だけ紹介リンク）では、注意書きに広告の文と「もしもアフィリエイト」の計測の文が入る", function () {
+test("AC-15：実際のデータ（紹介リンク3件・計測用画像2件）では、注意書きに広告の文と「A8.net・もしもアフィリエイト」の計測の文が入る", function () {
   const parts = render(TOOLBOX_DATA);
   assert.strictEqual(parts.pr.hidden, false);
-  assert.strictEqual(findAllByClass(parts.genres, "tb-pr").length, 1);
-  assert.strictEqual(findAllByClass(parts.genres, "tb-beacon").length, 1);
+  assert.strictEqual(findAllByClass(parts.genres, "tb-pr").length, 3);
+  assert.strictEqual(findAllByClass(parts.genres, "tb-beacon").length, 2);
   const text = parts.disclaimer.textContent;
   assert.ok(text.startsWith("ここで紹介しているのは、Yuが実際に使っている（使ったことがある）物です。"));
   assert.ok(text.includes("リンクの一部はアフィリエイト広告（PR）で"));
-  assert.ok(text.includes("このページを開くと、アフィリエイトサービス（もしもアフィリエイト）の計測用の画像を読み込み、その会社と通信します"));
+  assert.ok(text.includes("このページを開くと、アフィリエイトサービス（A8.net・もしもアフィリエイト）の計測用の画像を読み込み、その会社と通信します"));
 });
 
 test("AC-26：A8.net ともしもアフィリエイトの両方に計測用画像があると、注意書きに2つの名前が入る", function () {

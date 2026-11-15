@@ -23,9 +23,10 @@ const ASP_LIST = [
   {
     id: "a8",
     name: "A8.net",
-    linkHosts: ["px.a8.net"],
-    // 仮置き：A8.net の計測用画像のホストは番号違いが複数ある。提携が承認され、タグを発行したら確認して実際のホスト名に直す
-    beaconHosts: ["www10.a8.net"]
+    // px.a8.net：ふつうの紹介リンク／rpx.a8.net：楽天市場用の紹介リンク
+    linkHosts: ["px.a8.net", "rpx.a8.net"],
+    // 計測用画像のホストは広告ごとに番号が違う。新しいタグの番号が違うときは、ここに1つ足す
+    beaconHosts: ["www18.a8.net"]
   },
   {
     id: "moshimo",

@@ -14,7 +14,7 @@
  */
 
 const TOOLBOX_DATA = [
-  // お金・NISA（A8.net の提携結果待ちのため、今は公式リンク）
+  // お金・NISA（証券会社は紹介リンクの提携がないため、公式リンク）
   {
     genre: "money",
     name: "SBI証券",
@@ -51,7 +51,26 @@ const TOOLBOX_DATA = [
     linkType: "official",
     url: "https://code.visualstudio.com/"
   },
+  {
+    genre: "ai",
+    name: "ココナラ",
+    note: "サイトや発信で使うイラストを発注するときに使っています",
+    // A8.net の紹介リンク。タグの中のリンク先と計測用画像だけを写したもの
+    linkType: "affiliate",
+    asp: "a8",
+    url: "https://px.a8.net/svt/ejp?a8mat=4BGLS7+2VLG1E+2PEO+1HN5LU",
+    beaconUrl: "https://www18.a8.net/0.gif?a8mat=4BGLS7+2VLG1E+2PEO+1HN5LU"
+  },
   // ふだん使い
+  {
+    genre: "life",
+    name: "楽天市場",
+    note: "楽天のお買い物マラソンでポイントをためています",
+    // A8.net の紹介リンク（楽天市場用）。A8 のSNS用リンクのため計測用画像はない
+    linkType: "affiliate",
+    asp: "a8",
+    url: "https://rpx.a8.net/svt/ejp?a8mat=4BGLS7+DOZOY+2HOM+6GRMR&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26111582720_4BGLS7_DOZOY_2HOM_6GRMR%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F"
+  },
   {
     genre: "life",
     name: "田中渓『億までの人 億からの人』",

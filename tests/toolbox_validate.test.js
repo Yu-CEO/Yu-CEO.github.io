@@ -9,7 +9,7 @@ const { validateToolbox, validateAspList, findBeaconProblem } = require("../js/t
 
 // テスト用のASPの一覧（本番の ASP_LIST と同じ形）
 const TEST_ASP_LIST = [
-  { id: "a8", name: "A8.net", linkHosts: ["px.a8.net"], beaconHosts: ["www10.a8.net"] },
+  { id: "a8", name: "A8.net", linkHosts: ["px.a8.net"], beaconHosts: ["www18.a8.net"] },
   { id: "moshimo", name: "もしもアフィリエイト", linkHosts: ["af.moshimo.com"], beaconHosts: ["i.moshimo.com"] }
 ];
 // 正しい道具（公式リンク）の見本
@@ -17,7 +17,7 @@ const GOOD_OFFICIAL = { genre: "ai", name: "VS Code", note: "このサイトは�
 // 正しい道具（A8.net の紹介リンク・計測用画像つき）の見本。URLはテスト用のダミー
 const GOOD_A8 = {
   genre: "money", name: "テスト口座", note: "テスト用に使っています", linkType: "affiliate", asp: "a8",
-  url: "https://px.a8.net/svt/ejp?a8mat=TEST", beaconUrl: "https://www10.a8.net/0.gif?a8mat=TEST"
+  url: "https://px.a8.net/svt/ejp?a8mat=TEST", beaconUrl: "https://www18.a8.net/0.gif?a8mat=TEST"
 };
 
 /**
@@ -90,7 +90,7 @@ test("AC-13：リンクなしなのに url がある道具は、リンクなし�
 
 test("AC-27：正しくない計測用画像は取り除かれ、道具（リンク・PR）は残る", function () {
   const badBeacons = [
-    "http://www10.a8.net/0.gif?a8mat=TEST",
+    "http://www18.a8.net/0.gif?a8mat=TEST",
     "javascript:alert(1)",
     "https://example.com/0.gif",
     "https://i.moshimo.com/af/i/impression?a_id=TEST"
@@ -105,7 +105,7 @@ test("AC-27：正しくない計測用画像は取り除かれ、道具（リン
 });
 
 test("AC-27：公式リンクの道具に計測用画像を書いても置かれず、注意が返る", function () {
-  const result = validateToolbox([withChanges(GOOD_OFFICIAL, { beaconUrl: "https://www10.a8.net/0.gif" })], TEST_ASP_LIST);
+  const result = validateToolbox([withChanges(GOOD_OFFICIAL, { beaconUrl: "https://www18.a8.net/0.gif" })], TEST_ASP_LIST);
   assert.strictEqual(result.validItems.length, 1);
   assert.strictEqual(result.validItems[0].beaconUrl, undefined);
   assert.strictEqual(result.noticeReports.length, 1);

@@ -9,7 +9,7 @@ const { planToolboxLink } = require("../js/toolbox_link.js");
 
 const AFFILIATE_ITEM = {
   genre: "money", name: "テスト口座", note: "テスト用に使っています", linkType: "affiliate", asp: "a8",
-  url: "https://px.a8.net/svt/ejp?a8mat=TEST", beaconUrl: "https://www10.a8.net/0.gif?a8mat=TEST"
+  url: "https://px.a8.net/svt/ejp?a8mat=TEST", beaconUrl: "https://www18.a8.net/0.gif?a8mat=TEST"
 };
 const OFFICIAL_ITEM = { genre: "ai", name: "VS Code", note: "このサイトは、AIと一緒にVS Codeで作っています", linkType: "official", url: "https://code.visualstudio.com/" };
 const NONE_ITEM = { genre: "life", name: "テスト", note: "使っています", linkType: "none" };

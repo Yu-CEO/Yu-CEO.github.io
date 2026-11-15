@@ -74,7 +74,7 @@ function isHostList(hosts) {
  * ASPの一覧を検査し、正しいASPだけを返す。id の重複・名前がない・ホストの一覧が空のASPは「ないもの」として扱う。
  * @param {*} aspList site_config.js の ASP_LIST
  * @returns {{ validAsps: object[], problemReports: { position: number, problems: string[] }[] }}
- * @example validateAspList([{ id: "a8", name: "A8.net", linkHosts: ["px.a8.net"], beaconHosts: ["www10.a8.net"] }])
+ * @example validateAspList([{ id: "a8", name: "A8.net", linkHosts: ["px.a8.net"], beaconHosts: ["www18.a8.net"] }])
  *          // { validAsps: [そのままの1件], problemReports: [] }
  */
 function validateAspList(aspList) {
