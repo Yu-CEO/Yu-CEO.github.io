@@ -36,7 +36,7 @@ function isFilledToolboxText(value) {
  * URL が https:// で始まる文字かどうかを調べる。
  * @param {*} url 調べる値
  * @returns {boolean} https:// で始まるなら true
- * @example isSafeToolboxUrl("https://fit-easy.jp/")  // true
+ * @example isSafeToolboxUrl("https://fiteasy.jp/")  // true
  * @example isSafeToolboxUrl("javascript:alert(1)")   // false
  */
 function isSafeToolboxUrl(url) {

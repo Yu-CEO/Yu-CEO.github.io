@@ -86,7 +86,7 @@ const TOOLBOX_DATA = [
     name: "FIT-EASYの酸素ルーム",
     note: "ジムに行く日に使っていて、気に入っています",
     linkType: "official",
-    url: "https://fit-easy.jp/"
+    url: "https://fiteasy.jp/"
   }
 ];
 
