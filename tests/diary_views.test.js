@@ -108,7 +108,7 @@ test("AC-6：日記が0件なら「まだ日記はありません」、読み込
 test("AC-2：登場した話者が6人以上なら、顔は5人分と「+N」", function () {
   installFakeDocument({});
   const area = createFakeElement("main");
-  showDiaryList(area, createFakeElement("p"), [readSample("2026-11-16")], LIST_PATHS);
+  showDiaryList(area, createFakeElement("p"), [readSample("2026-11-14")], LIST_PATHS);
   assert.strictEqual(findAllByClass(area, "avatar-small").length, 5);
   assert.strictEqual(findByClass(area, "faces-more").textContent, "+1");
 });
@@ -116,22 +116,22 @@ test("AC-2：登場した話者が6人以上なら、顔は5人分と「+N」", 
 test("AC-7：1件のページは決まった順に並び、タブの題名が「Day N 見出し｜経営会議の日記」になる", function () {
   const doc = installFakeDocument({});
   const area = createFakeElement("main");
-  const entry = readSample("2026-11-16");
+  const entry = readSample("2026-11-14");
   showDiaryEntry(area, entry, LIST_PATHS);
   const head = area.children[0];
-  assert.strictEqual(findByClass(head, "d-day-big").textContent, "Day 3");
+  assert.strictEqual(findByClass(head, "d-day-big").textContent, "Day 1");
   assert.strictEqual(findByClass(head, "d-h1").textContent, entry.title);
   assert.ok(findByClass(head, "d-hook"));
   const sectionTitles = findAllByClass(area, "d-sec-title").map(function (title) { return title.textContent; });
   assert.deepStrictEqual(sectionTitles, ["01今日の議題", "02役員の一言", "03今日の決定", "04今日の失敗・学び"]);
   assert.ok(findByClass(area.children[2], "d-cta-box"));
-  assert.strictEqual(doc.title, "Day 3 " + entry.title + "｜経営会議の日記");
+  assert.strictEqual(doc.title, "Day 1 " + entry.title + "｜経営会議の日記");
 });
 
 test("AC-7：セリフは名前が吹き出しの上に出て、読み上げ・コピーでは「話者：セリフ」になる", function () {
   installFakeDocument({});
   const area = createFakeElement("main");
-  const entry = readSample("2026-11-16");
+  const entry = readSample("2026-11-14");
   showDiaryEntry(area, entry, LIST_PATHS);
   const rows = findAllByClass(area, "d-line");
   assert.strictEqual(rows.length, entry.lines.length);
@@ -142,7 +142,7 @@ test("AC-7：セリフは名前が吹き出しの上に出て、読み上げ・�
 test("AC-32：Yu の吹き出しは右寄せの紺（is-yu）、ほかは左寄せ。顔は話者ごとの決まった絵", function () {
   installFakeDocument({});
   const area = createFakeElement("main");
-  showDiaryEntry(area, readSample("2026-11-16"), LIST_PATHS);
+  showDiaryEntry(area, readSample("2026-11-14"), LIST_PATHS);
   const rows = findAllByClass(area, "d-line");
   assert.match(rows[1].className, /is-yu/);
   assert.doesNotMatch(rows[2].className, /is-yu/);
@@ -153,7 +153,7 @@ test("AC-32：Yu の吹き出しは右寄せの紺（is-yu）、ほかは左寄�
 test("AC-30：今日の一言は pick の番号のセリフ（pick が 3 なら3番目）を、顔（大）・名前・役の説明つきで出す", function () {
   installFakeDocument({});
   const area = createFakeElement("main");
-  const entry = readSample("2026-11-16");
+  const entry = readSample("2026-11-14");
   showDiaryEntry(area, entry, LIST_PATHS);
   const pick = findByClass(area, "d-pick");
   assert.strictEqual(findByClass(pick, "pick-quote").textContent, entry.lines[2].text);
@@ -172,7 +172,7 @@ test("AC-31：今日の参加は、話した人の小さな顔が重複なく登
 test("AC-8：決定が3つの日は、冒頭に1つ目と「ほか2件は下の『今日の決定』に」が出る", function () {
   installFakeDocument({});
   const area = createFakeElement("main");
-  showDiaryEntry(area, readSample("2026-11-16"), LIST_PATHS);
+  showDiaryEntry(area, readSample("2026-11-14"), LIST_PATHS);
   const decision = findByClass(area, "d-dec");
   assert.match(decision.textContent, /日記は1〜3分で読める長さにする/);
   assert.strictEqual(findByClass(decision, "decision-rest").textContent, "ほか2件は下の「今日の決定」に");
@@ -189,7 +189,7 @@ test("AC-8：決定がない日は「今日は決定なし」と出て、冒頭�
 test("AC-33：本文の最後に「見るだけの参加もOK。」・オープンチャットのボタン・一覧へ戻るがある", function () {
   installFakeDocument({});
   const area = createFakeElement("main");
-  showDiaryEntry(area, readSample("2026-11-16"), LIST_PATHS);
+  showDiaryEntry(area, readSample("2026-11-14"), LIST_PATHS);
   const box = findByClass(area, "d-cta-box");
   assert.match(box.textContent, /見るだけの参加もOK。/);
   const openchat = findByClass(box, "btn-line");
@@ -202,7 +202,7 @@ test("AC-33：本文の最後に「見るだけの参加もOK。」・オープ�
 test("AC-10・AC-35：HTMLの記号や表にない話者のデータでも、文字のまま表示し、絵の場所には使わない", function () {
   installFakeDocument({});
   const area = createFakeElement("main");
-  const entry = readSample("2026-11-16");
+  const entry = readSample("2026-11-14");
   entry.lines[2].text = "<img src=x onerror=alert(1)>";
   showDiaryEntry(area, entry, LIST_PATHS);
   const bubble = findByClass(findAllByClass(area, "d-line")[2], "bubble");

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 290" role="img" aria-labelledby="t">
+<title id="t">道すじの変化（これまで・これから）</title>
+<defs>
+<marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#8a8f98"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="290" rx="12" fill="#f2f3f5"/>
+<line x1="150" y1="14" x2="150" y2="276" stroke="#d9dbe0" stroke-width="1.5" stroke-dasharray="4 5"/>
+<rect x="15" y="12" width="120" height="32" rx="16" fill="#ffffff" stroke="#d9dbe0"/>
+<text x="75" y="28" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#5b5f66">これまで</text>
+<rect x="165" y="12" width="120" height="32" rx="16" fill="#0f1626"/>
+<text x="225" y="28" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#ffffff">これから</text>
+<rect x="9" y="60" width="132" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="75" y="80" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#16171a">TikTok</text>
+<line x1="75" y1="102" x2="75" y2="114" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#ag)"/>
+<rect x="9" y="118" width="132" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="75" y="138" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#16171a">プロフィール</text>
+<line x1="75" y1="160" x2="33" y2="172" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#ag)"/>
+<line x1="75" y1="160" x2="75" y2="172" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#ag)"/>
+<line x1="75" y1="160" x2="117" y2="172" stroke="#8a8f98" stroke-width="1.5" marker-end="url(#ag)"/>
+<rect x="14" y="176" width="38" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="33" y="196" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="700" fill="#8a8f98">？</text>
+<rect x="56" y="176" width="38" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="75" y="196" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="700" fill="#8a8f98">？</text>
+<rect x="98" y="176" width="38" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="117" y="196" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="700" fill="#8a8f98">？</text>
+<text x="75" y="242" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#5b5f66">どれを押す？</text>
+<text x="75" y="266" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">迷って止まる</text>
+<rect x="159" y="60" width="132" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="225" y="80" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#16171a">TikTok</text>
+<line x1="225" y1="102" x2="225" y2="114" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="159" y="118" width="132" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="225" y="138" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#16171a">入口ページ</text>
+<line x1="225" y1="160" x2="225" y2="172" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="159" y="176" width="132" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="225" y="196" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#16171a">会議の日記</text>
+<line x1="225" y1="218" x2="225" y2="230" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="159" y="234" width="132" height="40" rx="10" fill="#2563a8"/>
+<text x="225" y="254" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#ffffff">オープンチャット</text>
+</svg>

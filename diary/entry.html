@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <!--
   diary/entry.html：経営会議の日記1件のページ（/diary/entry.html?date=YYYY-MM-DD）の骨組みだけを書くファイル。
-  中身は js/diary_entry_view.js が、diary/entries/ のその日のデータから作る（流れは js/diary_entry_main.js）。
+  中身は js/diary_entry_view.js（旧形式）か js/diary_story_view.js（新しい形・図は diary/figures/ のSVGを <img> で表示）が、
+  diary/entries/ のその日のデータから作る（流れは js/diary_entry_main.js）。
   日付が正しくない・見つからないときは「この日の日記は見つかりませんでした」と一覧へのリンクを出す。
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -40,11 +41,15 @@
 <script src="../js/diary_safety.js"></script>
 <script src="../js/diary_speakers.js"></script>
 <script src="../js/diary_validate.js"></script>
+<script src="../js/diary_validate_story.js"></script>
+<script src="../js/diary_format.js"></script>
 <script src="../js/diary_pick.js"></script>
 <script src="../js/diary_load.js"></script>
 <script src="../js/diary_parts.js"></script>
 <script src="../js/diary_hook_view.js"></script>
 <script src="../js/diary_entry_view.js"></script>
+<script src="../js/diary_figure_view.js"></script>
+<script src="../js/diary_story_view.js"></script>
 <script src="../js/diary_entry_main.js"></script>
 </body>
 </html>

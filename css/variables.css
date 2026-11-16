@@ -139,6 +139,27 @@
   --av-size-lg:48px;              /* 今日の一言 */
   --av-size-sm:26px;              /* 一覧・パネル・今日の参加の小さな顔 */
   --av-overlap:6px;               /* 小さな顔を重ねる幅 */
+  /* 〔v3〕新しい形（1トピックの話）の1件のページ・図（css/diary_entry.css で使う） */
+  --fs-diary-story:clamp(15px, 4.2vw, 17px);    /* 01 何が問題だったか の段落 */
+  --diary-story-leading:1.95;                   /* 段落の行間（読み物なので本文より少し広く） */
+  --diary-para-gap:14px;                        /* 段落と段落のあいだ */
+  --diary-story-rule:#d9dbe0;                   /* 段落の左の細い線（前提の説明の目印） */
+  --diary-decision-bg:#0f1626;                  /* 03 Yuの決定の箱（Yuの吹き出しと同じ夜の紺） */
+  --diary-decision-text:#ffffff;
+  --diary-decision-label:#7cc4ff;               /* 箱の中の「DECISION」 */
+  --fs-diary-decision:clamp(17px, 4.7vw, 20px); /* 決定の文（本文より一段大きく・太く） */
+  --diary-decision-pad:18px;                    /* 決定の箱の内側 */
+  --diary-flow-height:32px;                     /* 道しるべの札（押せない飾りなので44pxは不要） */
+  --diary-flow-bg:#f2f3f5;
+  --diary-flow-text:#5b5f66;
+  --fs-diary-flow:12px;
+  --diary-fig-max:420px;                        /* 図の最大幅（PC）。スマホは本文の幅いっぱい */
+  --diary-fig-bg:#ffffff;                       /* 図の白いふち */
+  --diary-fig-border:#e3e5e9;                   /* 図の細い枠 */
+  --diary-fig-pad:10px;                         /* 図のふちの幅 */
+  --diary-fig-radius:16px;                      /* 図の角の丸み */
+  --fs-diary-caption:13px;                      /* 図の下の説明（caption） */
+  --diary-result-mark:#2563a8;                  /* 04 結果と学びの印（旧形式の「失敗・学び」のオレンジと分ける） */
 
   /* ===== 道具箱（css/toolbox.css で使う） ===== */
   --tb-card-bg:#ffffff;           /* 道具カードの背景 */

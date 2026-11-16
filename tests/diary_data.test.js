@@ -2,18 +2,29 @@
  * diary_data.test.js：実際の日記のデータ（diary/entries/）が全部検査を通るか、一覧のファイルと過不足がないかのテスト
  * 形の正しくない日記を入れた変更は、ここで CI が失敗し、公開されない。
  * テスト用の仮の日記（tests/fixtures/diary_entries/）も、同じ検査を通ることを確かめる。
+ * 〔v3〕図（SVG）も、「figure がある日だけ図のファイルがある」ことと、図の検査を通ることを確かめる。
  * 実行方法：portal フォルダで `node --test`
  */
 const test = require("node:test");
 const assert = require("node:assert");
 const fs = require("node:fs");
 const path = require("node:path");
-const { findDiaryProblems } = require("../js/diary_validate.js");
+const { findEntryProblems } = require("../js/diary_format.js");
+const { findSvgProblems } = require("../js/diary_svg_check.js");
 
 // 調べるフォルダ（名前は結果の表示に使う）
+// figureFolder：その日記の図（SVG）のフォルダ。図が1つもないうちは、フォルダがなくてもよい
 const ENTRY_FOLDERS = [
-  { label: "公開する日記", folder: path.join(__dirname, "..", "diary", "entries") },
-  { label: "テスト用の日記", folder: path.join(__dirname, "fixtures", "diary_entries") }
+  {
+    label: "公開する日記",
+    folder: path.join(__dirname, "..", "diary", "entries"),
+    figureFolder: path.join(__dirname, "..", "diary", "figures")
+  },
+  {
+    label: "テスト用の日記",
+    folder: path.join(__dirname, "fixtures", "diary_entries"),
+    figureFolder: path.join(__dirname, "fixtures", "diary_figures")
+  }
 ];
 
 /**
@@ -33,6 +44,32 @@ function readEntryFolder(folder) {
   return { index: index, files: files };
 }
 
+/**
+ * 図のフォルダの中の、図のファイル名（日付.svg）から取った日付の一覧を返す。フォルダがなければ空。
+ * @param {string} figureFolder 図のフォルダの場所
+ * @returns {string[]} 日付の一覧
+ */
+function listFigureDates(figureFolder) {
+  if (!fs.existsSync(figureFolder)) {
+    return [];
+  }
+  return fs.readdirSync(figureFolder).map(function (fileName) {
+    return fileName.replace(/\.svg$/, "");
+  });
+}
+
+/**
+ * 日記の中で figure（図の説明）がある日の一覧を返す。
+ * @param {string} folder 日記のフォルダの場所
+ * @returns {string[]} 日付の一覧
+ */
+function listDatesWithFigure(folder) {
+  return readEntryFolder(folder).files.filter(function (date) {
+    const entry = JSON.parse(fs.readFileSync(path.join(folder, date + ".json"), "utf8"));
+    return entry.figure !== undefined;
+  });
+}
+
 ENTRY_FOLDERS.forEach(function (target) {
   test("AC-18：" + target.label + "の index.json は日付の配列で、重複がなく、ファイルと過不足なく一致する", function () {
     const data = readEntryFolder(target.folder);
@@ -44,7 +81,19 @@ ENTRY_FOLDERS.forEach(function (target) {
   test("AC-18：" + target.label + "の全ファイルが検査を通る", function () {
     readEntryFolder(target.folder).files.forEach(function (date) {
       const entry = JSON.parse(fs.readFileSync(path.join(target.folder, date + ".json"), "utf8"));
-      assert.deepStrictEqual(findDiaryProblems(entry, date), [], date + ".json が正しくありません");
+      assert.deepStrictEqual(findEntryProblems(entry, date), [], date + ".json が正しくありません");
+    });
+  });
+
+  test("AC-46：" + target.label + "で、figure がある日にだけ図のファイル（日付.svg）があり、過不足がない。図のフォルダには .svg だけ", function () {
+    const figureDates = listFigureDates(target.figureFolder);
+    assert.deepStrictEqual(figureDates.slice().sort(), listDatesWithFigure(target.folder).sort());
+  });
+
+  test("AC-48・AC-49：" + target.label + "の図が、すべて図の検査を通る", function () {
+    listFigureDates(target.figureFolder).forEach(function (date) {
+      const svgText = fs.readFileSync(path.join(target.figureFolder, date + ".svg"), "utf8");
+      assert.deepStrictEqual(findSvgProblems(svgText), [], date + ".svg が正しくありません");
     });
   });
 });

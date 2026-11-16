@@ -2,6 +2,8 @@
  * diary_entry_view.js：日記1件のページ（/diary/entry.html?date=YYYY-MM-DD）の表示
  * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・冒頭のつかみ）→ 01 議題 → 02 役員の一言（顔つきの吹き出し）
  *       → 03 決定 → 04 失敗・学び → オープンチャットへの出口
+ * 〔v3〕このファイルは旧形式（format なし）の日の表示。新しい形（format 2）の日は diary_story_view.js が、
+ *       ここの部品（紺の帯・節・吹き出し・出口など）を使って表示する。
  * 主な関数：showDiaryEntry（1件を表示）、showDiaryNotFound（「この日の日記は見つかりませんでした」を表示）
  * 使うもの：diary_day.js・diary_parts.js・diary_hook_view.js・diary_speakers.js。diary_entry_main.js から使われる。
  * tests/diary_views.test.js でテストする。
@@ -150,11 +152,16 @@ function createLineRow(line, faceFile) {
  * 「02 役員の一言」を作る（凡例＋顔つきの吹き出し）。
  * @param {object[]} lines セリフの一覧
  * @param {string} faceFile speakers.svg の場所
+ * @param {string} [title] 節の名前（〔v3〕新しい形では「役員の意見」。書かなければ「役員の一言」）
  * @returns {HTMLElement} 節の要素
  * @example createLinesSection(entry.lines, "../assets/speakers.svg")
  */
-function createLinesSection(lines, faceFile) {
-  const section = createDiarySection("02", "役員の一言");
+function createLinesSection(lines, faceFile, title) {
+  let sectionTitle = "役員の一言";
+  if (typeof title === "string") {
+    sectionTitle = title;
+  }
+  const section = createDiarySection("02", sectionTitle);
   section.appendChild(makeDiaryElement("p", "d-legend", DIARY_LINES_LEGEND));
   const list = makeDiaryElement("div", "d-lines", "");
   lines.forEach(function (line) {
@@ -258,5 +265,9 @@ function showDiaryNotFound(area, paths) {
 
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { showDiaryEntry, showDiaryNotFound, DIARY_OPENCHAT_BUTTON_ID };
+  // 〔v3〕部品は、新しい形の表示（diary_story_view.js）でも同じものを使う
+  module.exports = {
+    showDiaryEntry, showDiaryNotFound, DIARY_OPENCHAT_BUTTON_ID, DIARY_TITLE_SUFFIX,
+    createEntryHead, createDiarySection, createTextList, createLinesSection, createExitBox
+  };
 }

@@ -1,5 +1,7 @@
 /*
  * diary_validate.js：日記1件のデータが決まった形か、公開してはいけない書き方がないかを調べる。画面には触れない
+ * 〔v3〕このファイルは旧形式（format なし。2026-11-15 以前の日記）の検査。形の見分けと日付の決まりは diary_format.js、
+ * 新しい形（format 2）は diary_validate_story.js が受け持つ。checkText などの部品は新しい形の検査でも使う。
  * 主な関数：findDiaryProblems（日記1件の問題点を日本語の一覧で返す。空なら正しい）
  * 同じ検査を、日記の画面（一覧・1件・入口のパネル）と自動テスト（CI）の両方で使う。
  * 使うもの：diary_day.js（日付）・diary_safety.js（書き方）・diary_speakers.js（話者の名前）。
@@ -207,5 +209,8 @@ function findDiaryProblems(entry, fileDate) {
 
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { findDiaryProblems, countTotalCharacters };
+  // 部品の検査（checkText など）は、新しい形の検査（diary_validate_story.js）でも同じものを使う
+  module.exports = {
+    findDiaryProblems, countTotalCharacters, countCharacters, checkText, checkUnknownFields, checkTextList, checkLines, checkPick
+  };
 }

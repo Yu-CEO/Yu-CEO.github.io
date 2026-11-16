@@ -103,7 +103,7 @@ test("AC-5：形が正しくない日記は出さず、ほかは出す。どの�
   const dates = captured.result.map(function (entry) {
     return entry.date;
   });
-  assert.deepStrictEqual(dates, ["2026-11-16"]);
+  assert.deepStrictEqual(dates, ["2026-11-17", "2026-11-16", "2026-11-14"]);
   assert.strictEqual(captured.messages.length, 1);
   assert.match(captured.messages[0], /2026-11-15/);
   assert.match(captured.messages[0], /「title」/);

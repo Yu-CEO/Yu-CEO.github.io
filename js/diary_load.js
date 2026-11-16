@@ -11,7 +11,7 @@
 // Node.js（テスト）では、ほかのファイルの関数を require で読み込んで、ブラウザと同じ名前で使えるようにする
 if (typeof module !== "undefined" && module.exports) {
   globalThis.isDiaryDate = require("./diary_day.js").isDiaryDate;
-  globalThis.findDiaryProblems = require("./diary_validate.js").findDiaryProblems;
+  globalThis.findEntryProblems = require("./diary_format.js").findEntryProblems;
 }
 
 // 日付の一覧のファイル名（diary/entries/ の中）
@@ -102,7 +102,7 @@ function loadDiaryIndex(folder) {
 }
 
 /**
- * 1日分の日記を読み込み、検査（diary_validate.js）を通ったものだけを返す。
+ * 1日分の日記を読み込み、検査（diary_format.js が形を見分けて呼ぶ検査）を通ったものだけを返す。
  * 使えない日付・読み込めない・形が正しくないときは null を返し、正しくないときはコンソールに理由を日本語で出す。
  * @param {string} folder diary/entries/ の場所
  * @param {*} date 読み込む日付
@@ -118,7 +118,7 @@ function loadCheckedEntry(folder, date, knownDates) {
     if (entry === null) {
       return null;
     }
-    const problems = findDiaryProblems(entry, date);
+    const problems = findEntryProblems(entry, date);
     if (problems.length > 0) {
       console.warn(
         "日記（" + date + "）が正しくないため、表示しませんでした：" + problems.join("／") +

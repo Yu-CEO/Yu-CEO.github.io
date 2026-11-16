@@ -7,7 +7,7 @@ const test = require("node:test");
 const assert = require("node:assert");
 const { findDiaryProblems } = require("../js/diary_validate.js");
 
-const SAMPLE_PATH = "./fixtures/diary_entries/2026-11-16.json";
+const SAMPLE_PATH = "./fixtures/diary_entries/2026-11-14.json";
 
 /**
  * テスト用の正しい日記を1件作る（毎回新しく写し、テスト同士で書き換え合わないようにする）。
@@ -30,34 +30,34 @@ function assertHasProblem(problems, pattern) {
 }
 
 test("正しい日記は、問題なし", function () {
-  assert.deepStrictEqual(findDiaryProblems(makeValidEntry(), "2026-11-16"), []);
+  assert.deepStrictEqual(findDiaryProblems(makeValidEntry(), "2026-11-14"), []);
 });
 
 test("AC-5：title がない日記は、title の問題として報告される", function () {
   const entry = makeValidEntry();
   delete entry.title;
-  assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /「title」/);
+  assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /「title」/);
 });
 
 test("文字数の上限を超えると止まる", function () {
   const entry = makeValidEntry();
   entry.title = "あ".repeat(41);
-  assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /「title」が40文字/);
+  assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /「title」が40文字/);
 });
 
 test("AC-12：決まった名前以外の話者（例：部長）は止まる", function () {
   const entry = makeValidEntry();
   entry.lines[1].speaker = "部長";
-  assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /2つ目の話者/);
+  assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /2つ目の話者/);
 });
 
 test("AC-12：決まった項目以外の項目は止まる（日記・セリフのどちらでも）", function () {
   const entry = makeValidEntry();
   entry.color = "red";
-  assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /「color」/);
+  assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /「color」/);
   const entry2 = makeValidEntry();
   entry2.lines[0].html = "x";
-  assertHasProblem(findDiaryProblems(entry2, "2026-11-16"), /「html」/);
+  assertHasProblem(findDiaryProblems(entry2, "2026-11-14"), /「html」/);
 });
 
 test("AC-12：本文の合計が1,500文字を超えると止まる", function () {
@@ -76,7 +76,7 @@ test("AC-12：本文の合計が1,500文字を超えると止まる", function (
   entry.lessons = ["学", "び", "だ"].map(function (character) {
     return character.repeat(100);
   });
-  assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /本文の合計/);
+  assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /本文の合計/);
 });
 
 test("本文の合計が300文字に足りないときも止まる", function () {
@@ -87,7 +87,7 @@ test("本文の合計が300文字に足りないときも止まる", function ()
   entry.agenda = ["短い"];
   entry.summary = "短い";
   delete entry.pick;
-  assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /本文の合計/);
+  assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /本文の合計/);
 });
 
 test("日付がファイル名と違う・実在しない日付のときは止まる", function () {
@@ -101,38 +101,38 @@ test("AC-34：pick が 0・セリフの数より大きい・小数・文字の�
   [0, 7, 1.5, "2"].forEach(function (pick) {
     const entry = makeValidEntry();
     entry.pick = pick;
-    assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /「pick」/);
+    assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /「pick」/);
   });
 });
 
 test("AC-34：pick がないときと、1〜セリフの数のときは通る", function () {
   const entry = makeValidEntry();
   delete entry.pick;
-  assert.deepStrictEqual(findDiaryProblems(entry, "2026-11-16"), []);
+  assert.deepStrictEqual(findDiaryProblems(entry, "2026-11-14"), []);
   [1, 6].forEach(function (pick) {
     const withPick = makeValidEntry();
     withPick.pick = pick;
-    assert.deepStrictEqual(findDiaryProblems(withPick, "2026-11-16"), []);
+    assert.deepStrictEqual(findDiaryProblems(withPick, "2026-11-14"), []);
   });
 });
 
 test("AC-10・AC-11：本文に書いてはいけない書き方があると、場所と理由が日本語で出る", function () {
   const entry = makeValidEntry();
   entry.lines[2].text = "<img src=x onerror=alert(1)>";
-  assertHasProblem(findDiaryProblems(entry, "2026-11-16"), /「lines」の3つ目のセリフに、公開してはいけない書き方（HTMLの記号/);
+  assertHasProblem(findDiaryProblems(entry, "2026-11-14"), /「lines」の3つ目のセリフに、公開してはいけない書き方（HTMLの記号/);
   const money = makeValidEntry();
   money.summary = "（テスト用）3万の話です。";
-  assertHasProblem(findDiaryProblems(money, "2026-11-16"), /「summary」に、公開してはいけない書き方（金額の書き方）/);
+  assertHasProblem(findDiaryProblems(money, "2026-11-14"), /「summary」に、公開してはいけない書き方（金額の書き方）/);
 });
 
 test("AC-27：伏せ字の「〇万円」「数万円」「ある金額」を使った日記は通る", function () {
   const entry = makeValidEntry();
   entry.lessons = ["（テスト用）〇万円か数万円かで迷ったが、ある金額の話は外すことにした。削るのも仕事だと分かった"];
-  assert.deepStrictEqual(findDiaryProblems(entry, "2026-11-16"), []);
+  assert.deepStrictEqual(findDiaryProblems(entry, "2026-11-14"), []);
 });
 
 test("{ } の形でないデータでも止まらずに報告する", function () {
-  assert.strictEqual(findDiaryProblems(null, "2026-11-16").length, 1);
-  assert.strictEqual(findDiaryProblems([], "2026-11-16").length, 1);
-  assert.ok(findDiaryProblems({ lines: "x" }, "2026-11-16").length > 0);
+  assert.strictEqual(findDiaryProblems(null, "2026-11-14").length, 1);
+  assert.strictEqual(findDiaryProblems([], "2026-11-14").length, 1);
+  assert.ok(findDiaryProblems({ lines: "x" }, "2026-11-14").length > 0);
 });

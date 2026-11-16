@@ -2,6 +2,7 @@
  * diary_entry.css：日記1件のページ（diary/entry.html）だけで使う見た目
  * 紺の帯の中の Day N・冒頭のつかみ（今日の一言・今日の決定・今日の参加）、節（議題・役員の一言・決定・失敗と学び）、
  * 顔つきの吹き出し、本文の最後のオープンチャットへの出口、見つからないときの表示。
+ * 〔v3〕新しい形（1トピックの話）の、道しるべ・01 の段落・03 Yuの決定の箱・図・04 結果と学び の見た目もここ（ファイルの最後）。
  * diary/entry.html から読み込まれる。色・大きさの値は variables.css、共通の見た目は diary.css。
  */
 
@@ -240,6 +241,103 @@
   height:2px;
   background:var(--sp-cmo);
 }
+
+/* ===== 〔v3〕新しい形：話の流れの道しるべ（本文の一番上。押せない飾り） ===== */
+.d-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 28px;padding:0;list-style:none}
+.d-flow li{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:var(--fs-diary-flow);
+  font-weight:700;
+  letter-spacing:.06em;
+  color:var(--diary-flow-text);
+}
+.d-flow .flow-step{
+  display:inline-flex;
+  align-items:center;
+  min-height:var(--diary-flow-height);
+  padding:0 12px;
+  border-radius:999px;
+  background:var(--diary-flow-bg);
+}
+/* 「決定」だけYuの紺にする（話の山場） */
+.d-flow .flow-step.is-decision{background:var(--diary-decision-bg);color:var(--diary-decision-text)}
+/* 札と札のあいだの「›」の印（CSSの線だけで描く） */
+.d-flow li + li::before{
+  content:"";
+  width:6px;
+  height:6px;
+  border-right:1.5px solid currentColor;
+  border-top:1.5px solid currentColor;
+  transform:rotate(45deg);
+  opacity:.6;
+}
+
+/* ===== 〔v3〕01 何が問題だったか：読み物の段落（左に細い線＝前提の説明の目印） ===== */
+.d-story{margin:0;padding-left:14px;border-left:2px solid var(--diary-story-rule)}
+.d-story p{margin:0;font-size:var(--fs-diary-story);line-height:var(--diary-story-leading);overflow-wrap:anywhere}
+.d-story p + p{margin-top:var(--diary-para-gap)}
+
+/* ===== 〔v3〕03 Yuの決定：Yuの色（夜の紺）の箱。顔＋小見出し＋決定の文 ===== */
+.d-decision{
+  display:grid;
+  grid-template-columns:var(--av-size) minmax(0, 1fr); /* 左に顔、右に決定の文 */
+  gap:12px;
+  align-items:start;
+  margin:0;
+  padding:var(--diary-decision-pad);
+  border-radius:var(--diary-card-radius);
+  background:var(--diary-decision-bg);
+  color:var(--diary-decision-text);
+  box-shadow:0 0 0 1px var(--hero-frame-border) inset;
+}
+.d-decision .decision-label{
+  display:block;
+  margin:0 0 4px;
+  font-size:var(--fs-diary-role);
+  font-weight:700;
+  letter-spacing:.16em;
+  color:var(--diary-decision-label);
+}
+.d-decision p{margin:0;font-size:var(--fs-diary-decision);line-height:1.65;font-weight:700;overflow-wrap:anywhere}
+
+/* ===== 〔v3〕図：SVGを <img> で表示。白いふち＋細い枠。下に「図」の札と説明（caption） ===== */
+.d-fig{margin:var(--diary-section-gap) auto 0;max-width:var(--diary-fig-max)}
+.d-fig .fig-frame{
+  padding:var(--diary-fig-pad);
+  background:var(--diary-fig-bg);
+  border:1px solid var(--diary-fig-border);
+  border-radius:var(--diary-fig-radius);
+  box-shadow:var(--diary-card-shadow);
+}
+/* スマホでは本文の幅いっぱい、PCでは最大幅まで。高さは図の縦横の比のまま */
+.d-fig img{display:block;width:100%;height:auto;border-radius:calc(var(--diary-fig-radius) - 6px)}
+.d-fig figcaption{
+  display:flex;
+  gap:8px;
+  align-items:baseline;
+  margin:10px 4px 0;
+  font-size:var(--fs-diary-caption);
+  line-height:1.6;
+  color:var(--color-text-sub);
+  overflow-wrap:anywhere;
+}
+.d-fig .fig-tag{
+  flex:none;
+  padding:0 7px;
+  border:1px solid var(--color-line);
+  border-radius:6px;
+  font-size:var(--fs-diary-role);
+  font-weight:700;
+  letter-spacing:.1em;
+  color:var(--color-text-sub);
+}
+/* 図のすぐ後の節（04）との間も、節どうしと同じだけ空ける */
+.d-fig + .d-sec{margin-top:var(--diary-section-gap)}
+
+/* ===== 〔v3〕04 結果と学び：旧形式の「失敗・学び」と同じ形で、印の色だけ差し色 ===== */
+.d-results li::before{background:var(--diary-result-mark)}
 
 /* ===== 本文の最後：オープンチャットへの出口 ===== */
 .d-cta{max-width:var(--content-max);margin:44px auto 0;padding:0 var(--gutter)}

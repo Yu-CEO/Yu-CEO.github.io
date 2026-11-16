@@ -1,6 +1,7 @@
 /*
  * diary_hook_view.js：日記1件のページの「冒頭のつかみ」（紺の帯の中）を作る
  * 中身：①今日の一言（顔・セリフ・名前と役の説明）②今日の決定（1つ目＋ほかN件。決定がない日は出さない）③今日の参加（小さな顔）
+ * 〔v3〕新しい形（format 2）の日は、②の代わりに「Yuの決定」（decision の文。必ず1つあるので毎回出す）を出す
  * 主な関数：createDiaryHook（つかみ全体を作る）
  * 使うもの：diary_pick.js・diary_speakers.js・diary_parts.js。diary_entry_view.js から使われる。
  */
@@ -53,7 +54,23 @@ function createFirstDecisionBox(decisions) {
 }
 
 /**
+ * 〔v3〕新しい形の「Yuの決定」の箱を作る（決定の文1つ。「ほかN件」はない）。
+ * @param {string} decision Yu の決定
+ * @returns {HTMLElement} 箱の要素
+ * @example createYuDecisionBox("両方を試してから決める")
+ */
+function createYuDecisionBox(decision) {
+  const box = makeDiaryElement("div", "d-dec", "");
+  const paragraph = makeDiaryElement("p", "", "");
+  paragraph.appendChild(makeDiaryElement("span", "hook-label", "Yuの決定"));
+  paragraph.appendChild(makeDiaryElement("span", "", decision));
+  box.appendChild(paragraph);
+  return box;
+}
+
+/**
  * 冒頭のつかみ全体を作る。決定がない日は「今日の決定」の箱を出さない。
+ * 〔v3〕新しい形（decision が文字の日）は「Yuの決定」の箱を出す。
  * @param {object} entry 検査を通った日記1件
  * @param {string} faceFile speakers.svg の場所
  * @returns {HTMLElement} つかみの要素
@@ -62,7 +79,9 @@ function createFirstDecisionBox(decisions) {
 function createDiaryHook(entry, faceFile) {
   const hook = makeDiaryElement("div", "d-hook", "");
   hook.appendChild(createPickBox(entry, faceFile));
-  if (entry.decisions.length > 0) {
+  if (typeof entry.decision === "string") {
+    hook.appendChild(createYuDecisionBox(entry.decision));
+  } else if (entry.decisions.length > 0) {
     hook.appendChild(createFirstDecisionBox(entry.decisions));
   }
   const participants = makeDiaryElement("div", "d-who-came", "");
