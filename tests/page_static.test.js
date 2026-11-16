@@ -169,7 +169,9 @@ test("道具箱 AC-18：外部の <script>・<iframe> がなく、計測用画�
       // 日記のページは1つ上のフォルダの js/ を読む（../js/）
       assert.ok(/src="(\.\.\/)?js\//.test(tag), "js/ 以外の <script> があります：" + tag);
     });
-    assert.ok(!/a8\.net|moshimo\.com/.test(html), "HTMLにASPの場所が書かれています");
+    // CSP の meta（読み込んでよい場所の一覧）には ASP のホストを書くので、それを除いた部分で確かめる（アクセス解析の仕様 2-5）
+    const htmlWithoutCsp = html.replace(/<meta http-equiv="Content-Security-Policy"[^>]*>/g, "");
+    assert.ok(!/a8\.net|moshimo\.com/.test(htmlWithoutCsp), "HTMLにASPの場所が書かれています");
   });
   readAllScripts().forEach(function (script) {
     assert.ok(!/createElement\(\s*["'](script|iframe)/.test(script.code), script.fileName + " で script・iframe を作っています");
@@ -180,5 +182,31 @@ test("道具箱 AC-3：日記のページは道具箱のファイルを読み込
   ["index.html", "entry.html"].forEach(function (fileName) {
     const html = fs.readFileSync(path.join(PORTAL_FOLDER, "diary", fileName), "utf8");
     assert.ok(!html.includes("toolbox"), "diary/" + fileName + " に道具箱があります");
+  });
+});
+
+// アクセス解析（requirements_analytics.md）を入れる3ページ
+const ANALYTICS_PAGE_FILES = ["index.html", "diary/index.html", "diary/entry.html"];
+
+test("アクセス解析 AC-16：3ページの注意書きの最後に、アクセス解析の説明の段落がある", function () {
+  const privacyText = "このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。";
+  ANALYTICS_PAGE_FILES.forEach(function (pageFile) {
+    const html = fs.readFileSync(path.join(PORTAL_FOLDER, pageFile), "utf8");
+    const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>"));
+    const paragraphs = footer.match(/<p>[^<]*<\/p>/g) || [];
+    assert.ok(paragraphs.length >= 2, pageFile + " の注意書きの段落が足りません");
+    assert.ok(paragraphs[paragraphs.length - 1].includes(privacyText), pageFile + " の注意書きの最後にアクセス解析の説明がありません");
+    assert.ok(paragraphs[paragraphs.length - 1].includes("トラッキングしない"));
+  });
+});
+
+test("アクセス解析 2-2：計測のJSは各ページの <script> の最後に、path → beacon → main の順で読み込む", function () {
+  ANALYTICS_PAGE_FILES.forEach(function (pageFile) {
+    const html = fs.readFileSync(path.join(PORTAL_FOLDER, pageFile), "utf8");
+    const sources = (html.match(/<script src="[^"]*"/g) || []).map(function (tag) {
+      return tag.split("/").pop().replace("\"", "");
+    });
+    assert.deepStrictEqual(sources.slice(-3), ["analytics_path.js", "analytics_beacon.js", "analytics_main.js"], pageFile);
+    assert.ok(sources.indexOf("site_config.js") === 0, pageFile + " で site_config.js が先に読み込まれていません");
   });
 });

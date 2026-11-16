@@ -6,7 +6,11 @@
   diary/index.html：経営会議の日記の一覧ページ（/diary/）の骨組みだけを書くファイル。
   日記のカードは js/diary_list_view.js が、diary/entries/ のデータから作って並べる（流れは js/diary_list_main.js）。
   データを読み込むので、公開サイト（https）か手元のサーバー（README の手順）で開く。ファイルを直接開くと「読み込めませんでした」になる。
+  外部と通信するのは、アクセス解析（GoatCounter）への 1×1 の画像の読み込みだけ（js/analytics_*.js。公開サイトで開いたときだけ。ページには置かない）。
 -->
+<!-- CSP（このページが読み込んでよい場所の制限）。外部は画像だけ・決まったホストだけ（アクセス解析の送り先だけ）。
+     計測の送り先（js/site_config.js の ANALYTICS_HOST）を決めたら、img-src に https://（そのホスト名）を1つ足す。tests/external_hosts.test.js が一致を確かめる -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>経営会議の日記｜Yu</title>
 <!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->
@@ -38,10 +42,11 @@
 <!-- 日記のカードの場所。js/diary_list_view.js が中身を入れる -->
 <main class="d-listwrap" id="diary-list"></main>
 
-<!-- 注意書き（ツールの注意書き＋日記の注意書き）。文言を変えるときは、ここと diary/entry.html の両方を直す -->
+<!-- 注意書き（ツールの注意書き＋日記の注意書き＋アクセス解析の説明）。文言を変えるときは、ここと diary/entry.html の両方を直す -->
 <footer class="note d-page-note">
   <p>このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
   <p>この日記は、AIを使った役員会議の記録を、公開用に書き直したものです。金額などの数字は伏せています。登場する役員はAIのキャラクターです。特定の商品や売買をすすめるものではありません。</p>
+  <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。ページを開くと、そのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類が届きます。Cookie は使わず、個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
 </footer>
 
 <!-- 読み込む順番に意味がある：設定 → 部品 → 表示 → 最後に流れ（diary_list_main.js） -->
@@ -58,5 +63,9 @@
 <script src="../js/diary_parts.js"></script>
 <script src="../js/diary_list_view.js"></script>
 <script src="../js/diary_list_main.js"></script>
+<!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
+<script src="../js/analytics_path.js"></script>
+<script src="../js/analytics_beacon.js"></script>
+<script src="../js/analytics_main.js"></script>
 </body>
 </html>

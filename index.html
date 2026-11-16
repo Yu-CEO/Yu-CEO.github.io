@@ -11,8 +11,12 @@
   道具箱は js/toolbox_data.js（データ）・toolbox_validate.js（検査）・toolbox_link.js（リンクの出し方）・toolbox_beacon.js（計測用画像）・toolbox_view.js（表示）と css/toolbox.css、流れは js/main.js。
   最新の日記は diary/entries/ のデータを読み込むので、公開サイト（https）か手元のサーバーで開いたときだけ出る。
   ブラウザで直接開くだけで動く（サーバー・インターネット接続は不要。外部のファイルは読み込まない）。
-  例外は道具箱の紹介リンクのカードに置く、ASPの計測用の小さな画像（1×1）だけ（js/site_config.js の ASP_LIST のホストに限る。読み込めなくても表示は崩れない）。
+  例外は画像だけ：道具箱の紹介リンクのカードに置く、ASPの計測用の小さな画像（1×1。js/site_config.js の ASP_LIST のホストに限る）と、
+  アクセス解析（GoatCounter）への 1×1 の画像の読み込み（js/analytics_*.js。公開サイトで開いたときだけ。ページには置かない）。どちらも読み込めなくても表示は崩れない。
 -->
+<!-- CSP（このページが読み込んでよい場所の制限）。外部は画像だけ・決まったホストだけ（道具箱の ASP の計測用画像＝js/site_config.js の ASP_LIST の beaconHosts・アクセス解析の送り先）。
+     計測の送り先（js/site_config.js の ANALYTICS_HOST）を決めたら、img-src に https://（そのホスト名）を1つ足す。tests/external_hosts.test.js が一致を確かめる -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://www18.a8.net https://i.moshimo.com; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Yu｜AI仮想会社の社長</title>
 <!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->
@@ -101,6 +105,7 @@
 <!-- ④ 共通の注意書き。文言を変えるときは、ここを直す -->
 <footer class="note" id="note">
   <p>このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
+  <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。ページを開くと、そのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類が届きます。Cookie は使わず、個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
 </footer>
 
 <!-- 読み込む順番に意味がある：設定とデータ → 検査 → 表示の部品 → 最後に流れ（main.js） -->
@@ -129,5 +134,9 @@
 <script src="js/toolbox_beacon.js"></script>
 <script src="js/toolbox_view.js"></script>
 <script src="js/main.js"></script>
+<!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
+<script src="js/analytics_path.js"></script>
+<script src="js/analytics_beacon.js"></script>
+<script src="js/analytics_main.js"></script>
 </body>
 </html>
