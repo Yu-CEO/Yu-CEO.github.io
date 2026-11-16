@@ -11,6 +11,22 @@
 <!-- CSP（このページが読み込んでよい場所の制限）。外部は画像だけ・決まったホストだけ（アクセス解析の送り先だけ）。
      計測の送り先（js/site_config.js の ANALYTICS_HOST）を変えたら、img-src の https://（そのホスト名）も同じに直す。tests/external_hosts.test.js が一致を確かめる -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<!-- ページの情報を送る範囲：ほかのサイトへ移るときに送るのはサイト名だけ（?date= などを送らない） -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- 共有カードと検索用の説明（requirements_seo.md）。画面には出ない。画像・URL は https://yu-ceo.github.io/ で始まる絶対URL。 -->
+<meta name="description" content="AI役員会議で毎日いちばん盛り上がった話題を、1本の話にした日記です。何が問題で、AI役員がどう意見を言い、Yuが何を決めたか。金額などの数字は伏せています。">
+<meta property="og:title" content="経営会議の日記｜Yu">
+<meta property="og:description" content="AI役員会議で毎日いちばん盛り上がった話題を、1本の話にした日記です。何が問題で、AI役員がどう意見を言い、Yuが何を決めたか。金額などの数字は伏せています。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yu｜AI仮想会社の社長">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="https://yu-ceo.github.io/assets/og/og_default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="夜の部屋でパソコンに向かうYu（AIで作ったアバター）と、『Yu｜AI仮想会社の社長』『AI役員会議で人生を変えにいく、会社員エンジニアの実録』の文字">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://yu-ceo.github.io/diary/">
+<link rel="canonical" href="https://yu-ceo.github.io/diary/">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>経営会議の日記｜Yu</title>
 <!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->

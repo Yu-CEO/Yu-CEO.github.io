@@ -78,16 +78,23 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # Node.js 20 を用意する（sitemap.xml を作るスクリプトに使う。外部ライブラリは使わない）
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
       # 公開するファイルだけを _site フォルダにまとめる
-      # 入れるもの：index.html・css/・js/・diary/（日記のページとデータ）（assets/・images/ があればそれも）
+      # 入れるもの：index.html・robots.txt・css/・js/・diary/（日記のページとデータ）（assets/・images/ があればそれも）
       # 入れないもの：tests/・ci/・tools/・README.md・docs/・.github/
+      # sitemap.xml はリポジトリに置かず、ここで diary/entries/index.json から作る（tools/build_sitemap.js。日付の形が違えば失敗して公開しない）
       - name: 公開するファイルをまとめる
         run: |
           mkdir _site
-          cp index.html _site/
+          cp index.html robots.txt _site/
           for dir in css js diary assets images; do
             if [ -d "$dir" ]; then cp -r "$dir" _site/; fi
           done
+          node tools/build_sitemap.js _site
           # 何を公開するかをログに残す（確認用）
           find _site -type f | sort
 

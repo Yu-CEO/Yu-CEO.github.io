@@ -57,6 +57,10 @@ function readAllScripts() {
 function assertNoExternalLoads(html, fileName) {
   const loadTags = html.match(/<(script|link|img)[^>]*>/g) || [];
   loadTags.forEach(function (tag) {
+    // <link rel="canonical">（検索用の正式なURLの印）は何も読み込まないので対象外（requirements_seo.md 2-2）
+    if (/rel="canonical"/.test(tag)) {
+      return;
+    }
     assert.ok(!/(src|href)="(https?:)?\/\//.test(tag), fileName + " で外部を読み込んでいます：" + tag);
   });
 }

@@ -17,6 +17,24 @@
 <!-- CSP（このページが読み込んでよい場所の制限）。外部は画像だけ・決まったホストだけ（道具箱の ASP の計測用画像＝js/site_config.js の ASP_LIST の beaconHosts・アクセス解析の送り先）。
      計測の送り先（js/site_config.js の ANALYTICS_HOST）を変えたら、img-src の https://（そのホスト名）も同じに直す。tests/external_hosts.test.js が一致を確かめる -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com https://www18.a8.net https://i.moshimo.com; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<!-- ページの情報を送る範囲：ほかのサイトへ移るときに送るのはサイト名だけ（?date= などを送らない） -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- 共有カードと検索用の説明（requirements_seo.md）。画面には出ない。画像・URL は https://yu-ceo.github.io/ で始まる絶対URL。 -->
+<meta name="description" content="会社員エンジニアのYuが、AIで作った仮想会社の役員にお金と人生を相談する実録。AI役員会議の日記と、無料の収支シミュレーターを置いています。">
+<meta property="og:title" content="Yu｜AI仮想会社の社長">
+<meta property="og:description" content="会社員エンジニアのYuが、AIで作った仮想会社の役員にお金と人生を相談する実録。AI役員会議の日記と、無料の収支シミュレーターを置いています。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yu｜AI仮想会社の社長">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="https://yu-ceo.github.io/assets/og/og_default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="夜の部屋でパソコンに向かうYu（AIで作ったアバター）と、『Yu｜AI仮想会社の社長』『AI役員会議で人生を変えにいく、会社員エンジニアの実録』の文字">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://yu-ceo.github.io/">
+<link rel="canonical" href="https://yu-ceo.github.io/">
+<!-- Google Search Console の所有権の確認（公開されてよい値）。消すと確認が外れるので消さない -->
+<meta name="google-site-verification" content="DRMRNizrtKxoNGWkSGP-5yyrqOF_DW4ScWJ_Nh_0c70">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Yu｜AI仮想会社の社長</title>
 <!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->

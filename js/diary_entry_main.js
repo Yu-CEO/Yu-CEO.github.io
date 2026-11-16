@@ -4,6 +4,7 @@
  * 2. URLの ?date= の日記を読み込み、表示する。見つからないときは「見つかりませんでした」を出す（diary_load.js・diary_entry_view.js）
  *    〔v3〕形を見て、旧形式は diary_entry_view.js、新しい形（format 2）は diary_story_view.js で表示する
  * 3. 本文の最後の「オープンチャットで続きを話そう」を、正しいURLがあるときだけ出す（link_button.js）
+ * 4. 検索用の説明文をその日の抜粋にする。見つからないときは検索に載せない印を付ける（diary_page_meta.js）
  * diary/entry.html の最後に読み込まれる。
  */
 
@@ -20,12 +21,21 @@ const requestedDiaryDate = new URLSearchParams(location.search).get("date");
 
 applyLinkButton("bar-tiktok", SITE_CONFIG.TIKTOK_URL);
 
+// 検索用の情報を直すときに使う、<head> の部品
+const diaryPageMeta = {
+  description: document.querySelector('meta[name="description"]'),
+  head: document.head,
+  documentObject: document
+};
+
 loadEntryByDate(DIARY_ENTRY_PATHS.folder, requestedDiaryDate).then(function (entry) {
   const area = document.getElementById("diary-entry");
   if (entry === null) {
     showDiaryNotFound(area, DIARY_ENTRY_PATHS);
+    updateEntryPageMeta(null, diaryPageMeta);
     return;
   }
   showEntryByFormat(area, entry, DIARY_ENTRY_PATHS);
+  updateEntryPageMeta(entry, diaryPageMeta);
   applyLinkButton(DIARY_OPENCHAT_BUTTON_ID, SITE_CONFIG.LINE_OPENCHAT_URL);
 });
