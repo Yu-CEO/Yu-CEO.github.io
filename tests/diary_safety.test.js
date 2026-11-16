@@ -45,3 +45,12 @@ test("止まった理由の名前を返し、当たった文字そのものは�
   const reasons = findUnsafeWritings("3万");
   assert.deepStrictEqual(reasons, ["金額の書き方"]);
 });
+
+test("N1：言葉の途中の目に見えない書式の文字（ゼロ幅スペース・単語結合子・ソフトハイフン）は止まる", function () {
+  // 目に見えない文字はソースに直接書かず、文字の番号から作る（ソースの表示で消えたり化けたりしないように）
+  [0x200b, 0x2060, 0x00ad, 0xfeff].forEach(function (codePoint) {
+    const text = "ふつう" + String.fromCharCode(codePoint) + "の文";
+    assert.deepStrictEqual(findUnsafeWritings(text), ["目に見えない書式の文字（ゼロ幅スペースなど）"], codePoint.toString(16));
+  });
+  assert.deepStrictEqual(findUnsafeWritings("ふつうの文"), []);
+});
