@@ -10,8 +10,8 @@
   外部と通信するのは、アクセス解析（GoatCounter）への 1×1 の画像の読み込みだけ（js/analytics_*.js。公開サイトで開いたときだけ。ページには置かない）。
 -->
 <!-- CSP（このページが読み込んでよい場所の制限）。外部は画像だけ・決まったホストだけ（アクセス解析の送り先だけ）。
-     計測の送り先（js/site_config.js の ANALYTICS_HOST）を決めたら、img-src に https://（そのホスト名）を1つ足す。tests/external_hosts.test.js が一致を確かめる -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+     計測の送り先（js/site_config.js の ANALYTICS_HOST）を変えたら、img-src の https://（そのホスト名）も同じに直す。tests/external_hosts.test.js が一致を確かめる -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>経営会議の日記｜Yu</title>
 <!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->

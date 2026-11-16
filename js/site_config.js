@@ -15,11 +15,11 @@ const SITE_CONFIG = {
 
   // ここから アクセス解析（GoatCounter）の設定。analytics_path.js・analytics_beacon.js が使う。止め方・始め方は README の「アクセス解析」
   // 計測のスイッチ。false にすると、どのページでも計測サービスと通信しない（JSを消さずに止められる）
-  ANALYTICS_ENABLED: false,
+  ANALYTICS_ENABLED: true,
   // 送り先のホスト名（「サイトコード.goatcounter.com」の形だけ。https:// は書かない）。
   // サイトコードは公開の値になるので、本名・会社名・仕事に関する言葉を入れない。
   // 空や形の違う値のときは送らない。ここを変えたら、3ページの CSP（img-src）も同じホスト名に直す（テストが確かめる）
-  ANALYTICS_HOST: "",
+  ANALYTICS_HOST: "yuceo.goatcounter.com",
   // 計測してよいページのホスト名（公開サイト）。手元のサーバーや file:// で開いたときは送らない
   ANALYTICS_PUBLIC_HOST: "yu-ceo.github.io"
 };
