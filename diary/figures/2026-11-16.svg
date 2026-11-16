@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 336" role="img" aria-labelledby="t">
+<title id="t">動画の改善ルール（これまで・これから）</title>
+<defs>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="336" rx="12" fill="#f2f3f5"/>
+<rect x="58" y="12" width="104" height="32" rx="16" fill="#ffffff" stroke="#d9dbe0"/>
+<text x="110" y="28" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#5b5f66">これまで</text>
+<rect x="182" y="12" width="108" height="32" rx="16" fill="#0f1626"/>
+<text x="236" y="28" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#ffffff">これから</text>
+<text x="30" y="76" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">長さ</text>
+<rect x="58" y="58" width="104" height="36" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="110" y="76" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">約1分以上</text>
+<line x1="165" y1="76" x2="179" y2="76" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="182" y="58" width="108" height="36" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="236" y="76" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">35〜45秒</text>
+<text x="30" y="122" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">冒頭</text>
+<rect x="58" y="104" width="104" height="36" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="110" y="122" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">同じ静止画</text>
+<line x1="165" y1="122" x2="179" y2="122" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="182" y="104" width="108" height="36" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="236" y="122" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">大きな問い</text>
+<text x="30" y="168" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">速さ</text>
+<rect x="58" y="150" width="104" height="36" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="110" y="168" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">ゆっくり</text>
+<line x1="165" y1="168" x2="179" y2="168" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="182" y="150" width="108" height="36" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="236" y="168" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">速めに</text>
+<text x="30" y="214" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">最後</text>
+<rect x="58" y="196" width="104" height="36" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="110" y="214" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">無音が残る</text>
+<line x1="165" y1="214" x2="179" y2="214" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="182" y="196" width="108" height="36" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="236" y="214" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">すぐループ</text>
+<text x="30" y="260" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">右上</text>
+<rect x="58" y="242" width="104" height="36" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="110" y="260" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">表示なし</text>
+<line x1="165" y1="260" x2="179" y2="260" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="182" y="242" width="108" height="36" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="236" y="260" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">Day N表示</text>
+<text x="30" y="306" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">読み方</text>
+<rect x="58" y="288" width="104" height="36" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="110" y="306" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">言い換え</text>
+<line x1="165" y1="306" x2="179" y2="306" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="182" y="288" width="108" height="36" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="236" y="306" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">台本どおり</text>
+</svg>
