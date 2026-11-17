@@ -95,6 +95,9 @@ jobs:
             if [ -d "$dir" ]; then cp -r "$dir" _site/; fi
           done
           node tools/build_sitemap.js _site
+          # ページごとに CSS を1つ・JS を2つ（表示用・アクセス解析用）にまとめ、_site の HTML の読み込みを書き換える（通信の回数を減らして軽くする）
+          # リポジトリの css/・js/ は機能ごとに分けたまま。読み込むファイルが見つからなければ失敗して公開しない
+          node tools/build_bundle.js _site
           # 何を公開するかをログに残す（確認用）
           find _site -type f | sort
 

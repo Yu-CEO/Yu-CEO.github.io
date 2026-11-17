@@ -59,7 +59,13 @@
     <h1 class="hero-title"><span>Yu｜</span><span>AI仮想会社の社長</span></h1>
     <figure class="hero-portrait">
       <div class="hero-portrait-clip">
-        <img id="hero-image" src="assets/yu.jpg" alt="夜の部屋でパソコンに向かうYu（AIで作ったアバター）">
+        <!-- 軽い WebP（yu.webp）を先に使い、WebP を表示できないブラウザだけ yu.jpg を使う。
+             width・height は画像の縦横のピクセル数（表示の大きさは CSS が決める。読み込み前に場所を取っておくため）。
+             最初に見える画像なので fetchpriority="high"（ほかより先に読み込む） -->
+        <picture>
+          <source srcset="assets/yu.webp" type="image/webp">
+          <img id="hero-image" src="assets/yu.jpg" alt="夜の部屋でパソコンに向かうYu（AIで作ったアバター）" width="787" height="1400" fetchpriority="high">
+        </picture>
       </div>
     </figure>
     <p class="hero-profile">会社員エンジニア（国家資格あり）。AIで仮想会社を設立し、AI役員にお金と人生を相談しています。うまくいかない日も全部記録。<span class="nowrap-unit">毎日19時投稿／22時ライブ</span></p>
@@ -126,35 +132,36 @@
   <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。ページを開くと、そのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類が届きます。Cookie は使わず、個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
 </footer>
 
-<!-- 読み込む順番に意味がある：設定とデータ → 検査 → 表示の部品 → 最後に流れ（main.js） -->
-<script src="js/site_config.js"></script>
-<script src="js/tools_data.js"></script>
-<script src="js/tools_validate.js"></script>
-<script src="js/hero_image.js"></script>
-<script src="js/tools_view.js"></script>
-<script src="js/link_button.js"></script>
-<script src="js/panel_tone.js"></script>
-<script src="js/reveal_motion.js"></script>
-<script src="js/hash_jump.js"></script>
-<script src="js/diary_day.js"></script>
-<script src="js/diary_safety.js"></script>
-<script src="js/diary_speakers.js"></script>
-<script src="js/diary_validate.js"></script>
-<script src="js/diary_validate_story.js"></script>
-<script src="js/diary_format.js"></script>
-<script src="js/diary_pick.js"></script>
-<script src="js/diary_load.js"></script>
-<script src="js/diary_parts.js"></script>
-<script src="js/diary_latest_panel.js"></script>
-<script src="js/toolbox_data.js"></script>
-<script src="js/toolbox_validate.js"></script>
-<script src="js/toolbox_link.js"></script>
-<script src="js/toolbox_beacon.js"></script>
-<script src="js/toolbox_view.js"></script>
-<script src="js/main.js"></script>
+<!-- 読み込む順番に意味がある：設定とデータ → 検査 → 表示の部品 → 最後に流れ（main.js）。
+     defer（HTMLを読み終えてから、書いた順に動かす）。公開するときは tools/build_bundle.js が1つのファイルにまとめる（計測の3つは別の1つ） -->
+<script src="js/site_config.js" defer></script>
+<script src="js/tools_data.js" defer></script>
+<script src="js/tools_validate.js" defer></script>
+<script src="js/hero_image.js" defer></script>
+<script src="js/tools_view.js" defer></script>
+<script src="js/link_button.js" defer></script>
+<script src="js/panel_tone.js" defer></script>
+<script src="js/reveal_motion.js" defer></script>
+<script src="js/hash_jump.js" defer></script>
+<script src="js/diary_day.js" defer></script>
+<script src="js/diary_safety.js" defer></script>
+<script src="js/diary_speakers.js" defer></script>
+<script src="js/diary_validate.js" defer></script>
+<script src="js/diary_validate_story.js" defer></script>
+<script src="js/diary_format.js" defer></script>
+<script src="js/diary_pick.js" defer></script>
+<script src="js/diary_load.js" defer></script>
+<script src="js/diary_parts.js" defer></script>
+<script src="js/diary_latest_panel.js" defer></script>
+<script src="js/toolbox_data.js" defer></script>
+<script src="js/toolbox_validate.js" defer></script>
+<script src="js/toolbox_link.js" defer></script>
+<script src="js/toolbox_beacon.js" defer></script>
+<script src="js/toolbox_view.js" defer></script>
+<script src="js/main.js" defer></script>
 <!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
-<script src="js/analytics_path.js"></script>
-<script src="js/analytics_beacon.js"></script>
-<script src="js/analytics_main.js"></script>
+<script src="js/analytics_path.js" defer></script>
+<script src="js/analytics_beacon.js" defer></script>
+<script src="js/analytics_main.js" defer></script>
 </body>
 </html>

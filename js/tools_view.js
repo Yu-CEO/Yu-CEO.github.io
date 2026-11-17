@@ -71,6 +71,9 @@ function getImageAlt(tool) {
 function createToolImage(tool) {
   const image = document.createElement("img");
   image.className = "tool-shot";
+  // 最初の画面（ヒーロー）の下にある画像なので、見える場所に近づいてから読み込む（最初の表示を軽くするため）
+  image.loading = "lazy";
+  image.decoding = "async";
   image.src = tool.image;
   image.alt = getImageAlt(tool);
   hideWhenBroken(image);

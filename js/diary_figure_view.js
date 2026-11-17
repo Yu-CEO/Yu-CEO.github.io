@@ -37,6 +37,8 @@ function createDiaryFigure(entry, figureFolder) {
   image.width = DIARY_FIGURE_WIDTH;
   image.height = DIARY_FIGURE_HEIGHT;
   image.decoding = "async";
+  // 図は本文の途中にあるので、見える場所に近づいてから読み込む（最初の表示を軽くするため）
+  image.loading = "lazy";
   // 読み込めないときは、図と caption だけを隠す（本文は出したまま）
   image.addEventListener("error", function () {
     figure.hidden = true;

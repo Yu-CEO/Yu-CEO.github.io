@@ -55,27 +55,28 @@
   <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。ページを開くと、そのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類が届きます。Cookie は使わず、個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
 </footer>
 
-<!-- 読み込む順番に意味がある：設定 → 部品 → 表示 → 最後に流れ（diary_entry_main.js） -->
-<script src="../js/site_config.js"></script>
-<script src="../js/link_button.js"></script>
-<script src="../js/diary_day.js"></script>
-<script src="../js/diary_safety.js"></script>
-<script src="../js/diary_speakers.js"></script>
-<script src="../js/diary_validate.js"></script>
-<script src="../js/diary_validate_story.js"></script>
-<script src="../js/diary_format.js"></script>
-<script src="../js/diary_pick.js"></script>
-<script src="../js/diary_load.js"></script>
-<script src="../js/diary_parts.js"></script>
-<script src="../js/diary_hook_view.js"></script>
-<script src="../js/diary_entry_view.js"></script>
-<script src="../js/diary_figure_view.js"></script>
-<script src="../js/diary_story_view.js"></script>
-<script src="../js/diary_page_meta.js"></script>
-<script src="../js/diary_entry_main.js"></script>
+<!-- 読み込む順番に意味がある：設定 → 部品 → 表示 → 最後に流れ（diary_entry_main.js）。
+     defer（HTMLを読み終えてから、書いた順に動かす）。公開するときは tools/build_bundle.js が1つのファイルにまとめる（計測の3つは別の1つ） -->
+<script src="../js/site_config.js" defer></script>
+<script src="../js/link_button.js" defer></script>
+<script src="../js/diary_day.js" defer></script>
+<script src="../js/diary_safety.js" defer></script>
+<script src="../js/diary_speakers.js" defer></script>
+<script src="../js/diary_validate.js" defer></script>
+<script src="../js/diary_validate_story.js" defer></script>
+<script src="../js/diary_format.js" defer></script>
+<script src="../js/diary_pick.js" defer></script>
+<script src="../js/diary_load.js" defer></script>
+<script src="../js/diary_parts.js" defer></script>
+<script src="../js/diary_hook_view.js" defer></script>
+<script src="../js/diary_entry_view.js" defer></script>
+<script src="../js/diary_figure_view.js" defer></script>
+<script src="../js/diary_story_view.js" defer></script>
+<script src="../js/diary_page_meta.js" defer></script>
+<script src="../js/diary_entry_main.js" defer></script>
 <!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
-<script src="../js/analytics_path.js"></script>
-<script src="../js/analytics_beacon.js"></script>
-<script src="../js/analytics_main.js"></script>
+<script src="../js/analytics_path.js" defer></script>
+<script src="../js/analytics_beacon.js" defer></script>
+<script src="../js/analytics_main.js" defer></script>
 </body>
 </html>

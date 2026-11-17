@@ -159,7 +159,8 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 | `diary/entries/YYYY-MM-DD.json` | 1日分の日記のデータ |
 | `diary/figures/YYYY-MM-DD.svg` | その日の図（図がある日だけ。まだ1つもないので、フォルダもまだない） |
 | `assets/speakers.svg` | 日記の話者9人の顔イラスト（オリジナル） |
-| `assets/yu.jpg` | ヒーローの肖像（AIで作ったアバター。埋め込み情報なし） |
+| `assets/yu.jpg` | ヒーローの肖像（AIで作ったアバター。埋め込み情報なし）。WebP を表示できないブラウザ用の予備 |
+| `assets/yu.webp` | `yu.jpg` を WebP（軽い画像の形式）にしたもの（同じ 787×1400・約94KB・埋め込み情報なし）。ふだんはこちらを表示する |
 | `assets/tool_simulator.jpg` | おかね収支シミュレーターのスクリーンショット（埋め込み情報なし） |
 | `css/toolbox.css` | 道具箱の見た目（カード・PRの印・PR表示・ボタン・計測用画像の置き方・注意書き）。値は `css/variables.css` の「道具箱」の節 |
 | `js/toolbox_data.js` | 道具箱のデータ。道具を増やす・リンクを差し替えるときはここだけ |
@@ -229,8 +230,10 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 | `robots.txt` | 検索エンジン向けの決まり（何も禁止しない・sitemap の場所） |
 | `assets/og/og_default.png` | 共有カードの画像（1200×630。3ページ共通） |
 | `tools/build_sitemap.js` | 公開のたびに `diary/entries/index.json` から sitemap.xml を作る（CI の deploy で動く。公開されない） |
+| `tools/build_bundle.js` | 公開のたびに、ページごとの CSS を1つ・JS を2つ（表示用・アクセス解析用）にまとめ、`_site` の HTML を書き換える（CI の deploy で動く。リポジトリのファイルは変えない） |
 | `tests/seo_meta.test.js` | 3ページの説明文・共有カードの meta・画像の大きさ・canonical・Search Console の meta・robots.txt・日記1件の説明文の書きかえのテスト |
 | `tests/build_sitemap.test.js` | sitemap の作り方のテスト（URL・lastmod・0件・形の違う日付で失敗・実際の index.json） |
+| `tests/build_bundle.test.js` | 軽量化のテスト（まとめたあとの数・順番・文法・HTML のほかの部分が変わらない・ファイルがないと止まる・defer・`yu.webp` と肖像の書き方） |
 | `tools/diary_publish.js` | 日記の公開前チェック（`--check`）と自動公開（`--push`）の流れ。公開されない |
 | `tools/diary_changes.js` | 変更が「その日の日記・`index.json`・その日の図」だけか、`index.json` の変更・`figure` と図・日付の決まりの判定（git に触れない計算だけ） |
 | `tools/diary_words_file.js` | 機密の言葉の一覧ファイルが正しい場所（運用用のフォルダとリポジトリの外）にあるかの確認 |
@@ -252,6 +255,25 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 | `.gitignore` | リポジトリに入れないものの一覧（`docs/`・機密の言葉のファイルなど） |
 | `ci/confidential_check.py` | 機密チェック（GitHubに上げる前に、外に出せない情報がないか調べる）。`--words-file` で、リポジトリの外の一覧だけを使って照合できる（日記の自動公開用） |
 | `.github/workflows/ci.yml` | CI/CD の設定。GitHubに上げるたびにテストと機密チェックを自動で実行し、合格したら GitHub Pages に公開する（公開に入るのは `index.html`・`robots.txt`・`css/`・`js/`・`diary/`・`assets/` と、その場で作る `sitemap.xml` だけ） |
+
+## ページの軽さ（2026-11-17）
+GitHub Pages が重く感じるようになったため、見た目と動きを変えずに、読み込みを減らした。
+- **CSS・JS をまとめるのは公開のときだけ**：リポジトリの `css/`・`js/` は機能ごとに分けたまま（読みやすさのため）。CI の deploy で `tools/build_bundle.js` が、ページごとに CSS を1つ・JS を2つにまとめる。アクセス解析の JS を別にするのは、表示の JS がエラーで止まっても計測は動かすため（3ページで同じファイルなので2ページ目からは保存された物を使う）。まとめたファイルの名前には中身の印（ハッシュ）が入るので、更新したのに古いファイルが使われ続けることがない
+- **script に defer**：HTML を読み終えてから、書いた順に動かす（手元で開いたときも公開のときも同じ）
+- **ヒーローの肖像**：`assets/yu.webp`（約94KB）を先に使い、WebP を表示できないブラウザだけ `yu.jpg`（約138KB）を使う。幅・高さを書いて読み込み前に場所を取り、`fetchpriority="high"` で先に読み込む
+- **ほかの画像**：ツールのスクリーンショット・日記の図は `loading="lazy"`（見える場所に近づいてから読み込む）。最初の画面では読み込まない
+- **新しい JS・CSS を足すとき**：今までどおり HTML に `<script src="js/○○.js" defer></script>`・`<link rel="stylesheet" href="css/○○.css">` を1行で書けば、公開のときに自動でまとめに入る（計測用は名前を `analytics_` で始める）
+
+前後の比べ（HTML・CSS・JS・ヒーローの画像。日記のデータ・図・道具箱の画像・計測の通信は前後で同じなので数えていない。「gzip」は GitHub Pages が圧縮して送るときのおよその大きさ）
+
+| ページ | 前：通信の回数 | 前：合計 | 後：通信の回数 | 後：合計 |
+|---|---|---|---|---|
+| 入口 `index.html` | 35回（HTML1・CSS5・JS28・画像1） | 335KB（gzip 約215KB） | 5回（HTML1・CSS1・JS2・画像1） | 292KB（gzip 約150KB） |
+| 日記の一覧 `diary/index.html` | 22回（HTML1・CSS5・JS16） | 132KB（gzip 約51KB） | 4回（HTML1・CSS1・JS2） | 132KB（gzip 約38KB） |
+| 日記1件 `diary/entry.html` | 26回（HTML1・CSS5・JS20） | 158KB（gzip 約61KB） | 4回（HTML1・CSS1・JS2） | 158KB（gzip 約43KB） |
+
+- 入口では、ヒーローの下にあるツールのスクリーンショット（約51KB）も最初は読み込まなくなった（上の表には入れていない）
+- 360px 幅で前後の画面を比べ、違いは肖像の画像の圧縮の差だけ（目で見て分からない程度）だった
 
 ## 注意
 - このサイトのツールは計算するだけのもので、特定の商品や売買をすすめるものではありません（投資の助言ではありません）。
