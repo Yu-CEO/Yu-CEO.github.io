@@ -24,6 +24,14 @@ const TOOLS_DATA = [
     status: "公開中",
     image: "assets/tool_video_check.jpg",
     imageAlt: "ショート動画のかんたん診断の最初の画面"
+  },
+  {
+    name: "為替の動く幅（学習用）",
+    description: "米ドル／円が過去にどれくらいの幅で動いたかを見て学べます。売買のタイミングや方向を示すものではありません",
+    url: "https://yu-ceo.github.io/fx-simulator/",
+    status: "公開中",
+    image: "assets/tool_fx_simulator.jpg",
+    imageAlt: "為替の動く幅（学習用）の最初の画面"
   }
 ];
 

@@ -105,3 +105,9 @@ test("動画診断の画像 assets/tool_video_check.jpg は 500×710 で、埋�
   assert.deepStrictEqual(findImageSize(markers), { width: 500, height: 710 });
   assert.deepStrictEqual(findEmbeddedInfoMarkers(markers), []);
 });
+
+test("為替の学習ツールの画像 assets/tool_fx_simulator.jpg は 500×710 で、埋め込み情報がない", function () {
+  const markers = readJpegMarkers(fs.readFileSync(path.join(PORTAL_FOLDER, "assets", "tool_fx_simulator.jpg")));
+  assert.deepStrictEqual(findImageSize(markers), { width: 500, height: 710 });
+  assert.deepStrictEqual(findEmbeddedInfoMarkers(markers), []);
+});
