@@ -11,6 +11,7 @@
 if (typeof module !== "undefined" && module.exports) {
   globalThis.tokenizeSvg = require("./diary_svg_tokens.js").tokenizeSvg;
   globalThis.findUnsafeWritings = require("./diary_safety.js").findUnsafeWritings;
+  globalThis.hasMarkupSymbols = require("./diary_markup.js").hasMarkupSymbols;
   globalThis.findSvgAttributeProblem = require("./diary_svg_attributes.js").findSvgAttributeProblem;
   globalThis.SVG_CHECK_NAMESPACE = require("./diary_svg_attributes.js").SVG_CHECK_NAMESPACE;
 }
@@ -195,6 +196,12 @@ function checkSvgJoinedText(texts, problems) {
   const joined = texts.map(function (item) {
     return item.text;
   }).join("");
+  const hasSymbolEach = texts.some(function (item) {
+    return hasMarkupSymbols(item.text);
+  });
+  if (!hasSymbolEach && hasMarkupSymbols(joined)) {
+    problems.push("図の中の文字を全部つなげると、強調の記号（** や ==）になります。記号を分けて書かないでください");
+  }
   findUnsafeWritings(joined).forEach(function (ruleName) {
     if (!foundEach.includes(ruleName)) {
       problems.push("図の中の文字を全部つなげると、公開してはいけない書き方（" + ruleName + "）になります。言葉を分けて書かないでください");
@@ -213,6 +220,10 @@ function checkSvgTextSafety(texts, problems) {
   let total = 0;
   texts.forEach(function (item) {
     total += Array.from(item.text).length;
+    // 3版目の強調の記号（** と ==）は図の中では書けない（日記の文と同じ読み取りで、記号で言葉を分けるのを止める）
+    if (hasMarkupSymbols(item.text)) {
+      problems.push(item.line + "行目：<" + item.element + "> の文字に、強調の記号（** や ==）は書けません");
+    }
     findUnsafeWritings(item.text).forEach(function (ruleName) {
       problems.push(item.line + "行目：<" + item.element + "> の文字に、公開してはいけない書き方（" + ruleName + "）があります");
     });

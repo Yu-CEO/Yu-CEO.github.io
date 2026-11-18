@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <!--
   diary/entry.html：経営会議の日記1件のページ（/diary/entry.html?date=YYYY-MM-DD）の骨組みだけを書くファイル。
-  中身は js/diary_entry_view.js（旧形式）か js/diary_story_view.js（新しい形・図は diary/figures/ のSVGを <img> で表示）が、
+  中身は js/diary_entry_view.js（旧形式）か js/diary_story_view.js（2版目・図は diary/figures/ のSVGを <img> で表示）か js/diary_story3_view.js（3版目・太字とハイライト・図2枚・今日の学び）が、
   diary/entries/ のその日のデータから作る（流れは js/diary_entry_main.js）。
   日付が正しくない・見つからないときは「この日の日記は見つかりませんでした」と一覧へのリンクを出す。
   外部と通信するのは、アクセス解析（GoatCounter）への 1×1 の画像の読み込みだけ（js/analytics_*.js。公開サイトで開いたときだけ。ページには置かない）。
@@ -36,6 +36,7 @@
 <link rel="stylesheet" href="../css/hero.css">
 <link rel="stylesheet" href="../css/diary.css">
 <link rel="stylesheet" href="../css/diary_entry.css">
+<link rel="stylesheet" href="../css/diary_format3.css">
 </head>
 <body>
 
@@ -64,13 +65,19 @@
 <script src="../js/diary_speakers.js" defer></script>
 <script src="../js/diary_validate.js" defer></script>
 <script src="../js/diary_validate_story.js" defer></script>
+<script src="../js/diary_markup.js" defer></script>
+<script src="../js/diary_format3_counts.js" defer></script>
+<script src="../js/diary_validate_format3.js" defer></script>
 <script src="../js/diary_format.js" defer></script>
 <script src="../js/diary_pick.js" defer></script>
 <script src="../js/diary_load.js" defer></script>
 <script src="../js/diary_parts.js" defer></script>
+<script src="../js/diary_markup_view.js" defer></script>
 <script src="../js/diary_hook_view.js" defer></script>
 <script src="../js/diary_entry_view.js" defer></script>
 <script src="../js/diary_figure_view.js" defer></script>
+<script src="../js/diary_takeaway_view.js" defer></script>
+<script src="../js/diary_story3_view.js" defer></script>
 <script src="../js/diary_story_view.js" defer></script>
 <script src="../js/diary_page_meta.js" defer></script>
 <script src="../js/diary_entry_main.js" defer></script>

@@ -2,7 +2,7 @@
  * diary_story_view.js：新しい形（"format": 2・1トピックの話）の日記1件のページの表示
  * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 話の流れの道しるべ（問題›意見›決定›結果）
  *       → 01 何が問題だったか → 02 役員の意見（顔つきの吹き出し）→ 03 Yuの決定 →（図がある日は図と説明）→ 04 結果と学び → オープンチャットへの出口
- * 主な関数：showStoryEntry（新しい形の1件を表示）、showEntryByFormat（形を見て、旧形式・新しい形の表示を呼び分ける）
+ * 主な関数：showStoryEntry（2版目の1件を表示）、showEntryByFormat（形を見て、旧形式・2版目・3版目（diary_story3_view.js）の表示を呼び分ける）
  * 使うもの：diary_entry_view.js の部品・diary_figure_view.js・diary_format.js・diary_speakers.js。diary_entry_main.js から使われる。
  * 日記の文字はすべて textContent で入れる（HTMLとしては読ませない）。tests/diary_story_view.test.js でテストする。
  */
@@ -23,6 +23,8 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.HUMAN_SPEAKER = require("./diary_speakers.js").HUMAN_SPEAKER;
   globalThis.createDiaryFigure = require("./diary_figure_view.js").createDiaryFigure;
   globalThis.isStoryEntry = require("./diary_format.js").isStoryEntry;
+  globalThis.isFormat3Entry = require("./diary_format.js").isFormat3Entry;
+  globalThis.showStory3Entry = require("./diary_story3_view.js").showStory3Entry;
 }
 
 // 話の流れの道しるべの札（押せない飾り）。isDecision の札だけ紺にする（話の山場＝Yu の決定）
@@ -123,7 +125,7 @@ function showStoryEntry(area, entry, paths) {
 }
 
 /**
- * 日記の形を見て、新しい形なら showStoryEntry、旧形式なら今までの showDiaryEntry で表示する。
+ * 日記の形を見て、3版目なら showStory3Entry、2版目なら showStoryEntry、旧形式なら今までの showDiaryEntry で表示する。
  * @param {HTMLElement} area 表示する場所
  * @param {object} entry 検査を通った日記1件
  * @param {{ faceFile: string, listPage: string, figureFolder: string }} paths 場所の設定
@@ -131,7 +133,9 @@ function showStoryEntry(area, entry, paths) {
  * @example showEntryByFormat(area, entry, paths)
  */
 function showEntryByFormat(area, entry, paths) {
-  if (isStoryEntry(entry)) {
+  if (isFormat3Entry(entry)) {
+    showStory3Entry(area, entry, paths);
+  } else if (isStoryEntry(entry)) {
     showStoryEntry(area, entry, paths);
   } else {
     showDiaryEntry(area, entry, paths);

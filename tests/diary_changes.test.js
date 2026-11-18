@@ -102,3 +102,40 @@ test("前の日の日付：月・年・うるう年をまたいでも正しい",
   assert.strictEqual(previousDate("2027-01-01"), "2026-12-31");
   assert.strictEqual(previousDate("2028-03-01"), "2028-02-29");
 });
+
+const NEW_FIGURE2 = { state: "??", path: "diary/figures/2026-11-16-2.svg" };
+
+test("AC-76：日記＋index.json＋図＋2枚目の図（その日の -2.svg）なら進み、上げるファイルに2枚目も入る", function () {
+  const result = judgeDiaryChanges([NEW_ENTRY, INDEX_CHANGE, NEW_FIGURE, NEW_FIGURE2]);
+  assert.strictEqual(result.ok, true);
+  assert.strictEqual(result.hasFigure, true);
+  assert.strictEqual(result.hasFigure2, true);
+  assert.ok(result.files.includes("diary/figures/2026-11-16-2.svg"));
+  assert.ok(result.files.includes("diary/figures/2026-11-16.svg"));
+});
+
+test("AC-76：2枚目だけ（figure なしの figure2 だけの日）も進む", function () {
+  const result = judgeDiaryChanges([NEW_ENTRY, INDEX_CHANGE, NEW_FIGURE2]);
+  assert.strictEqual(result.ok, true);
+  assert.strictEqual(result.hasFigure, false);
+  assert.strictEqual(result.hasFigure2, true);
+});
+
+test("AC-76：別の日の -2.svg・過去の -2.svg の変更・-3.svg・-1.svg・2枚目が2つ、は止まる", function () {
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-15-2.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: " M", path: "diary/figures/2026-11-16-2.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-16-3.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-16-1.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, NEW_FIGURE2, { state: "A ", path: "diary/figures/2026-11-16-2.svg" }]);
+});
+
+test("AC-74・AC-76：figure2 と -2.svg の過不足（figure2 があるのに無い／figure2 が無いのに有る）を見つける", function () {
+  const figure = { alt: "a", caption: "b" };
+  assert.deepStrictEqual(checkFigureMatch({ figure2: figure }, false, true), []);
+  assert.match(checkFigureMatch({ figure2: figure }, false, false).join("／"), /figure2 があるのに/);
+  const extra = checkFigureMatch({ title: "x" }, false, true);
+  assert.match(extra.join("／"), /figure2 がないのに/);
+  assert.ok(extra.includes(NEEDS_DEV_FLOW_MESSAGE));
+  // 今までの呼び方（2つ目の引数だけ）も同じ結果
+  assert.deepStrictEqual(checkFigureMatch({ figure: figure }, true), []);
+});

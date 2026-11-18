@@ -160,6 +160,20 @@
   --diary-fig-radius:16px;                      /* 図の角の丸み */
   --fs-diary-caption:13px;                      /* 図の下の説明（caption） */
   --diary-result-mark:#2563a8;                  /* 04 結果と学びの印（旧形式の「失敗・学び」のオレンジと分ける） */
+  /* 〔v4〕3版目：太字・ハイライト・今日の学び（css/diary_entry.css の .f3 と .d-take で使う） */
+  --diary-strong-weight:700;                    /* 本文（400）の中の太字 */
+  --diary-strong-on-dark:#7cc4ff;               /* もとが太い文（紺の箱の決定・帯の決定・今日の一言）の中の太字の色。紺の上で約9:1 */
+  --diary-mark-bg:#ffdf6b;                      /* ハイライト（黄色のマーカー）。文字 #16171a との差 約13:1。白・グレー・紺のどこでも同じ */
+  --diary-mark-text:#16171a;
+  --diary-mark-pad:0 .18em;                     /* マーカーの左右のすき間 */
+  --diary-mark-radius:3px;                      /* マーカーの角 */
+  --diary-take-bg:#fff8db;                      /* 今日の学びの枠（薄い黄色） */
+  --diary-take-border:#f1dc8f;
+  --diary-take-label:#7a5a00;                   /* 「今日の学び」の小見出しの文字（薄い黄色の上で約6:1） */
+  --diary-take-bar:#ffdf6b;                     /* 枠の左の太い線 */
+  --fs-diary-take:clamp(17px, 4.7vw, 20px);     /* 今日の学びの1文（決定と同じ大きさ。太さは普通にして太字を見分けられるように） */
+  --fs-diary-take-label:12px;                   /* 「今日の学び」の小見出し */
+  --diary-take-pad:18px 18px 18px 22px;         /* 枠の内側 */
 
   /* ===== 道具箱（css/toolbox.css で使う） ===== */
   --tb-card-bg:#ffffff;           /* 道具カードの背景 */

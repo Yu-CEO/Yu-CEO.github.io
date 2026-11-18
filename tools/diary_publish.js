@@ -1,20 +1,24 @@
 /*
  * diary_publish.js：日記の公開前チェック（--check）と自動公開（--push）の流れ（requirements_diary.md 機能5・2-5・2-5-1）
  * 使い方：portal フォルダで `node tools/diary_publish.js --check`（手元のチェック）／`node tools/diary_publish.js --push`（公開）
- * --check：一覧ファイルの場所 → 変更がその日の日記だけか → 日付 → index.json → 日記と図の検査 → 機密の言葉の照合。PASS なら指紋を出す
+ * --check：一覧ファイルの場所 → 変更がその日の日記だけか → 日付 → index.json → 日記と図（2枚目も）の検査 → 機密の言葉の照合
+ *          （3版目の日記は、記号 ** と == を外した文字でも照合する）。PASS なら指紋を出す
  * --push ：--check と同じことをもう一度（commit の直前の照合）→ push の前の確かめ → 確認担当の PASS の記録 → commit
  *          → 照合をもう一度（push の直前）→ push。どれか1つでも FAIL なら commit・push しない
- * 部品：tools/diary_words_file.js・diary_changes.js・diary_contents.js（日記・図の中身の検査）・diary_audit.js・diary_git.js。
+ * 部品：tools/diary_words_file.js・diary_changes.js・diary_contents.js（日記・図の中身の検査）・diary_audit.js・diary_git.js・
+ *   diary_plain_text.js（記号を外した文字の書き出し）。
  * Node.js 標準の機能だけで書く。テスト（tests/diary_publish.test.js）では git と Python を差し替えて、本物の push はしない。
  */
 const fs = require("node:fs");
 const path = require("node:path");
+const os = require("node:os");
 const childProcess = require("node:child_process");
 const { checkWordsFileLocation } = require("./diary_words_file.js");
 const changesRule = require("./diary_changes.js");
 const audit = require("./diary_audit.js");
 const git = require("./diary_git.js");
 const { readRepoFile, checkDiaryContents } = require("./diary_contents.js");
+const { writePlainTexts, removePlainTexts } = require("./diary_plain_text.js");
 
 const REPO_DIR = path.join(__dirname, "..");
 const CONFIDENTIAL_CHECK = path.join("ci", "confidential_check.py");
@@ -22,7 +26,7 @@ const CONFIDENTIAL_CHECK = path.join("ci", "confidential_check.py");
 const PYTHON_CANDIDATES = ["python3", "python"];
 
 /**
- * 機密の言葉の照合（ci/confidential_check.py --words-file）を動かす。結果にはファイル名と行番号だけが出る。
+ * 機密の言葉の照合を、上がる予定のファイルと、3版目の記号を外した文字の両方にかける（どちらも一覧は同じ）。
  * @param {object} context 動かす場所・環境変数・run・log
  * @returns {string[]} 問題点（なければ空）
  * @example runConfidentialCheck(context)
@@ -37,7 +41,37 @@ function runConfidentialCheck(context) {
   if (result.status !== 0) {
     return ["機密の言葉の照合で止まりました（上の場所を直してください。言葉そのものは表示しません）"];
   }
-  return [];
+  return runPlainTextCheck(context, python);
+}
+
+/**
+ * 3版目の日記から記号（** と ==）を外した文字を、リポジトリの外の一時フォルダに書き出して、同じ一覧で照合する。終わったら必ず消す。
+ * 言葉の途中に記号を挟んで、行ごとの照合をすり抜けるのを止めるため。表示は「日付__項目-番号.txt」と行番号だけ（言葉は出ない）。
+ * @param {object} context 動かす場所・環境変数・run・log
+ * @param {string} python 動く Python のコマンドの名前
+ * @returns {string[]} 問題点（なければ空）
+ * @example runPlainTextCheck(context, "python")
+ */
+function runPlainTextCheck(context, python) {
+  const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), "diary-plain-"));
+  try {
+    const written = writePlainTexts(context.repoDir, outputDir);
+    if (!written.ok) {
+      return written.problems;
+    }
+    if (written.count === 0) {
+      return [];
+    }
+    const script = path.join(context.repoDir, CONFIDENTIAL_CHECK);
+    const result = context.run(python, [script, "--words-file", context.env.DIARY_CONFIDENTIAL_WORDS_FILE], { cwd: outputDir });
+    context.log(result.stdout.trim());
+    if (result.status !== 0) {
+      return ["記号を外した文字の機密の言葉の照合で止まりました（上の「日付__項目」の場所を直してください。言葉そのものは表示しません）"];
+    }
+    return [];
+  } finally {
+    removePlainTexts(outputDir);
+  }
 }
 
 /**
@@ -161,8 +195,13 @@ function createContext(env) {
     env: env,
     today: formatLocalDate(new Date()),
     log: function (text) { console.log(text); },
-    run: function (command, args) {
-      const result = childProcess.spawnSync(command, args, { cwd: REPO_DIR, encoding: "utf8", env: commandEnv });
+    run: function (command, args, options) {
+      // options.cwd：動かす場所（記号を外した文字の照合だけが、一時フォルダを指定する）。指定がなければリポジトリ
+      let workingDir = REPO_DIR;
+      if (options && options.cwd) {
+        workingDir = options.cwd;
+      }
+      const result = childProcess.spawnSync(command, args, { cwd: workingDir, encoding: "utf8", env: commandEnv });
       return {
         status: result.status,
         stdout: result.stdout || "",

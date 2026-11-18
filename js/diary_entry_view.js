@@ -4,6 +4,7 @@
  *       → 03 決定 → 04 失敗・学び → オープンチャットへの出口
  * 〔v3〕このファイルは旧形式（format なし）の日の表示。新しい形（format 2）の日は diary_story_view.js が、
  *       ここの部品（紺の帯・節・吹き出し・出口など）を使って表示する。
+ *       〔v4〕3版目（format 3）の日も diary_story3_view.js が同じ部品を使う。
  * 主な関数：showDiaryEntry（1件を表示）、showDiaryNotFound（「この日の日記は見つかりませんでした」を表示）
  * 使うもの：diary_day.js・diary_parts.js・diary_hook_view.js・diary_speakers.js。diary_entry_main.js から使われる。
  * tests/diary_views.test.js でテストする。
@@ -18,6 +19,7 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.getSpeakerInfo = require("./diary_speakers.js").getSpeakerInfo;
   globalThis.createSpeakerFace = require("./diary_speakers.js").createSpeakerFace;
   globalThis.HUMAN_SPEAKER = require("./diary_speakers.js").HUMAN_SPEAKER;
+  globalThis.writePlainText = require("./diary_markup_view.js").writePlainText;
 }
 
 // ブラウザのタブの題名の後ろにつける文字
@@ -122,10 +124,15 @@ function createAgendaSection(agenda) {
  * 名前は吹き出しの上に出す。読み上げ・コピーでは「話者：セリフ」になるよう、見えない「名前：」を吹き出しの頭に入れる。
  * @param {{ speaker: string, text: string }} line セリフ1つ
  * @param {string} faceFile speakers.svg の場所
+ * @param {function(HTMLElement, string): void} [textWriter] セリフの文字を入れる関数（3版目は強調つき。書かなければ文字をそのまま入れる）
  * @returns {HTMLElement} 行の要素
  * @example createLineRow({ speaker: "アオイ", text: "読みたい" }, "../assets/speakers.svg")
  */
-function createLineRow(line, faceFile) {
+function createLineRow(line, faceFile, textWriter) {
+  let writeText = writePlainText;
+  if (typeof textWriter === "function") {
+    writeText = textWriter;
+  }
   const info = getSpeakerInfo(line.speaker);
   let rowClass = "d-line " + info.className;
   if (line.speaker === HUMAN_SPEAKER) {
@@ -141,7 +148,9 @@ function createLineRow(line, faceFile) {
   nameRow.appendChild(makeDiaryElement("span", "role", info.role));
   const bubble = makeDiaryElement("p", "bubble", "");
   bubble.appendChild(makeDiaryElement("span", "screen-reader-only", line.speaker + "："));
-  bubble.appendChild(makeDiaryElement("span", "", line.text));
+  const textSpan = makeDiaryElement("span", "", "");
+  writeText(textSpan, line.text);
+  bubble.appendChild(textSpan);
   say.appendChild(nameRow);
   say.appendChild(bubble);
   row.appendChild(say);
@@ -153,10 +162,11 @@ function createLineRow(line, faceFile) {
  * @param {object[]} lines セリフの一覧
  * @param {string} faceFile speakers.svg の場所
  * @param {string} [title] 節の名前（〔v3〕新しい形では「役員の意見」。書かなければ「役員の一言」）
+ * @param {function(HTMLElement, string): void} [textWriter] セリフの文字を入れる関数（3版目は強調つき）
  * @returns {HTMLElement} 節の要素
  * @example createLinesSection(entry.lines, "../assets/speakers.svg")
  */
-function createLinesSection(lines, faceFile, title) {
+function createLinesSection(lines, faceFile, title, textWriter) {
   let sectionTitle = "役員の一言";
   if (typeof title === "string") {
     sectionTitle = title;
@@ -165,7 +175,7 @@ function createLinesSection(lines, faceFile, title) {
   section.appendChild(makeDiaryElement("p", "d-legend", DIARY_LINES_LEGEND));
   const list = makeDiaryElement("div", "d-lines", "");
   lines.forEach(function (line) {
-    list.appendChild(createLineRow(line, faceFile));
+    list.appendChild(createLineRow(line, faceFile, textWriter));
   });
   section.appendChild(list);
   return section;

@@ -1,0 +1,57 @@
+/*
+ * diary_format3.css：日記1件のページの3版目（.f3）だけの見た目（太字・ハイライト・2枚目の図の札・今日の学びの枠）
+ * diary/entry.html で diary_entry.css のあとに読み込まれる。値は css/variables.css の〔v4〕の節。
+ */
+
+/* ===== 〔v4〕3版目（.f3）：太字・ハイライト。強調は diary_markup_view.js が strong・mark の要素で作る ===== */
+.f3 strong{font-weight:var(--diary-strong-weight)}
+/* もとが太い文（紺の箱の決定・帯の決定・今日の一言）の中は、太さで見分けられないので色で見分ける */
+.f3 .d-dec strong,.f3 .d-pick strong,.f3 .d-decision strong{color:var(--diary-strong-on-dark)}
+.f3 mark{
+  background:var(--diary-mark-bg);
+  color:var(--diary-mark-text);
+  padding:var(--diary-mark-pad);
+  border-radius:var(--diary-mark-radius);
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;       /* 行をまたいでも、行ごとに角が丸くなる */
+}
+.f3 mark strong{color:inherit}
+
+/* ===== 〔v4〕図は2枚：1枚目は 01 の下、2枚目は 04 の下。どちらも図の枠は同じ。2枚目の札「まとめ」だけ黄色系 ===== */
+.f3 .d-sec > .d-fig{margin-top:22px}
+.d-fig .fig-tag.is-summary{border-color:var(--diary-take-border);background:var(--diary-take-bg);color:var(--diary-take-label)}
+
+/* ===== 〔v4〕今日の学び：本文の最後の枠。薄い黄色＋左の太い線 ===== */
+.d-take{
+  position:relative;
+  margin:var(--diary-section-gap) 0 0;
+  padding:var(--diary-take-pad);
+  background:var(--diary-take-bg);
+  border:1px solid var(--diary-take-border);
+  border-radius:var(--diary-card-radius);
+  overflow:hidden;
+}
+.d-take::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--diary-take-bar)}
+.d-take .take-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 6px;
+  font-size:var(--fs-diary-take-label);
+  font-weight:700;
+  letter-spacing:.14em;
+  color:var(--diary-take-label);
+}
+/* 小さな「芯」の印（絵文字は使わない） */
+.d-take .take-label::before{
+  content:"";
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  box-shadow:inset 0 0 0 2px currentColor;
+  background:radial-gradient(circle, currentColor 0 2.5px, transparent 3px);
+}
+.d-take .take-text{margin:0;font-size:var(--fs-diary-take);line-height:1.65;font-weight:500;overflow-wrap:anywhere}
+/* 学びの枠はもともと黄色。中のハイライトは下半分だけの線＋太字にして、背景に沈まないようにする */
+.d-take mark{padding:0;font-weight:700;background:linear-gradient(transparent 62%, var(--diary-mark-bg) 62%)}
+.d-fig + .d-take{margin-top:var(--diary-section-gap)}

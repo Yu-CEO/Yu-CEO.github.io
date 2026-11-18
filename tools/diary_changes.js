@@ -4,7 +4,8 @@
  *   checkIndexChange（index.json に日付が1つ足されただけか）、checkFigureMatch（JSON の figure と図のファイルが合うか）、
  *   checkPublishDate（今日か前の日の日付か）
  * 自動で上げてよいのは、その日の diary/entries/<日付>.json（新しい1つ）・diary/entries/index.json（1行追加）・
- *   diary/figures/<日付>.svg（新しい0〜1つ）だけ（requirements_diary.md 2-5）。それ以外が1つでもあれば止める。
+ *   diary/figures/<日付>.svg（新しい0〜1つ）・〔v4〕diary/figures/<日付>-2.svg（2枚目の図。新しい0〜1つ）だけ（requirements_diary.md 2-5）。
+ *   それ以外（-3.svg・別の日の図など）が1つでもあれば止める。
  * tools/diary_publish.js から使われる。tests/diary_changes.test.js でテストする。
  */
 
@@ -14,6 +15,8 @@ const INDEX_FILE = "diary/entries/index.json";
 // 新しい日記・図のファイルの形（日付は YYYY-MM-DD）
 const ENTRY_FILE_PATTERN = /^diary\/entries\/(\d{4}-\d{2}-\d{2})\.json$/;
 const FIGURE_FILE_PATTERN = /^diary\/figures\/(\d{4}-\d{2}-\d{2})\.svg$/;
+// 〔v4〕2枚目の図（3版目の figure2）。-2 の連番だけを認め、-1・-3 などは「それ以外」として止める
+const FIGURE2_FILE_PATTERN = /^diary\/figures\/(\d{4}-\d{2}-\d{2})-2\.svg$/;
 // git status の2文字の状態のうち「新しいファイル」と認めるもの（?? はまだ git に足していない、A  は足した）
 const NEW_FILE_STATES = ["??", "A "];
 // index.json の状態として認めるもの（変更だけ。削除・名前の変更は不可）
@@ -46,14 +49,15 @@ function parseGitStatus(output) {
 /**
  * 変更の一覧が「その日の日記1件＋index.json＋（あれば）その日の図1つ」だけかを判定する。
  * @param {{ state: string, path: string }[]} changes 変更の一覧
- * @returns {{ ok: boolean, date: string, files: string[], hasFigure: boolean, problems: string[] }}
- *   ok：進んでよいか／date：日記の日付／files：上げるファイル／hasFigure：図があるか／problems：止めた理由（日本語）
+ * @returns {{ ok: boolean, date: string, files: string[], hasFigure: boolean, hasFigure2: boolean, problems: string[] }}
+ *   ok：進んでよいか／date：日記の日付／files：上げるファイル／hasFigure：図があるか／hasFigure2：2枚目の図があるか／problems：止めた理由（日本語）
  * @example judgeDiaryChanges([{ state: "??", path: "diary/entries/2026-11-16.json" }, { state: " M", path: "diary/entries/index.json" }])
  */
 function judgeDiaryChanges(changes) {
   const problems = [];
   const entryDates = [];
   const figureDates = [];
+  const figure2Dates = [];
   let indexChanged = false;
   changes.forEach(function (change) {
     const kind = classifyChange(change);
@@ -61,20 +65,22 @@ function judgeDiaryChanges(changes) {
       entryDates.push(kind.date);
     } else if (kind.type === "figure") {
       figureDates.push(kind.date);
+    } else if (kind.type === "figure2") {
+      figure2Dates.push(kind.date);
     } else if (kind.type === "index") {
       indexChanged = true;
     } else {
       problems.push("自動で上げられない変更があります：" + change.path + "（" + describeState(change.state) + "）");
     }
   });
-  addCountProblems(problems, entryDates, figureDates, indexChanged);
-  return buildJudgement(problems, entryDates, figureDates);
+  addCountProblems(problems, entryDates, figureDates, figure2Dates, indexChanged);
+  return buildJudgement(problems, entryDates, figureDates, figure2Dates);
 }
 
 /**
- * 変更1つが、新しい日記・新しい図・index.json の変更・それ以外のどれかを見分ける。
+ * 変更1つが、新しい日記・新しい図（1枚目・2枚目）・index.json の変更・それ以外のどれかを見分ける。
  * @param {{ state: string, path: string }} change 変更1つ
- * @returns {{ type: string, date: string }} type は "entry"・"figure"・"index"・"other"
+ * @returns {{ type: string, date: string }} type は "entry"・"figure"・"figure2"・"index"・"other"
  * @example classifyChange({ state: "??", path: "diary/figures/2026-11-16.svg" }) // { type: "figure", date: "2026-11-16" }
  */
 function classifyChange(change) {
@@ -86,6 +92,10 @@ function classifyChange(change) {
   const figureMatch = change.path.match(FIGURE_FILE_PATTERN);
   if (isNewFile && figureMatch) {
     return { type: "figure", date: figureMatch[1] };
+  }
+  const figure2Match = change.path.match(FIGURE2_FILE_PATTERN);
+  if (isNewFile && figure2Match) {
+    return { type: "figure2", date: figure2Match[1] };
   }
   if (change.path === INDEX_FILE && MODIFIED_STATES.includes(change.state)) {
     return { type: "index", date: "" };
@@ -116,12 +126,13 @@ function describeState(state) {
  * 日記・図・index.json の数が決まりどおりかを確かめ、違えば理由を足す。
  * @param {string[]} problems 理由を足す一覧
  * @param {string[]} entryDates 新しい日記の日付
- * @param {string[]} figureDates 新しい図の日付
+ * @param {string[]} figureDates 新しい図（1枚目）の日付
+ * @param {string[]} figure2Dates 新しい2枚目の図の日付
  * @param {boolean} indexChanged index.json が変わったか
  * @returns {void}
- * @example addCountProblems([], ["2026-11-16"], [], true)
+ * @example addCountProblems([], ["2026-11-16"], [], [], true)
  */
-function addCountProblems(problems, entryDates, figureDates, indexChanged) {
+function addCountProblems(problems, entryDates, figureDates, figure2Dates, indexChanged) {
   if (entryDates.length !== 1) {
     problems.push("新しい日記のファイルは1つだけにしてください（今は " + entryDates.length + " 個）");
   }
@@ -131,7 +142,10 @@ function addCountProblems(problems, entryDates, figureDates, indexChanged) {
   if (figureDates.length > 1) {
     problems.push("図は1日1つだけです（今は " + figureDates.length + " 個）");
   }
-  figureDates.forEach(function (figureDate) {
+  if (figure2Dates.length > 1) {
+    problems.push("2枚目の図は1日1つだけです（今は " + figure2Dates.length + " 個）");
+  }
+  figureDates.concat(figure2Dates).forEach(function (figureDate) {
     if (entryDates.length === 1 && figureDate !== entryDates[0]) {
       problems.push("日記と別の日の図があります：" + figureDate);
     }
@@ -142,20 +156,26 @@ function addCountProblems(problems, entryDates, figureDates, indexChanged) {
  * 判定の結果をまとめる。止める理由があれば、最後に「通常の /dev フロー…」を足す。
  * @param {string[]} problems 止めた理由
  * @param {string[]} entryDates 新しい日記の日付
- * @param {string[]} figureDates 新しい図の日付
- * @returns {{ ok: boolean, date: string, files: string[], hasFigure: boolean, problems: string[] }} 判定の結果
- * @example buildJudgement([], ["2026-11-16"], [])
+ * @param {string[]} figureDates 新しい図（1枚目）の日付
+ * @param {string[]} figure2Dates 新しい2枚目の図の日付
+ * @returns {{ ok: boolean, date: string, files: string[], hasFigure: boolean, hasFigure2: boolean, problems: string[] }} 判定の結果
+ * @example buildJudgement([], ["2026-11-16"], [], [])
  */
-function buildJudgement(problems, entryDates, figureDates) {
+function buildJudgement(problems, entryDates, figureDates, figure2Dates) {
   if (problems.length > 0) {
-    return { ok: false, date: "", files: [], hasFigure: false, problems: problems.concat([NEEDS_DEV_FLOW_MESSAGE]) };
+    return { ok: false, date: "", files: [], hasFigure: false, hasFigure2: false, problems: problems.concat([NEEDS_DEV_FLOW_MESSAGE]) };
   }
   const date = entryDates[0];
   const files = ["diary/entries/" + date + ".json", INDEX_FILE];
   if (figureDates.length === 1) {
     files.push("diary/figures/" + date + ".svg");
   }
-  return { ok: true, date: date, files: files, hasFigure: figureDates.length === 1, problems: [] };
+  if (figure2Dates.length === 1) {
+    files.push("diary/figures/" + date + "-2.svg");
+  }
+  return {
+    ok: true, date: date, files: files, hasFigure: figureDates.length === 1, hasFigure2: figure2Dates.length === 1, problems: []
+  };
 }
 
 /**
@@ -178,22 +198,31 @@ function checkIndexChange(previousList, currentList, date) {
 }
 
 /**
- * 日記の JSON の figure と、図のファイルがあるかが合っているかを確かめる。
+ * 日記の JSON の figure・figure2 と、図のファイル（<日付>.svg・<日付>-2.svg）があるかが合っているかを確かめる。
  * @param {object} entry 日記のデータ
- * @param {boolean} hasFigureFile 図のファイルがあるか
+ * @param {boolean} hasFigureFile 図（1枚目）のファイルがあるか
+ * @param {boolean} [hasFigure2File] 2枚目の図のファイルがあるか（書かなければ「ない」）
  * @returns {string[]} 問題点（なければ空）
- * @example checkFigureMatch({ figure: { alt: "a", caption: "b" } }, false) // ["日記に figure があるのに、図のファイルがありません", …]
+ * @example checkFigureMatch({ figure: { alt: "a", caption: "b" } }, false) // ["日記に figure があるのに、図のファイルがありません"]
  */
-function checkFigureMatch(entry, hasFigureFile) {
+function checkFigureMatch(entry, hasFigureFile, hasFigure2File) {
   const hasFigureItem = Boolean(entry) && entry.figure !== undefined;
+  const hasFigure2Item = Boolean(entry) && entry.figure2 !== undefined;
+  const problems = [];
+  // 図のファイルを足せば、このまま自動で出せる（ほかの変更ではない）ので、足りないときは「通常の /dev フロー」の文は付けない
   if (hasFigureItem && !hasFigureFile) {
-    // 図のファイルを足せば、このまま自動で出せる（ほかの変更ではない）ので、「通常の /dev フロー」の文は付けない
-    return ["日記に figure があるのに、図のファイルがありません"];
+    problems.push("日記に figure があるのに、図のファイルがありません");
   }
   if (!hasFigureItem && hasFigureFile) {
-    return ["日記に figure がないのに、図のファイルがあります", NEEDS_DEV_FLOW_MESSAGE];
+    problems.push("日記に figure がないのに、図のファイルがあります", NEEDS_DEV_FLOW_MESSAGE);
   }
-  return [];
+  if (hasFigure2Item && !hasFigure2File) {
+    problems.push("日記に figure2 があるのに、2枚目の図のファイル（-2.svg）がありません");
+  }
+  if (!hasFigure2Item && hasFigure2File) {
+    problems.push("日記に figure2 がないのに、2枚目の図のファイル（-2.svg）があります", NEEDS_DEV_FLOW_MESSAGE);
+  }
+  return problems;
 }
 
 /**

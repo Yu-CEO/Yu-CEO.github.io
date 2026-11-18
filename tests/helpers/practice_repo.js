@@ -101,7 +101,7 @@ function makeContext(world, options) {
     today: TODAY,
     env: Object.assign({ DIARY_CONFIDENTIAL_WORDS_FILE: world.wordsFile, HQ_DIR: world.hq }, settings.env),
     log: function (text) { record.logs.push(text); },
-    run: function (command, args) {
+    run: function (command, args, options) {
       if (command === "git" && args[0] === "fetch") {
         return { status: 0, stdout: "", stderr: "" };
       }
@@ -122,7 +122,7 @@ function makeContext(world, options) {
         }
       }
       const result = childProcess.spawnSync(command, args, {
-        cwd: world.repo, encoding: "utf8", env: Object.assign({}, process.env, { PYTHONIOENCODING: "utf-8" }, settings.commandEnv)
+        cwd: (options && options.cwd) || world.repo, encoding: "utf8", env: Object.assign({}, process.env, { PYTHONIOENCODING: "utf-8" }, settings.commandEnv)
       });
       return { status: result.status, stdout: result.stdout || "", stderr: result.stderr || "" };
     }

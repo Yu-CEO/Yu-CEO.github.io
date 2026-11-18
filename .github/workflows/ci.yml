@@ -61,6 +61,16 @@ jobs:
           CONFIDENTIAL_WORDS: ${{ secrets.CONFIDENTIAL_WORDS }}
         run: python ci/confidential_check.py --require-words
 
+      # 3版目の日記は、太字・ハイライトの記号（** と ==）を外した文字でも照合する（言葉の途中に記号を挟んで照合をすり抜けるのを防ぐ）
+      # 書き出し先は RUNNER_TEMP（リポジトリの外）。公開するファイル（_site）には入れない。結果にはファイル名と行番号だけが出る
+      - name: 機密チェック（記号を外した文字）
+        env:
+          CONFIDENTIAL_WORDS: ${{ secrets.CONFIDENTIAL_WORDS }}
+        run: |
+          node tools/diary_plain_text.js "$RUNNER_TEMP/diary_plain"
+          cd "$RUNNER_TEMP/diary_plain"
+          python "$GITHUB_WORKSPACE/ci/confidential_check.py" --require-words
+
   # ---------------------------------------------------------------
   # ここから CD（自動公開）。チェックが合格し、main で、DEPLOY_PAGES が true のときだけ動く
   # ---------------------------------------------------------------

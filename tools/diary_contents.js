@@ -103,27 +103,43 @@ function checkEntryFile(context, plan) {
   if (entry === undefined) {
     return ["日記の JSON を読めません（書き方を確かめてください）"];
   }
-  return findEntryProblems(entry, plan.date).concat(changesRule.checkFigureMatch(entry, plan.hasFigure));
+  return findEntryProblems(entry, plan.date).concat(changesRule.checkFigureMatch(entry, plan.hasFigure, plan.hasFigure2));
 }
 
 /**
- * その日の図（SVG）を読み、図の検査をする。図が無い日は何もしない。
+ * 図1つ（SVG）を読み、図の検査をする。
  * @param {object} context 動かす場所
- * @param {{ date: string, hasFigure: boolean }} plan 変更の判定の結果
+ * @param {string} filePath リポジトリの中の図の場所
+ * @param {string} label 問題の頭につける名前（「図」「2枚目の図」）
  * @returns {string[]} 問題点（なければ空）
- * @example checkFigureFile(context, { date: "2026-11-16", hasFigure: true })
+ * @example checkOneFigureFile(context, "diary/figures/2026-11-16.svg", "図")
  */
-function checkFigureFile(context, plan) {
-  if (!plan.hasFigure) {
-    return [];
-  }
-  const file = readRepoText(context, "diary/figures/" + plan.date + ".svg");
+function checkOneFigureFile(context, filePath, label) {
+  const file = readRepoText(context, filePath);
   if (file.problems.length > 0) {
     return file.problems;
   }
   return findSvgProblems(file.text).map(function (problem) {
-    return "図：" + problem;
+    return label + "：" + problem;
   });
+}
+
+/**
+ * その日の図（SVG。1枚目と、3版目は2枚目も）を読み、図の検査をする。図が無い日は何もしない。
+ * @param {object} context 動かす場所
+ * @param {{ date: string, hasFigure: boolean, hasFigure2: boolean }} plan 変更の判定の結果
+ * @returns {string[]} 問題点（なければ空）
+ * @example checkFigureFile(context, { date: "2026-11-16", hasFigure: true, hasFigure2: false })
+ */
+function checkFigureFile(context, plan) {
+  let problems = [];
+  if (plan.hasFigure) {
+    problems = problems.concat(checkOneFigureFile(context, "diary/figures/" + plan.date + ".svg", "図"));
+  }
+  if (plan.hasFigure2) {
+    problems = problems.concat(checkOneFigureFile(context, "diary/figures/" + plan.date + "-2.svg", "2枚目の図"));
+  }
+  return problems;
 }
 
 /**

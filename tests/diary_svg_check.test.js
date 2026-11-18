@@ -201,3 +201,19 @@ test("セキュリティ審査 L7：言葉を2つの <text> に分けても、�
   const splitWord = "<text x=\"1\" y=\"1\">おす</text>\n<text x=\"1\" y=\"2\">すめ</text>";
   assertHasProblem(findSvgProblems(svgWith(splitWord)), /全部つなげると、公開してはいけない書き方（投資を勧める言い回し）/);
 });
+
+test("AC-75：図の中の <text> に ** か == があると止まる。記号を2つの <text> に分けても止まる", function () {
+  const bold = findSvgProblems(svgWith('<text x="1" y="1" font-family="sans-serif">**強調**</text>'));
+  assert.ok(bold.some(function (problem) { return /強調の記号/.test(problem); }), bold.join("／"));
+  const mark = findSvgProblems(svgWith('<text x="1" y="1" font-family="sans-serif">==強調==</text>'));
+  assert.ok(mark.some(function (problem) { return /強調の記号/.test(problem); }), mark.join("／"));
+  const split = findSvgProblems(svgWith('<text x="1" y="1" font-family="sans-serif">*</text>' + "\n" + '<text x="2" y="1" font-family="sans-serif">*</text>'));
+  assert.ok(split.some(function (problem) { return /つなげると、強調の記号/.test(problem); }), split.join("／"));
+});
+
+test("AC-75：2枚目の図の見本（テスト用）にも、同じ図の検査が通る。<script> を足すと止まる", function () {
+  const second = fs.readFileSync(path.join(__dirname, "fixtures", "diary_figures", "2026-11-20-2.svg"), "utf8");
+  assert.deepStrictEqual(findSvgProblems(second), []);
+  assert.ok(findSvgProblems(second.replace("</svg>", "<script>1</script></svg>")).length > 0);
+  assert.ok(findSvgProblems(second.replace("文章が減った", "3万")).length > 0);
+});

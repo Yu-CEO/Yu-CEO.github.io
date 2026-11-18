@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" role="img" aria-labelledby="t">
+<title id="t">長い文章から読み手が離れる様子（テスト用）</title>
+<rect width="300" height="200" rx="12" fill="#f2f3f5"/>
+<rect x="30" y="30" width="240" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="150" y="50" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#16171a">長い文章</text>
+<line x1="150" y1="72" x2="150" y2="108" stroke="#8a8f98" stroke-width="1.5"/>
+<rect x="30" y="112" width="240" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="150" y="132" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" fill="#5b5f66">途中で離れる</text>
+</svg>

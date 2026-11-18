@@ -216,3 +216,164 @@ test("N2：origin に push 先が2つ登録されていると（公開サイト�
     assertStoppedWithoutPush(world, run, main(["--push"], run.context), /push 先が公開サイトのリポジトリではありません/);
   });
 });
+
+// ---- 〔v4〕3版目（format 3）・2枚目の図・記号を外した文字の照合 ----
+const FORMAT3_DATE = "2026-11-20";
+const os = require("node:os");
+
+/**
+ * 3版目の日記（テスト用の仮の日記）と index.json の1行追加を置く。図は withFigures が true のとき、1枚目と2枚目を置く。
+ * @param {object} world makeWorld の結果
+ * @param {function(object): void} [edit] 日記（読み込んだ JSON）を書き換える関数
+ * @param {boolean} [withFigures] 図を置くか（既定は置く）
+ */
+function addFormat3Entry(world, edit, withFigures) {
+  const entry = JSON.parse(fs.readFileSync(path.join(FIXTURES, "diary_entries", FORMAT3_DATE + ".json"), "utf8"));
+  if (edit) {
+    edit(entry);
+  }
+  writeFile(world.repo, "diary/entries/" + FORMAT3_DATE + ".json", JSON.stringify(entry, null, 2) + "\n");
+  writeFile(world.repo, "diary/entries/index.json", "[\"2026-11-15\", \"" + FORMAT3_DATE + "\"]\n");
+  if (withFigures !== false) {
+    ["", "-2"].forEach(function (suffix) {
+      const svg = fs.readFileSync(path.join(FIXTURES, "diary_figures", FORMAT3_DATE + suffix + ".svg"), "utf8");
+      writeFile(world.repo, "diary/figures/" + FORMAT3_DATE + suffix + ".svg", svg);
+    });
+  }
+}
+
+/**
+ * 3版目の日の context を作る（今日の日付を 3版目の日に合わせる）。
+ * @param {object} world makeWorld の結果
+ * @param {object} [options] makeContext の options
+ * @returns {object} makeContext の結果
+ */
+function makeFormat3Context(world, options) {
+  const run = makeContext(world, options);
+  run.context.today = FORMAT3_DATE;
+  return run;
+}
+
+/**
+ * 3版目の日の確認担当の記録（PASS と指紋）を書く。
+ * @param {object} world makeWorld の結果
+ * @param {string} fingerprint 指紋
+ */
+function writeFormat3AuditRecord(world, fingerprint) {
+  const folder = path.join(world.hq, "security", "diary_audit");
+  fs.mkdirSync(folder, { recursive: true });
+  fs.writeFileSync(path.join(folder, FORMAT3_DATE + ".md"), "判定：PASS\n指紋：" + fingerprint + "\n", "utf8");
+}
+
+/**
+ * --check を動かして指紋を取り出す（3版目の日）。
+ * @param {object} world makeWorld の結果
+ * @returns {string} 指紋
+ */
+function format3Fingerprint(world) {
+  const run = makeFormat3Context(world);
+  assert.strictEqual(main(["--check"], run.context), 0, run.record.logs.join("\n"));
+  return run.record.logs.join("\n").match(/指紋：([0-9a-f]{16})/)[1];
+}
+
+/**
+ * 一時フォルダの中の、記号を外した文字の書き出しフォルダ（diary-plain-…）の数を数える（消し忘れの確認用）。
+ * @returns {number} フォルダの数
+ */
+function countPlainFolders() {
+  return fs.readdirSync(os.tmpdir()).filter(function (name) {
+    return name.startsWith("diary-plain-") && !name.startsWith("diary-plain-test-");
+  }).length;
+}
+
+test("AC-76：3版目の日記1件＋index.json＋図＋2枚目の図なら --check は PASS。--push は4つのファイルだけを同じ commit に入れる", { skip: SKIP_REASON }, function () {
+  withWorld(function (world) {
+    addFormat3Entry(world);
+    writeFormat3AuditRecord(world, format3Fingerprint(world));
+    const run = makeFormat3Context(world);
+    assert.strictEqual(main(["--push"], run.context), 0, run.record.logs.join("\n"));
+    const lines = run.record.pushes[0].split("\n").filter(Boolean);
+    assert.deepStrictEqual(lines.slice(2).sort(), [
+      "diary/entries/" + FORMAT3_DATE + ".json",
+      "diary/entries/index.json",
+      "diary/figures/" + FORMAT3_DATE + "-2.svg",
+      "diary/figures/" + FORMAT3_DATE + ".svg"
+    ]);
+  });
+});
+
+test("AC-76：2枚目の図を1文字変えると指紋が変わる。2枚目を変えた版では、前の指紋の記録で --push が止まる", { skip: SKIP_REASON }, function () {
+  withWorld(function (world) {
+    addFormat3Entry(world);
+    const before = format3Fingerprint(world);
+    fs.appendFileSync(path.join(world.repo, "diary/figures/" + FORMAT3_DATE + "-2.svg"), "\n");
+    const after = format3Fingerprint(world);
+    assert.notStrictEqual(before, after);
+    writeFormat3AuditRecord(world, before);
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--push"], run.context), /指紋が合いません/);
+  });
+});
+
+test("AC-76：figure2 があるのに -2.svg がない・figure2 がないのに -2.svg がある・-3.svg がある、は止まる", { skip: SKIP_REASON }, function () {
+  withWorld(function (world) {
+    addFormat3Entry(world);
+    fs.rmSync(path.join(world.repo, "diary/figures/" + FORMAT3_DATE + "-2.svg"));
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--check"], run.context), /figure2 があるのに/);
+  });
+  withWorld(function (world) {
+    addFormat3Entry(world, function (entry) { delete entry.figure2; });
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--check"], run.context), /figure2 がないのに/);
+  });
+  withWorld(function (world) {
+    addFormat3Entry(world);
+    writeFile(world.repo, "diary/figures/" + FORMAT3_DATE + "-3.svg", "<svg/>");
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--check"], run.context), /通常の \/dev フローとCEO承認が必要です/);
+  });
+});
+
+test("AC-75：2枚目の図に <script> や図の中の金額があると、--check は止まる", { skip: SKIP_REASON }, function () {
+  withWorld(function (world) {
+    addFormat3Entry(world);
+    const second = "diary/figures/" + FORMAT3_DATE + "-2.svg";
+    const text = fs.readFileSync(path.join(world.repo, second), "utf8");
+    fs.writeFileSync(path.join(world.repo, second), text.replace("</svg>", "<script>1</script></svg>"), "utf8");
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--check"], run.context), /2枚目の図：/);
+  });
+});
+
+test("AC-77：機密の言葉を ** で分けて書くと、行ごとの照合はすり抜けるが、記号を外した文字の照合で止まる。言葉は表示されず、一時ファイルも残らない", { skip: SKIP_REASON }, function () {
+  const foldersBefore = countPlainFolders();
+  withWorld(function (world) {
+    // 「テスト用ひみつ語」の途中に ** を入れる（1文字目のあとと最後に記号）
+    addFormat3Entry(world, function (entry) {
+      entry.decision = "（テスト用）テ**スト用ひみつ語**を決める";
+    });
+    const raw = fs.readFileSync(path.join(world.repo, "diary/entries/" + FORMAT3_DATE + ".json"), "utf8");
+    assert.ok(!raw.includes(TEST_WORD), "準備：もとの文字には言葉が1続きで入っていない");
+    ["--check", "--push"].forEach(function (mode) {
+      const run = makeFormat3Context(world);
+      assertStoppedWithoutPush(world, run, main([mode], run.context), /記号を外した文字の機密の言葉の照合で止まりました/);
+      const logs = run.record.logs.join("\n");
+      assert.ok(!logs.includes(TEST_WORD));
+      assert.match(logs, new RegExp(FORMAT3_DATE + "__decision-1\.txt"));
+    });
+  });
+  assert.strictEqual(countPlainFolders(), foldersBefore, "記号を外した文字の一時フォルダが残っています");
+});
+
+test("AC-77：3版目の日記でも、通る日は一時フォルダが残らず、--push の照合は（本体＋記号を外した文字）× 2回", { skip: SKIP_REASON }, function () {
+  const foldersBefore = countPlainFolders();
+  withWorld(function (world) {
+    addFormat3Entry(world);
+    writeFormat3AuditRecord(world, format3Fingerprint(world));
+    const run = makeFormat3Context(world);
+    assert.strictEqual(main(["--push"], run.context), 0, run.record.logs.join("\n"));
+    assert.strictEqual(run.record.checks, 4);
+  });
+  assert.strictEqual(countPlainFolders(), foldersBefore);
+});

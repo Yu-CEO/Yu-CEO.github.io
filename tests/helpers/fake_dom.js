@@ -81,6 +81,12 @@ function installFakeDocument(ids) {
   global.document = {
     title: "",
     createElement: createFakeElement,
+    // 文字だけの部品（ブラウザの createTextNode のまね）。文字は text に持つ
+    createTextNode: function (text) {
+      const node = createFakeElement("#text");
+      node.text = text;
+      return node;
+    },
     createElementNS: function (namespace, tagName) {
       return createFakeElement(tagName);
     },

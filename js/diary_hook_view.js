@@ -13,6 +13,24 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.createSpeakerFace = require("./diary_speakers.js").createSpeakerFace;
   globalThis.makeDiaryElement = require("./diary_parts.js").makeDiaryElement;
   globalThis.createFacesRow = require("./diary_parts.js").createFacesRow;
+  globalThis.appendMarkedText = require("./diary_markup_view.js").appendMarkedText;
+  globalThis.writePlainText = require("./diary_markup_view.js").writePlainText;
+}
+
+// 3版目（"format": 3）の印。この日だけ、今日の一言と Yu の決定に太字・ハイライトを付けて表示する（2版目の ** は記号のまま出す）
+const HOOK_FORMAT3 = 3;
+
+/**
+ * 日記の文字の入れ方を選ぶ。3版目は強調つき、それ以外は文字をそのまま入れる。
+ * @param {object} entry 日記1件
+ * @returns {function(HTMLElement, string): void} 文字を入れる関数
+ * @example chooseHookWriter({ format: 3 }) // appendMarkedText
+ */
+function chooseHookWriter(entry) {
+  if (entry.format === HOOK_FORMAT3) {
+    return appendMarkedText;
+  }
+  return writePlainText;
 }
 
 /**
@@ -29,7 +47,9 @@ function createPickBox(entry, faceFile) {
   box.appendChild(createSpeakerFace(line.speaker, "avatar-large", faceFile));
   const words = makeDiaryElement("div", "", "");
   words.appendChild(makeDiaryElement("span", "hook-label", "今日の一言"));
-  words.appendChild(makeDiaryElement("p", "pick-quote", line.text));
+  const quote = makeDiaryElement("p", "pick-quote", "");
+  chooseHookWriter(entry)(quote, line.text);
+  words.appendChild(quote);
   words.appendChild(makeDiaryElement("p", "pick-speaker", line.speaker + "（" + info.role + "）"));
   box.appendChild(words);
   return box;
@@ -56,14 +76,17 @@ function createFirstDecisionBox(decisions) {
 /**
  * 〔v3〕新しい形の「Yuの決定」の箱を作る（決定の文1つ。「ほかN件」はない）。
  * @param {string} decision Yu の決定
+ * @param {function(HTMLElement, string): void} writeText 文字を入れる関数
  * @returns {HTMLElement} 箱の要素
- * @example createYuDecisionBox("両方を試してから決める")
+ * @example createYuDecisionBox("両方を試してから決める", writePlainText)
  */
-function createYuDecisionBox(decision) {
+function createYuDecisionBox(decision, writeText) {
   const box = makeDiaryElement("div", "d-dec", "");
   const paragraph = makeDiaryElement("p", "", "");
   paragraph.appendChild(makeDiaryElement("span", "hook-label", "Yuの決定"));
-  paragraph.appendChild(makeDiaryElement("span", "", decision));
+  const decisionText = makeDiaryElement("span", "", "");
+  writeText(decisionText, decision);
+  paragraph.appendChild(decisionText);
   box.appendChild(paragraph);
   return box;
 }
@@ -80,7 +103,7 @@ function createDiaryHook(entry, faceFile) {
   const hook = makeDiaryElement("div", "d-hook", "");
   hook.appendChild(createPickBox(entry, faceFile));
   if (typeof entry.decision === "string") {
-    hook.appendChild(createYuDecisionBox(entry.decision));
+    hook.appendChild(createYuDecisionBox(entry.decision, chooseHookWriter(entry)));
   } else if (entry.decisions.length > 0) {
     hook.appendChild(createFirstDecisionBox(entry.decisions));
   }

@@ -44,29 +44,46 @@ function readEntryFolder(folder) {
   return { index: index, files: files };
 }
 
+// 図のファイル名の決まり：1枚目は <日付>.svg、2枚目（3版目）は <日付>-2.svg。これ以外の名前（-1・-3・-02 など）は失敗にする
+const FIRST_FIGURE_PATTERN = /^(\d{4}-\d{2}-\d{2})\.svg$/;
+const SECOND_FIGURE_PATTERN = /^(\d{4}-\d{2}-\d{2})-2\.svg$/;
+
 /**
- * 図のフォルダの中の、図のファイル名（日付.svg）から取った日付の一覧を返す。フォルダがなければ空。
+ * 図のフォルダの中のファイル名の一覧を返す。フォルダがなければ空。
  * @param {string} figureFolder 図のフォルダの場所
- * @returns {string[]} 日付の一覧
+ * @returns {string[]} ファイル名の一覧
  */
-function listFigureDates(figureFolder) {
+function listFigureFiles(figureFolder) {
   if (!fs.existsSync(figureFolder)) {
     return [];
   }
-  return fs.readdirSync(figureFolder).map(function (fileName) {
-    return fileName.replace(/\.svg$/, "");
+  return fs.readdirSync(figureFolder);
+}
+
+/**
+ * 図のファイル名のうち、決まった形（pattern）のものから日付を取り出す。
+ * @param {string[]} fileNames ファイル名の一覧
+ * @param {RegExp} pattern 1枚目か2枚目の形
+ * @returns {string[]} 日付の一覧
+ */
+function pickFigureDates(fileNames, pattern) {
+  return fileNames.filter(function (fileName) {
+    return pattern.test(fileName);
+  }).map(function (fileName) {
+    return fileName.match(pattern)[1];
   });
 }
 
 /**
- * 日記の中で figure（図の説明）がある日の一覧を返す。
+ * 日記の中で、決まった項目（figure か figure2）がある日の一覧を返す。
  * @param {string} folder 日記のフォルダの場所
+ * @param {string} fieldName "figure" か "figure2"
  * @returns {string[]} 日付の一覧
  */
-function listDatesWithFigure(folder) {
+function listDatesWithField(folder, fieldName) {
   return readEntryFolder(folder).files.filter(function (date) {
     const entry = JSON.parse(fs.readFileSync(path.join(folder, date + ".json"), "utf8"));
-    return entry.figure !== undefined;
+    return entry[fieldName] !== undefined;
   });
 }
 
@@ -85,15 +102,27 @@ ENTRY_FOLDERS.forEach(function (target) {
     });
   });
 
-  test("AC-46：" + target.label + "で、figure がある日にだけ図のファイル（日付.svg）があり、過不足がない。図のフォルダには .svg だけ", function () {
-    const figureDates = listFigureDates(target.figureFolder);
-    assert.deepStrictEqual(figureDates.slice().sort(), listDatesWithFigure(target.folder).sort());
+  test("AC-46：" + target.label + "で、figure がある日にだけ図のファイル（日付.svg）があり、過不足がない", function () {
+    const figureDates = pickFigureDates(listFigureFiles(target.figureFolder), FIRST_FIGURE_PATTERN);
+    assert.deepStrictEqual(figureDates.slice().sort(), listDatesWithField(target.folder, "figure").sort());
   });
 
-  test("AC-48・AC-49：" + target.label + "の図が、すべて図の検査を通る", function () {
-    listFigureDates(target.figureFolder).forEach(function (date) {
-      const svgText = fs.readFileSync(path.join(target.figureFolder, date + ".svg"), "utf8");
-      assert.deepStrictEqual(findSvgProblems(svgText), [], date + ".svg が正しくありません");
+  test("AC-74：" + target.label + "で、figure2 がある日にだけ2枚目の図（日付-2.svg）があり、過不足がない（figure なしの figure2 だけの日も可）", function () {
+    const figureDates = pickFigureDates(listFigureFiles(target.figureFolder), SECOND_FIGURE_PATTERN);
+    assert.deepStrictEqual(figureDates.slice().sort(), listDatesWithField(target.folder, "figure2").sort());
+  });
+
+  test("AC-74：" + target.label + "の図のフォルダには、決まった名前（日付.svg・日付-2.svg）のファイルだけがある", function () {
+    listFigureFiles(target.figureFolder).forEach(function (fileName) {
+      const isKnownName = FIRST_FIGURE_PATTERN.test(fileName) || SECOND_FIGURE_PATTERN.test(fileName);
+      assert.ok(isKnownName, "決まっていない名前の図のファイルがあります：" + fileName);
+    });
+  });
+
+  test("AC-48・AC-49・AC-75：" + target.label + "の図（2枚目も）が、すべて図の検査を通る", function () {
+    listFigureFiles(target.figureFolder).forEach(function (fileName) {
+      const svgText = fs.readFileSync(path.join(target.figureFolder, fileName), "utf8");
+      assert.deepStrictEqual(findSvgProblems(svgText), [], fileName + " が正しくありません");
     });
   });
 });

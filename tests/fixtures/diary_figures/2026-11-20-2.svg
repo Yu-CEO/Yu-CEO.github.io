@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 232" role="img" aria-labelledby="t">
+<title id="t">決定から結果への流れ（テスト用）</title>
+<defs>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="232" rx="12" fill="#f2f3f5"/>
+<rect x="30" y="24" width="240" height="64" rx="12" fill="#0f1626"/>
+<text x="150" y="44" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="#7cc4ff">決定</text>
+<text x="150" y="68" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="700" fill="#ffffff">説明は図にする</text>
+<line x1="150" y1="92" x2="150" y2="124" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="30" y="132" width="240" height="64" rx="12" fill="#ffffff" stroke="#ffdf6b" stroke-width="2"/>
+<text x="150" y="152" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="#7a5a00">結果</text>
+<text x="150" y="176" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="700" fill="#16171a">文章が減った</text>
+</svg>
