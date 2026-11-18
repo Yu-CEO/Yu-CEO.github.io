@@ -22,7 +22,7 @@ function readLocations(xml) {
   });
 }
 
-test("AC-8：日付の一覧から、入口・一覧・日記1件・シミュレーターの URL と lastmod を作る", function () {
+test("AC-8：日付の一覧から、入口・一覧・日記1件・シミュレーター・動画診断の URL と lastmod を作る", function () {
   const xml = buildSitemapXml(["2026-11-14", "2026-11-15"]);
   assert.ok(xml.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"));
   assert.deepStrictEqual(readLocations(xml), [
@@ -30,18 +30,20 @@ test("AC-8：日付の一覧から、入口・一覧・日記1件・シミュレ
     "https://yu-ceo.github.io/diary/",
     "https://yu-ceo.github.io/diary/entry.html?date=2026-11-14",
     "https://yu-ceo.github.io/diary/entry.html?date=2026-11-15",
-    "https://yu-ceo.github.io/okane-simulator/"
+    "https://yu-ceo.github.io/okane-simulator/",
+    "https://yu-ceo.github.io/video-check/"
   ]);
-  // 入口と一覧は一番新しい日記の日付、日記1件はその日付、シミュレーターは書かない
+  // 入口と一覧は一番新しい日記の日付、日記1件はその日付、シミュレーターと動画診断は書かない
   assert.ok(xml.includes("<loc>https://yu-ceo.github.io/</loc><lastmod>2026-11-15</lastmod>"));
   assert.ok(xml.includes("<loc>https://yu-ceo.github.io/diary/entry.html?date=2026-11-14</loc><lastmod>2026-11-14</lastmod>"));
+  assert.ok(xml.includes("<loc>https://yu-ceo.github.io/video-check/</loc></url>"));
   assert.ok(xml.includes("<loc>https://yu-ceo.github.io/okane-simulator/</loc></url>"));
   assert.ok(!/changefreq|priority/.test(xml));
 });
 
-test("日付が0件でも、入口・一覧・シミュレーターの3件で作る", function () {
+test("日付が0件でも、入口・一覧・シミュレーター・動画診断の4件で作る", function () {
   const xml = buildSitemapXml([]);
-  assert.strictEqual(readLocations(xml).length, 3);
+  assert.strictEqual(readLocations(xml).length, 4);
   assert.ok(!xml.includes("<lastmod>"));
 });
 
@@ -52,13 +54,13 @@ test("AC-11：形の違う日付・配列でない一覧は、どの値かを日
   assert.throws(function () { buildSitemapXml({}); }, /配列ではありません/);
 });
 
-test("AC-8：実際の index.json から作ると、日付の数＋3件になり、書き出したファイルも同じ中身", function () {
+test("AC-8：実際の index.json から作ると、日付の数＋4件になり、書き出したファイルも同じ中身", function () {
   const dates = JSON.parse(fs.readFileSync(REAL_INDEX, "utf8"));
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "sitemap-"));
   try {
     const outputFile = writeSitemap(folder);
     const xml = fs.readFileSync(outputFile, "utf8");
-    assert.strictEqual(readLocations(xml).length, dates.length + 3);
+    assert.strictEqual(readLocations(xml).length, dates.length + 4);
     assert.strictEqual(xml, buildSitemapXml(dates));
   } finally {
     fs.rmSync(folder, { recursive: true, force: true });

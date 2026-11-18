@@ -12,6 +12,7 @@ const path = require("node:path");
 const SITE_URL = "https://yu-ceo.github.io/";
 // 入口と同じホストにある、別のリポジトリのページ（日付は分からないので lastmod は書かない）
 const SIMULATOR_URL = SITE_URL + "okane-simulator/";
+const VIDEO_CHECK_URL = SITE_URL + "video-check/";
 const DIARY_INDEX_FILE = path.join(__dirname, "..", "diary", "entries", "index.json");
 const SITEMAP_FILE_NAME = "sitemap.xml";
 // 載せてよい日付の形（YYYY-MM-DD）。ほかの値はURLに入れず、失敗にする
@@ -56,7 +57,7 @@ function checkSitemapDates(dates) {
 }
 
 /**
- * 日付の一覧から sitemap.xml の中身を作る。載せるのは入口・日記の一覧・日記1件（日付の数）・シミュレーター。
+ * 日付の一覧から sitemap.xml の中身を作る。載せるのは入口・日記の一覧・日記1件（日付の数）・シミュレーター・動画診断。
  * 入口と一覧の lastmod は一番新しい日記の日付、日記1件はその日付。日記が0件なら入口と一覧の lastmod は書かない。
  * @param {string[]} dates 公開している日記の日付
  * @returns {string} sitemap.xml の中身（UTF-8 の XML）
@@ -73,6 +74,7 @@ function buildSitemapXml(dates) {
     elements.push(buildUrlElement(SITE_URL + "diary/entry.html?date=" + date, date));
   });
   elements.push(buildUrlElement(SIMULATOR_URL, ""));
+  elements.push(buildUrlElement(VIDEO_CHECK_URL, ""));
   return [
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
     "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">",

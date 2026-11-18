@@ -16,6 +16,14 @@ const TOOLS_DATA = [
     status: "公開中",
     image: "assets/tool_simulator.jpg",
     imageAlt: "おかね収支シミュレーターの画面（NISA積立の計算例）"
+  },
+  {
+    name: "ショート動画のかんたん診断",
+    description: "縦のショート動画を選ぶだけで、冒頭3秒や無音など6つの項目を、伸びる動画の目安と比べます（動画は端末の外へ送りません）",
+    url: "https://yu-ceo.github.io/video-check/",
+    status: "公開中",
+    image: "assets/tool_video_check.jpg",
+    imageAlt: "ショート動画のかんたん診断の最初の画面"
   }
 ];
 

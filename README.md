@@ -53,7 +53,7 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 - **日記1件のページ**：共有カードは全日共通（共有先は JS を動かさないため）。説明文だけ、表示のあとで `js/diary_page_meta.js` がその日の抜粋（`summary`）に書きかえる。日記が見つからないときは検索に載せない印（`noindex`）を付ける。`canonical`・`og:url` は書かない（書くと全日が1ページ扱いになる）
 - **共有カードの画像**：`assets/og/og_default.png`（1200×630・300KB 以内・写真の情報なし）。差し替えるときは同じファイル名で置き換える。LINE・X などは前の画像をしばらく覚えている（キャッシュ）ので、すぐには変わらないことがある
 - **robots.txt**：固定（何も禁止せず、sitemap の場所を書くだけ）。ドメイン全体（シミュレーターを含む）に効く
-- **sitemap.xml**：リポジトリには置かない。公開（CI の deploy）のたびに `tools/build_sitemap.js` が `diary/entries/index.json` から作る（入口・日記の一覧・日記1件・シミュレーター）。日記を足せば手で直さなくてよい。`index.json` に形の違う日付があると作れず、公開されない
+- **sitemap.xml**：リポジトリには置かない。公開（CI の deploy）のたびに `tools/build_sitemap.js` が `diary/entries/index.json` から作る（入口・日記の一覧・日記1件・シミュレーター・動画診断）。日記を足せば手で直さなくてよい。`index.json` に形の違う日付があると作れず、公開されない
 - **Search Console**：入口の `<head>` の `google-site-verification` の meta は所有権の確認に使う。**消さない**（消すと確認が外れる）。sitemap は Search Console に `https://yu-ceo.github.io/sitemap.xml` を送る
 
 ## 日記の自動公開（`tools/diary_publish.js`）
@@ -162,6 +162,7 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 | `assets/yu.jpg` | ヒーローの肖像（AIで作ったアバター。埋め込み情報なし）。WebP を表示できないブラウザ用の予備 |
 | `assets/yu.webp` | `yu.jpg` を WebP（軽い画像の形式）にしたもの（同じ 787×1400・約94KB・埋め込み情報なし）。ふだんはこちらを表示する |
 | `assets/tool_simulator.jpg` | おかね収支シミュレーターのスクリーンショット（埋め込み情報なし） |
+| `assets/tool_video_check.jpg` | ショート動画のかんたん診断のスクリーンショット（埋め込み情報なし） |
 | `css/toolbox.css` | 道具箱の見た目（カード・PRの印・PR表示・ボタン・計測用画像の置き方・注意書き）。値は `css/variables.css` の「道具箱」の節 |
 | `js/toolbox_data.js` | 道具箱のデータ。道具を増やす・リンクを差し替えるときはここだけ |
 | `js/toolbox_validate.js` | 道具箱のデータと `ASP_LIST` の検査（決まった形・禁止表現・紹介リンクと計測用画像のホスト）。画面に触れない |
