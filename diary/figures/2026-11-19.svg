@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 284" role="img" aria-labelledby="t">
+<title id="t">画面の順番：作った人の順と、知りたい順</title>
+<defs>
+<marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#5b5f66"/></marker>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="284" rx="12" fill="#f2f3f5"/>
+<line x1="150" y1="14" x2="150" y2="270" stroke="#d9dbe0" stroke-width="1.5" stroke-dasharray="4 4"/>
+<rect x="17" y="10" width="120" height="30" rx="15" fill="#ffffff" stroke="#d9dbe0"/>
+<text x="77" y="25" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#5b5f66">作った人の順</text>
+<rect x="163" y="10" width="120" height="30" rx="15" fill="#0f1626"/>
+<text x="223" y="25" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#ffffff">知りたい順</text>
+<rect x="10" y="54" width="134" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="77" y="74" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#5b5f66">注意書き</text>
+<line x1="77" y1="96" x2="77" y2="113" stroke="#5b5f66" stroke-width="2" marker-end="url(#ag)"/>
+<rect x="10" y="116" width="134" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="77" y="136" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#5b5f66">計算方法</text>
+<line x1="77" y1="158" x2="77" y2="175" stroke="#5b5f66" stroke-width="2" marker-end="url(#ag)"/>
+<rect x="10" y="178" width="134" height="40" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="77" y="198" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#5b5f66">入力</text>
+<rect x="10" y="226" width="134" height="40" rx="10" fill="#ffffff" stroke="#a14a00" stroke-width="1.5"/>
+<text x="77" y="246" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#a14a00">答えは最後</text>
+<rect x="156" y="54" width="134" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="223" y="74" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0f1626">答え</text>
+<line x1="223" y1="96" x2="223" y2="113" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="156" y="116" width="134" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="223" y="136" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0f1626">入力</text>
+<line x1="223" y1="158" x2="223" y2="175" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="156" y="178" width="134" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="223" y="198" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0f1626">読み方の一言</text>
+<line x1="223" y1="220" x2="223" y2="223" stroke="#2563a8" stroke-width="2"/>
+<rect x="156" y="226" width="134" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="223" y="246" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0f1626">次の行動</text>
+</svg>
