@@ -195,7 +195,7 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 | `tests/toolbox_link.test.js` | リンクの種類ごとの出し方のテスト |
 | `tests/toolbox_data.test.js` | 実際の `toolbox_data.js` と `ASP_LIST` が検査を通るか・文面のテスト |
 | `tests/toolbox_view.test.js` | 道具箱の表示（ジャンルの順・PR表示・注意書き・計測用画像・0件）のテスト |
-| `js/site_config.js` | 設定値（LINEオープンチャット・LINE公式アカウント・TikTokのURL・アクセス解析の `ANALYTICS_*`）と、道具箱で使うASPの一覧 `ASP_LIST` |
+| `js/site_config.js` | 設定値（LINEオープンチャット・LINE公式アカウント・TikTok・ZennのURL（`ZENN_URL`）・アクセス解析の `ANALYTICS_*`）と、道具箱で使うASPの一覧 `ASP_LIST` |
 | `js/tools_data.js` | ツール一覧のデータ。ツールを足すときはここだけ |
 | `js/tools_validate.js` | 一覧データの形の検査と、画像の項目の検査（画面には触れない） |
 | `js/tools_view.js` | 検査を通ったツールのパネルを1件1枚で作って並べる。問題のある項目をコンソールに出す |

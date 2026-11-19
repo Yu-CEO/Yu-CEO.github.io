@@ -1,7 +1,7 @@
 /*
  * diary_entry_view.js：日記1件のページ（/diary/entry.html?date=YYYY-MM-DD）の表示
  * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・冒頭のつかみ）→ 01 議題 → 02 役員の一言（顔つきの吹き出し）
- *       → 03 決定 → 04 失敗・学び → オープンチャットへの出口
+ *       → 03 決定 → 04 失敗・学び → 出口（オープンチャット・一覧へ戻る・Zenn の説明と文字リンク）
  * 〔v3〕このファイルは旧形式（format なし）の日の表示。新しい形（format 2）の日は diary_story_view.js が、
  *       ここの部品（紺の帯・節・吹き出し・出口など）を使って表示する。
  *       〔v4〕3版目（format 3）の日も diary_story3_view.js が同じ部品を使う。
@@ -26,6 +26,9 @@ if (typeof module !== "undefined" && module.exports) {
 const DIARY_TITLE_SUFFIX = "｜経営会議の日記";
 // オープンチャットのボタンの id。URLは diary_entry_main.js が link_button.js で入れる（正しいURLのときだけ出す）
 const DIARY_OPENCHAT_BUTTON_ID = "diary-openchat";
+// Zenn の説明＋文字リンクのまとまりの id と、リンクの id。URLは diary_entry_main.js が入れる（正しいURLのときだけまとまりごと出す）
+const DIARY_ZENN_BOX_ID = "diary-zenn-box";
+const DIARY_ZENN_LINK_ID = "diary-zenn";
 // 吹き出しの見分け方の説明（凡例）
 const DIARY_LINES_LEGEND = "右の紺色の吹き出しはYu（人間）、左のグレーの吹き出しはAIの役員です。";
 
@@ -198,7 +201,27 @@ function createDecisionsSection(decisions) {
 }
 
 /**
- * 本文の最後のオープンチャットへの出口（「見るだけの参加もOK。」・緑のボタン・一覧へ戻る）を作る。
+ * 出口の枠の中に置く、Zenn の説明の1行と文字のリンクを作る。ボタンではなく文字のリンク（ボタンは2つまでの決まりのため）。
+ * 正しいURLがあるときだけ diary_entry_main.js が出すので、最初はまとまりごと隠しておく。
+ * @returns {HTMLElement} 説明とリンクを入れたまとまり
+ * @example createZennNote()
+ */
+function createZennNote() {
+  const note = makeDiaryElement("div", "d-zenn", "");
+  note.id = DIARY_ZENN_BOX_ID;
+  note.hidden = true;
+  note.appendChild(makeDiaryElement("p", "", "会議で決めたことの作り方は、記事にまとめています。"));
+  const link = makeDiaryElement("a", "text-link", "作り方の記事を読む（Zenn）");
+  link.id = DIARY_ZENN_LINK_ID;
+  link.target = "_blank";
+  link.rel = "noopener";
+  note.appendChild(link);
+  return note;
+}
+
+/**
+ * 本文の最後の出口（「見るだけの参加もOK。」・緑のボタン・一覧へ戻る・その下に Zenn の説明と文字リンク）を作る。
+ * Zenn の説明とリンクも最初は隠しておき、正しいURLがあるときだけ diary_entry_main.js が一緒に出す。
  * 緑のボタンは最初は隠しておき、正しいURLがあるときだけ diary_entry_main.js が出す。
  * @param {string} listPage 一覧ページの場所
  * @returns {HTMLElement} 出口の要素
@@ -219,6 +242,7 @@ function createExitBox(listPage) {
   actions.appendChild(openchat);
   actions.appendChild(back);
   box.appendChild(actions);
+  box.appendChild(createZennNote());
   wrap.appendChild(box);
   return wrap;
 }
@@ -277,7 +301,7 @@ function showDiaryNotFound(area, paths) {
 if (typeof module !== "undefined" && module.exports) {
   // 〔v3〕部品は、新しい形の表示（diary_story_view.js）でも同じものを使う
   module.exports = {
-    showDiaryEntry, showDiaryNotFound, DIARY_OPENCHAT_BUTTON_ID, DIARY_TITLE_SUFFIX,
+    showDiaryEntry, showDiaryNotFound, DIARY_OPENCHAT_BUTTON_ID, DIARY_ZENN_BOX_ID, DIARY_ZENN_LINK_ID, DIARY_TITLE_SUFFIX,
     createEntryHead, createDiarySection, createTextList, createLinesSection, createExitBox
   };
 }

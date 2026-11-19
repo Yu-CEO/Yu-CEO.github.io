@@ -1,5 +1,5 @@
 /*
- * site_config.js：設定値（LINE・TikTok のURL・アクセス解析の設定と、道具箱で使うアフィリエイトサービスの一覧 ASP_LIST）をまとめたファイル
+ * site_config.js：設定値（LINE・TikTok・Zenn のURL・アクセス解析の設定と、道具箱で使うアフィリエイトサービスの一覧 ASP_LIST）をまとめたファイル
  * URLを変えるときは、このファイルの該当する1行だけを書き換える。
  * 空（""）にしたり、https:// で始まらない文字にしたりすると、そのボタンは表示されない（link_button.js が判定する）。
  * main.js から使われる（ASP_LIST は toolbox_view.js・toolbox_validate.js、ANALYTICS_* は analytics_main.js も使う）。
@@ -12,6 +12,8 @@ const SITE_CONFIG = {
   LINE_OFFICIAL_URL: "https://lin.ee/8W9x0HEb",
   // TikTokのアカウントのURL。ボタン「TikTokを見る」に使う
   TIKTOK_URL: "https://www.tiktok.com/@yu_from_l2w",
+  // Zenn（エンジニア向けの記事サイト）の記事一覧のURL。文字のリンク「作り方の記事を読む（Zenn）」に使う
+  ZENN_URL: "https://zenn.dev/yuceo",
 
   // ここから アクセス解析（GoatCounter）の設定。analytics_path.js・analytics_beacon.js が使う。止め方・始め方は README の「アクセス解析」
   // 計測のスイッチ。false にすると、どのページでも計測サービスと通信しない（JSを消さずに止められる）

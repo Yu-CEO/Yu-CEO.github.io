@@ -1,7 +1,7 @@
 /*
  * main.js：入口。ページを開いたときの流れだけを書く
  * 1. ツールのパネルを1件1枚で並べ、ヒーローの「無料ツールを見る」の行き先を決める（tools_view.js）
- * 2. 設定ファイルのURLをもとに、TikTok・LINEのボタンとLINEパネルを出すか隠すかを切り替える（link_button.js）
+ * 2. 設定ファイルのURLをもとに、TikTok・LINEのボタンとLINEパネル、「最新の日記」パネルの Zenn の文字リンクを出すか隠すかを切り替える（link_button.js）
  * 3. 道具箱のカードを並べ、PR表示と注意書きを出し分ける。0件ならパネルごと隠す（toolbox_view.js）
  * 4. 肖像の画像が読めないときの対応・背景の交互の色・スクロールの動きをつける（hero_image.js・panel_tone.js・reveal_motion.js）
  * 5. URLの #tool-1 などの場所へ移動し直す（hash_jump.js）
@@ -19,6 +19,7 @@ applyLinkButton("bar-tiktok", SITE_CONFIG.TIKTOK_URL);
 applyLinkButton("hero-tiktok", SITE_CONFIG.TIKTOK_URL);
 applyLinkButton("hero-openchat", SITE_CONFIG.LINE_OPENCHAT_URL);
 applyLinkButton("line-openchat", SITE_CONFIG.LINE_OPENCHAT_URL);
+applyLinkButton("diary-zenn", SITE_CONFIG.ZENN_URL);
 applyLinkButton("line-official", SITE_CONFIG.LINE_OFFICIAL_URL);
 const lineDecision = decideLineButtons(SITE_CONFIG.LINE_OPENCHAT_URL, SITE_CONFIG.LINE_OFFICIAL_URL);
 setPanelVisible("line-panel", lineDecision.showPanel);

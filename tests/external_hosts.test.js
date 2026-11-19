@@ -67,7 +67,7 @@ function hostOf(url) {
  * @returns {string[]} ホスト名
  */
 function linkOnlyHosts() {
-  const urls = [SITE_CONFIG.TIKTOK_URL, SITE_CONFIG.LINE_OPENCHAT_URL, SITE_CONFIG.LINE_OFFICIAL_URL]
+  const urls = [SITE_CONFIG.TIKTOK_URL, SITE_CONFIG.LINE_OPENCHAT_URL, SITE_CONFIG.LINE_OFFICIAL_URL, SITE_CONFIG.ZENN_URL]
     .concat(TOOLBOX_DATA.filter(function (item) { return item.url; }).map(function (item) { return item.url; }))
     .concat(TOOLS_DATA.map(function (tool) { return tool.url; }));
   const aspLinkHosts = ASP_LIST.flatMap(function (asp) {

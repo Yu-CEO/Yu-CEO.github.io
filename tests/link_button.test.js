@@ -64,3 +64,10 @@ test("AC-39・AC-40：ヒーローの「TikTokを見る」は、URLが https:// 
   assert.strictEqual(shouldShowLinkButton(""), false);
   assert.strictEqual(shouldShowLinkButton("www.tiktok.com/@yu_from_l2w"), false);
 });
+
+test("AC-41・AC-43：ZENN_URL は https://zenn.dev/yuceo で表示され、空や javascript: なら出さない", function () {
+  assert.strictEqual(SITE_CONFIG.ZENN_URL, "https://zenn.dev/yuceo");
+  assert.strictEqual(shouldShowLinkButton(SITE_CONFIG.ZENN_URL), true);
+  assert.strictEqual(shouldShowLinkButton(""), false);
+  assert.strictEqual(shouldShowLinkButton("javascript:alert(1)"), false);
+});

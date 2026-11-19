@@ -227,3 +227,19 @@
 /* ===== 日記のページの注意書き（2段落） ===== */
 .d-page-note{border-top:1px solid var(--diary-card-border);margin-top:32px}
 .note p + p{margin-top:10px}
+
+/* Zenn への文字のリンク（ボタンではない。押せる高さ44px以上・下線つき・新しい色は使わない） */
+.text-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:0 8px;
+  color:inherit;
+  text-decoration:underline;
+}
+.text-link[hidden]{display:none}
+.diary-panel .text-link{margin-top:12px}
+.d-zenn{margin-top:12px}
+.d-zenn[hidden]{display:none}
+.d-zenn p{margin:0 0 4px}

@@ -8,6 +8,7 @@
   データの検査は js/tools_validate.js、パネルの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、
   肖像の画像は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
   URLの # の場所への移動は js/hash_jump.js、最新の日記は js/diary_latest_panel.js（と diary_*.js）、
+  「最新の日記」パネルの Zenn の文字リンク（id=diary-zenn）は js/main.js が URL を入れて出し分ける、
   道具箱は js/toolbox_data.js（データ）・toolbox_validate.js（検査）・toolbox_link.js（リンクの出し方）・toolbox_beacon.js（計測用画像）・toolbox_view.js（表示）と css/toolbox.css、流れは js/main.js。
   最新の日記は diary/entries/ のデータを読み込むので、公開サイト（https）か手元のサーバーで開いたときだけ出る。
   ブラウザで直接開くだけで動く（サーバー・インターネット接続は不要。外部のファイルは読み込まない）。
@@ -91,6 +92,7 @@
       <p class="eyebrow">DIARY</p>
       <h2 class="panel-title" id="diary-latest-title"><span>経営会議の</span><span>日記</span></h2>
       <article class="diary-card" id="diary-latest-card"></article>
+      <a class="text-link" id="diary-zenn" target="_blank" rel="noopener" hidden>作り方の記事を読む（Zenn）</a>
     </div>
     <div class="actions">
       <a class="btn btn-main" id="diary-latest-read" href="diary/">読む</a>

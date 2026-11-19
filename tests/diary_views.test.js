@@ -199,6 +199,23 @@ test("AC-33：本文の最後に「見るだけの参加もOK。」・オープ�
   assert.strictEqual(findByClass(box, "btn-sub").href, "./");
 });
 
+test("AC-42：出口の枠に、Zenn の説明の1行と文字のリンク（新しいタブ・noopener・最初は隠れる）があり、ボタンは2つのまま", function () {
+  installFakeDocument({});
+  const area = createFakeElement("main");
+  showDiaryEntry(area, readSample("2026-11-14"), LIST_PATHS);
+  const box = findByClass(area, "d-cta-box");
+  const note = findByClass(box, "d-zenn");
+  assert.strictEqual(note.id, "diary-zenn-box");
+  assert.strictEqual(note.hidden, true);
+  assert.match(note.textContent, /会議で決めたことの作り方は、記事にまとめています。/);
+  const link = findByClass(note, "text-link");
+  assert.strictEqual(link.id, "diary-zenn");
+  assert.strictEqual(link.textContent, "作り方の記事を読む（Zenn）");
+  assert.strictEqual(link.target, "_blank");
+  assert.strictEqual(link.rel, "noopener");
+  assert.strictEqual(findAllByClass(findByClass(box, "actions"), "btn").length, 2);
+});
+
 test("AC-10・AC-35：HTMLの記号や表にない話者のデータでも、文字のまま表示し、絵の場所には使わない", function () {
   installFakeDocument({});
   const area = createFakeElement("main");

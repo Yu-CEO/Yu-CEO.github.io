@@ -236,3 +236,13 @@ test("AC-62：入口のパネルは、形に関係なく最新の1件（3版目�
   assert.ok(!parts["diary-latest-card"].textContent.includes("**") && !parts["diary-latest-card"].textContent.includes("=="));
   assert.strictEqual(findAllByTag(parts["diary-latest-card"], "img").length, 0);
 });
+
+test("AC-42：Zenn の説明と文字リンクが出口の枠にある（新しいタブ・noopener・最初は隠れる）", function () {
+  const shown = render(readSample("2026-11-20"));
+  const note = findByClass(findByClass(shown.area, "d-cta-box"), "d-zenn");
+  assert.strictEqual(note.hidden, true);
+  const link = findByClass(note, "text-link");
+  assert.strictEqual(link.textContent, "作り方の記事を読む（Zenn）");
+  assert.strictEqual(link.target, "_blank");
+  assert.strictEqual(link.rel, "noopener");
+});
