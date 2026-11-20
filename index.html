@@ -6,7 +6,7 @@
   index.html：入口ページの骨組みだけを書くファイル（上から ①ヒーロー ②ツールのパネルの場所 ②' 最新の日記 ③LINEのパネル ③' Yuの道具箱 ④注意書き）。
   見た目は css/variables.css（色・大きさの値）・css/style.css（共通）・css/hero.css（ヒーロー）・css/meeting_scene.css（会議の場面）・css/diary.css（日記）、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
   データの検査は js/tools_validate.js、パネルの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、
-  今日の会議の場面は js/scene_layout.js（席の配置）・js/meeting_scene.js（絵を作る）と css/meeting_scene.css、Yu の写真の読み込み失敗の対応は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
+  今日の会議の場面は js/scene_layout.js（席の配置）・js/meeting_scene.js（絵を作る）・名言の吹き出しは js/board_quotes_data.js（一覧）・js/board_quote_pick.js（選ぶ）・js/scene_quote.js（表示）と css/meeting_scene.css、Yu の写真の読み込み失敗の対応は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
   URLの # の場所への移動は js/hash_jump.js、最新の日記は js/diary_latest_panel.js（と diary_*.js）、
   「最新の日記」パネルの Zenn の文字リンク（id=diary-zenn）は js/main.js が URL を入れて出し分ける、
   道具箱は js/toolbox_data.js（データ）・toolbox_validate.js（検査）・toolbox_link.js（リンクの出し方）・toolbox_beacon.js（計測用画像）・toolbox_view.js（表示）と css/toolbox.css、流れは js/main.js。
@@ -76,6 +76,11 @@
         </div>
       </div>
       <p class="scene-cap">役員とアオイはAIのキャラクター。人間はYuだけです。</p>
+      <!-- 役員の名言の吹き出し（js/scene_quote.js が中身を入れる）。名言が選べないときは隠したまま -->
+      <div class="quote-wrap" id="hero-quote-wrap" hidden>
+        <div class="quote-holder"></div>
+        <div class="quote-foot"><span class="quote-day"></span><a class="quote-link" href="diary/">この日の話を読む</a></div>
+      </div>
     </div>
     <div class="actions">
       <!-- 行き先（最初のツールのパネル、または「ただいま準備中です」）は main.js が入れる -->
@@ -160,6 +165,9 @@
 <script src="js/diary_validate.js" defer></script>
 <script src="js/diary_validate_story.js" defer></script>
 <script src="js/diary_markup.js" defer></script>
+<script src="js/board_quotes_data.js" defer></script>
+<script src="js/board_quote_pick.js" defer></script>
+<script src="js/scene_quote.js" defer></script>
 <script src="js/diary_format3_counts.js" defer></script>
 <script src="js/diary_validate_format3.js" defer></script>
 <script src="js/diary_format.js" defer></script>

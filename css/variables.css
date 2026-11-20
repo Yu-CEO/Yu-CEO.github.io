@@ -77,7 +77,7 @@
   --btn-radius:12px;
   --btn-max:300px;                /* PC幅で横に2つ並べるときの1つの幅 */
   --pill-height:44px;             /* ヒーロー中央の丸い「TikTokを見る」。指で押せる最小の44px */
-  /* ヒーローの会議の場面（css/meeting_scene.css）。値はデザインメモ（design/portal_redesign/design_notes.md）の確定版 */
+  /* ヒーローの会議の場面（css/meeting_scene.css）。値はデザインの確定版 */
   --scene-max:460px;              /* 場面の最大幅。PC幅で大きくなりすぎないため */
   --scene-table:#121a2b;          /* 机の面（紺の背景より少し明るい） */
   --scene-table-edge:rgba(124,196,255,.38); /* 机のふちの細い線 */
@@ -85,6 +85,15 @@
   --scene-sub:#c3c8d2;            /* 机の上の「AI役員会議・毎日開催」（背景に対して約11:1） */
   --scene-ring:#7cc4ff;           /* 話している人の顔のまわりの輪 */
   --fs-scene-cap:11px;            /* 場面の下の小さな説明（架空の人物の表示） */
+  /* 名言の吹き出し：紺の上の白い吹き出し（文字との差 約17:1） */
+  --quote-bg:#ffffff;
+  --quote-text:#16171a;
+  --fs-quote:clamp(14px, 4vw, 17px); /* スマホ幅でも読める大きさ。17pxまで */
+  --fs-quote-who:12px;
+  --quote-radius:14px;
+  --quote-pad:12px 14px;
+  --quote-tail:9px;               /* 吹き出しの三角の大きさ */
+  --t-quote-delay:.6s;            /* 開いてから吹き出しを出すまで（顔が出そろうころ）。1回だけ */
   --t-rise:.35s;                  /* 顔が下から浮かぶ時間 */
   --t-step:.06s;                  /* 顔を1人ずつずらす間隔 */
   /* ツールのスクリーンショット。高さの上限は「画面の高さ − 見出し・説明・状態・ボタンの分（約470px）」で、パネルを1画面に収める

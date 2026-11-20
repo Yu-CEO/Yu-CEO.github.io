@@ -20,7 +20,7 @@
 .scene .face-bg{fill:var(--sp)}
 .scene .yu-bg{fill:var(--diary-yu-bg);stroke:var(--hero-frame-border);stroke-width:1.2}
 .scene .yu-name{fill:var(--hero-accent);font-size:10px;font-weight:700;letter-spacing:.1em}
-/* 話している人の輪。いまは常に見えない（吹き出しの機能が .speaking を付けたときだけ出す） */
+/* 話している人の輪。名言の吹き出しの役員にだけ .speaking が付き、そのときだけ出る */
 .scene .ring{fill:none;stroke:var(--scene-ring);stroke-width:2.2;opacity:0}
 .scene .speaking .ring{opacity:1}
 .scene-cap{
@@ -66,4 +66,58 @@
 @media (prefers-reduced-motion:reduce){
   .play .seat,
   .play .scene-yu{animation:none}
+}
+
+/* ===== 役員の名言の吹き出し（js/scene_quote.js が中身を入れる） ===== */
+.quote-wrap{margin-top:12px;text-align:left}
+.quote{
+  position:relative;
+  background:var(--quote-bg);
+  color:var(--quote-text);
+  border-radius:var(--quote-radius);
+  padding:var(--quote-pad);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+/* 吹き出しの三角。位置（--tail-x）は話した役員の席に合わせて js が入れる */
+.quote::before{
+  content:"";
+  position:absolute;
+  top:calc(var(--quote-tail) * -1 + 1px);
+  left:var(--tail-x,50%);
+  transform:translateX(-50%);
+  border-style:solid;
+  border-width:0 var(--quote-tail) var(--quote-tail);
+  border-color:transparent transparent var(--quote-bg);
+}
+.quote-who{margin:0;font-size:var(--fs-quote-who);font-weight:700;color:var(--sp)}
+.quote-who .role{margin-left:6px;font-weight:400;color:var(--color-text-sub)}
+.quote-text{margin:2px 0 0;font-size:var(--fs-quote);line-height:1.6;font-weight:600;overflow-wrap:anywhere}
+.quote-foot{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:2px;
+  font-size:13px;
+  color:var(--hero-text-sub);
+}
+.quote-foot a{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px; /* 指で押せる最小の高さ */
+  padding:0 2px;
+  font-weight:700;
+  color:var(--hero-accent);
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+/* 吹き出しと話した役員の輪は、顔が出そろうころに1回だけ出て止まる */
+@keyframes ring-stay{from{opacity:0}to{opacity:1}}
+.play .quote,
+.play .quote-foot{animation:scene-rise var(--t-rise) ease-out both;animation-delay:var(--t-quote-delay)}
+.play .seat.speaking .ring{animation:ring-stay var(--t-rise) ease both;animation-delay:var(--t-quote-delay)}
+@media (prefers-reduced-motion:reduce){
+  .play .quote,
+  .play .quote-foot,
+  .play .seat.speaking .ring{animation:none}
 }
