@@ -8,10 +8,11 @@
   diary/entries/ のその日のデータから作る（流れは js/diary_entry_main.js）。
   日付が正しくない・見つからないときは「この日の日記は見つかりませんでした」と一覧へのリンクを出す。
   外部と通信するのは、アクセス解析（GoatCounter）への 1×1 の画像の読み込みだけ（js/analytics_*.js。公開サイトで開いたときだけ。ページには置かない）。
+  もう1つの例外：Google タグマネージャー（js/gtm_loader.js。公開サイトで開いたときだけ www.googletagmanager.com を読み込み、Google アナリティクスへ送る）。
 -->
-<!-- CSP（このページが読み込んでよい場所の制限）。外部は画像だけ・決まったホストだけ（アクセス解析の送り先だけ）。
+<!-- CSP（このページが読み込んでよい場所の制限）。外部は Google タグマネージャー（script・通信・画像）のほかは画像だけ・決まったホストだけ（アクセス解析の送り先だけ）。
      計測の送り先（js/site_config.js の ANALYTICS_HOST）を変えたら、img-src の https://（そのホスト名）も同じに直す。tests/external_hosts.test.js が一致を確かめる -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com https://www.googletagmanager.com https://*.google-analytics.com; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <!-- ページの情報を送る範囲：ほかのサイトへ移るときに送るのはサイト名だけ（?date= などを送らない） -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <!-- 共有カードと検索用の説明（requirements_seo.md）。画面には出ない。画像・URL は https://yu-ceo.github.io/ で始まる絶対URL。
@@ -53,7 +54,7 @@
 <footer class="note d-page-note">
   <p>このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
   <p>この日記は、AIを使った役員会議の記録を、公開用に書き直したものです。金額などの数字は伏せています。登場する役員はAIのキャラクターです。特定の商品や売買をすすめるものではありません。</p>
-  <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。ページを開くと、そのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類が届きます。Cookie は使わず、個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
+  <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter と、Google タグマネージャー・Google アナリティクス）を使っています。ページを開くと、これらのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類などが届きます。Google のサービスは Cookie を使うことがあります。個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
 </footer>
 
 <!-- 読み込む順番に意味がある：設定 → 部品 → 表示 → 最後に流れ（diary_entry_main.js）。
@@ -82,6 +83,7 @@
 <script src="../js/diary_page_meta.js" defer></script>
 <script src="../js/diary_entry_main.js" defer></script>
 <!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
+<script src="../js/gtm_loader.js" defer></script>
 <script src="../js/analytics_path.js" defer></script>
 <script src="../js/analytics_beacon.js" defer></script>
 <script src="../js/analytics_main.js" defer></script>

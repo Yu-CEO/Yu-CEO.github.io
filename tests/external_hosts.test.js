@@ -20,9 +20,9 @@ const PAGE_FILES = ["index.html", "diary/index.html", "diary/entry.html"];
 // 外部のホストを書かずに、読み込み先が同じサイトだけと決める指定（CSP の値は2-5の表のとおり）
 const CSP_FIXED_DIRECTIVES = {
   "default-src": ["'self'"],
-  "script-src": ["'self'"],
+  "script-src": ["'self'", "https://www.googletagmanager.com"],
   "style-src": ["'self'"],
-  "connect-src": ["'self'"],
+  "connect-src": ["'self'", "https://www.googletagmanager.com", "https://*.google-analytics.com", "https://*.analytics.google.com"],
   "font-src": ["'none'"],
   "frame-src": ["'none'"],
   "object-src": ["'none'"],
@@ -31,6 +31,9 @@ const CSP_FIXED_DIRECTIVES = {
 };
 // 名前空間（SVG の決まった名前）。読み込み先ではないので照合から外す
 const NAMESPACE_HOSTS = ["www.w3.org"];
+// Google タグマネージャー（gtm_loader.js）の読み込み先と、Google アナリティクスの送り先（仕様 2-10）
+const GTM_HOST = "www.googletagmanager.com";
+const GTM_IMAGE_SOURCES = ["https://www.googletagmanager.com", "https://*.google-analytics.com"];
 
 /**
  * 計測の送り先のホストの一覧（設定が空なら0件）。
@@ -128,7 +131,7 @@ function expectedImageSources(pageFile) {
   if (pageFile === "index.html") {
     hosts = hosts.concat(beaconHosts());
   }
-  return hosts.map(function (host) { return "https://" + host; }).sort();
+  return hosts.map(function (host) { return "https://" + host; }).concat(GTM_IMAGE_SOURCES).sort();
 }
 
 /**
@@ -166,7 +169,7 @@ test("AC-14：外部の <script src> を足すと、ファイル名と行の番�
 });
 
 test("2-7-2・AC-12・AC-14：js/ に書かれた外部の場所は、許可リストかリンク用のURLだけ", function () {
-  const allowed = analyticsHosts().concat(beaconHosts(), linkOnlyHosts(), NAMESPACE_HOSTS);
+  const allowed = analyticsHosts().concat(beaconHosts(), linkOnlyHosts(), NAMESPACE_HOSTS, [GTM_HOST]);
   readFolder("js", ".js").forEach(function (file) {
     findHostsWithLines(removeJsComments(file.text)).forEach(function (found) {
       assert.ok(allowed.includes(found.host),

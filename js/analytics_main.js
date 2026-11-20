@@ -8,3 +8,8 @@
 if (typeof startAnalytics === "function" && typeof SITE_CONFIG !== "undefined") {
   startAnalytics(SITE_CONFIG, window);
 }
+
+// Google タグマネージャー（gtm_loader.js）。読み込めなかったときは何もしない
+if (typeof startGtm === "function" && typeof SITE_CONFIG !== "undefined") {
+  startGtm(SITE_CONFIG, window);
+}

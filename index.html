@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <!--
   index.html：入口ページの骨組みだけを書くファイル（上から ①ヒーロー ②ツールのパネルの場所 ②' 最新の日記 ③LINEのパネル ③' Yuの道具箱 ④注意書き）。
-  見た目は css/variables.css（色・大きさの値）・css/style.css（共通）・css/hero.css（ヒーロー）・css/diary.css（日記）、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
+  見た目は css/variables.css（色・大きさの値）・css/style.css（共通）・css/hero.css（ヒーロー）・css/meeting_scene.css（会議の場面）・css/diary.css（日記）、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
   データの検査は js/tools_validate.js、パネルの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、
-  肖像の画像は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
+  今日の会議の場面は js/scene_layout.js（席の配置）・js/meeting_scene.js（絵を作る）と css/meeting_scene.css、Yu の写真の読み込み失敗の対応は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
   URLの # の場所への移動は js/hash_jump.js、最新の日記は js/diary_latest_panel.js（と diary_*.js）、
   「最新の日記」パネルの Zenn の文字リンク（id=diary-zenn）は js/main.js が URL を入れて出し分ける、
   道具箱は js/toolbox_data.js（データ）・toolbox_validate.js（検査）・toolbox_link.js（リンクの出し方）・toolbox_beacon.js（計測用画像）・toolbox_view.js（表示）と css/toolbox.css、流れは js/main.js。
@@ -14,10 +14,11 @@
   ブラウザで直接開くだけで動く（サーバー・インターネット接続は不要。外部のファイルは読み込まない）。
   例外は画像だけ：道具箱の紹介リンクのカードに置く、ASPの計測用の小さな画像（1×1。js/site_config.js の ASP_LIST のホストに限る）と、
   アクセス解析（GoatCounter）への 1×1 の画像の読み込み（js/analytics_*.js。公開サイトで開いたときだけ。ページには置かない）。どちらも読み込めなくても表示は崩れない。
+  もう1つの例外：Google タグマネージャー（js/gtm_loader.js。公開サイトで開いたときだけ www.googletagmanager.com の本体を読み込み、Google アナリティクスへ送る）。
 -->
-<!-- CSP（このページが読み込んでよい場所の制限）。外部は画像だけ・決まったホストだけ（道具箱の ASP の計測用画像＝js/site_config.js の ASP_LIST の beaconHosts・アクセス解析の送り先）。
+<!-- CSP（このページが読み込んでよい場所の制限）。外部は Google タグマネージャー（script・通信・画像）のほかは画像だけ・決まったホストだけ（道具箱の ASP の計測用画像＝js/site_config.js の ASP_LIST の beaconHosts・アクセス解析の送り先）。
      計測の送り先（js/site_config.js の ANALYTICS_HOST）を変えたら、img-src の https://（そのホスト名）も同じに直す。tests/external_hosts.test.js が一致を確かめる -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com https://www18.a8.net https://i.moshimo.com; connect-src 'self'; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com https://www18.a8.net https://i.moshimo.com https://www.googletagmanager.com https://*.google-analytics.com; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <!-- ページの情報を送る範囲：ほかのサイトへ移るときに送るのはサイト名だけ（?date= などを送らない） -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <!-- 共有カードと検索用の説明（requirements_seo.md）。画面には出ない。画像・URL は https://yu-ceo.github.io/ で始まる絶対URL。 -->
@@ -42,6 +43,7 @@
 <link rel="stylesheet" href="css/variables.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/meeting_scene.css">
 <link rel="stylesheet" href="css/diary.css">
 <link rel="stylesheet" href="css/toolbox.css">
 </head>
@@ -54,32 +56,37 @@
 </nav>
 
 <main>
-  <!-- ① ヒーロー：小見出し・表示名・肖像・プロフィール文・中央の「TikTokを見る」・下部のボタン2つ。文言を変えるときはここを直す -->
+  <!-- ① ヒーロー：小見出し・表示名・今日の会議の場面（Yu の写真つき）・下部のボタン2つ・プロフィール文丸ボタン。文言を変えるときはここを直す -->
   <header class="panel hero" id="top">
     <p class="hero-eyebrow">@yu_from_l2w</p>
     <h1 class="hero-title"><span>Yu｜</span><span>AI仮想会社の社長</span></h1>
-    <figure class="hero-portrait">
-      <div class="hero-portrait-clip">
-        <!-- 軽い WebP（yu.webp）を先に使い、WebP を表示できないブラウザだけ yu.jpg を使う。
-             width・height は画像の縦横のピクセル数（表示の大きさは CSS が決める。読み込み前に場所を取っておくため）。
-             最初に見える画像なので fetchpriority="high"（ほかより先に読み込む） -->
-        <picture>
-          <source srcset="assets/yu.webp" type="image/webp">
-          <img id="hero-image" src="assets/yu.jpg" alt="夜の部屋でパソコンに向かうYu（AIで作ったアバター）" width="787" height="1400" fetchpriority="high">
-        </picture>
+    <!-- 今日の会議の場面（css/meeting_scene.css・js/meeting_scene.js）。机・顔・Day N の絵（SVG）は js/meeting_scene.js が .scene-holder に入れる。
+         Yu の席の写真は、絵の Yu の席の上に重ねる（位置は meeting_scene.js が % で入れる）。
+         WebP の写真（yu.webp）を先に使い、WebP を表示できないブラウザだけ yu.jpg を使う。
+         width・height は画像の縦横のピクセル数（表示の大きさは CSS が決める。読み込み前に場所を取っておくため）。
+         最初に見える画像なので fetchpriority="high"（ほかより先に読み込む） -->
+    <div class="hero-stage" id="hero-stage">
+      <div class="scene-box">
+        <div class="scene-holder"></div>
+        <div class="scene-yu">
+          <picture>
+            <source srcset="assets/yu.webp" type="image/webp">
+            <img id="hero-image" src="assets/yu.jpg" alt="夜の部屋でパソコンに向かうYu（AIで作ったアバター）" width="787" height="1400" fetchpriority="high">
+          </picture>
+        </div>
       </div>
-    </figure>
+      <p class="scene-cap">役員とアオイはAIのキャラクター。人間はYuだけです。</p>
+    </div>
+    <div class="actions">
+      <!-- 行き先（最初のツールのパネル、または「ただいま準備中です」）は main.js が入れる -->
+      <a class="btn btn-hero-main" id="hero-tools" href="#tool-area">無料ツールを見る</a>
+      <a class="btn btn-hero-sub" id="hero-openchat" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
+    </div>
     <p class="hero-profile">会社員エンジニア（国家資格あり）。AIで仮想会社を設立し、AI役員にお金と人生を相談しています。うまくいかない日も全部記録。<span class="nowrap-unit">毎日19時投稿／22時ライブ</span></p>
     <!-- 中央の控えめな丸いボタン2つ。TikTok は URL が正しいときだけ、日記は最新の日記を出せたときだけ表示される -->
     <div class="hero-pills">
       <a class="btn-pill" id="hero-tiktok" target="_blank" rel="noopener" hidden>TikTokを見る</a>
       <a class="btn-pill pill-diary" id="hero-diary" href="#diary-latest" hidden>会議の日記</a>
-    </div>
-    <div class="hero-spacer"></div>
-    <div class="actions">
-      <!-- 行き先（最初のツールのパネル、または「ただいま準備中です」）は main.js が入れる -->
-      <a class="btn btn-hero-main" id="hero-tools" href="#tool-area">無料ツールを見る</a>
-      <a class="btn btn-hero-sub" id="hero-openchat" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
     </div>
   </header>
 
@@ -131,7 +138,7 @@
 <!-- ④ 共通の注意書き。文言を変えるときは、ここを直す -->
 <footer class="note" id="note">
   <p>このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
-  <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。ページを開くと、そのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類が届きます。Cookie は使わず、個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
+  <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter と、Google タグマネージャー・Google アナリティクス）を使っています。ページを開くと、これらのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類などが届きます。Google のサービスは Cookie を使うことがあります。個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
 </footer>
 
 <!-- 読み込む順番に意味がある：設定とデータ → 検査 → 表示の部品 → 最後に流れ（main.js）。
@@ -148,6 +155,8 @@
 <script src="js/diary_day.js" defer></script>
 <script src="js/diary_safety.js" defer></script>
 <script src="js/diary_speakers.js" defer></script>
+<script src="js/scene_layout.js" defer></script>
+<script src="js/meeting_scene.js" defer></script>
 <script src="js/diary_validate.js" defer></script>
 <script src="js/diary_validate_story.js" defer></script>
 <script src="js/diary_markup.js" defer></script>
@@ -165,6 +174,7 @@
 <script src="js/toolbox_view.js" defer></script>
 <script src="js/main.js" defer></script>
 <!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
+<script src="js/gtm_loader.js" defer></script>
 <script src="js/analytics_path.js" defer></script>
 <script src="js/analytics_beacon.js" defer></script>
 <script src="js/analytics_main.js" defer></script>

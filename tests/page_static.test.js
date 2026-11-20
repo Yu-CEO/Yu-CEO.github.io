@@ -178,6 +178,10 @@ test("道具箱 AC-18：外部の <script>・<iframe> がなく、計測用画�
     assert.ok(!/a8\.net|moshimo\.com/.test(htmlWithoutCsp), "HTMLにASPの場所が書かれています");
   });
   readAllScripts().forEach(function (script) {
+    // 例外：gtm_loader.js だけは Google タグマネージャーの本体を読み込むために script を作る（仕様 2-10。CSP で読み込み先を限る）
+    if (script.fileName === "gtm_loader.js") {
+      return;
+    }
     assert.ok(!/createElement\(\s*["'](script|iframe)/.test(script.code), script.fileName + " で script・iframe を作っています");
   });
 });
@@ -193,7 +197,7 @@ test("道具箱 AC-3：日記のページは道具箱のファイルを読み込
 const ANALYTICS_PAGE_FILES = ["index.html", "diary/index.html", "diary/entry.html"];
 
 test("アクセス解析 AC-16：3ページの注意書きの最後に、アクセス解析の説明の段落がある", function () {
-  const privacyText = "このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter）を使っています。";
+  const privacyText = "このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter と、Google タグマネージャー・Google アナリティクス）を使っています。";
   ANALYTICS_PAGE_FILES.forEach(function (pageFile) {
     const html = fs.readFileSync(path.join(PORTAL_FOLDER, pageFile), "utf8");
     const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>"));

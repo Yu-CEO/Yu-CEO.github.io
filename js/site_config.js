@@ -23,7 +23,10 @@ const SITE_CONFIG = {
   // 空や形の違う値のときは送らない。ここを変えたら、3ページの CSP（img-src）も同じホスト名に直す（テストが確かめる）
   ANALYTICS_HOST: "yuceo.goatcounter.com",
   // 計測してよいページのホスト名（公開サイト）。手元のサーバーや file:// で開いたときは送らない
-  ANALYTICS_PUBLIC_HOST: "yu-ceo.github.io"
+  ANALYTICS_PUBLIC_HOST: "yu-ceo.github.io",
+  // Google タグマネージャーのコンテナID（GTM-で始まる。公開の値）。空にすると GTM は読み込まない（gtm_loader.js）。
+  // 読み込む条件は GoatCounter と同じ（ANALYTICS_ENABLED・公開サイト・トラッキングしない）
+  GTM_ID: "GTM-PH2VNGMC"
 };
 
 // 道具箱で使うアフィリエイトサービス（ASP：紹介リンクを発行する会社）の一覧。toolbox_validate.js・toolbox_view.js が使う。
