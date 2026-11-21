@@ -95,7 +95,7 @@
   --adv-face:88px;                /* 役員の大きな顔 */
   --adv-yu:40px;                  /* 受け取る Yu の写真 */
   --fs-adv-eyebrow:13px;
-  --fs-adv-text:clamp(15px, 4.2vw, 18px);
+  --fs-adv-text:16px;
   --fs-adv-name:13px;
   --fs-adv-to:14px;
   --fs-hero-days:14px;            /* 「今日で、AI会社を始めて N 日目」 */

@@ -211,7 +211,9 @@ test("CSP を緩めていない：style 属性・HTML 直書きの挿入がな�
 test("AC-5・AC-6：場面の動きは1回だけ（くり返さない）・動きを減らす設定で止める・「LIVE」などの言葉がない", function () {
   const css = read("css/hero_advice.css");
   assert.ok(!/infinite/.test(css));
-  assert.ok(/prefers-reduced-motion:reduce[\s\S]*\.adv-bubble/.test(css));
+  assert.ok(/prefers-reduced-motion:reduce[\s\S]*\.adv-who/.test(css));
+  // 吹き出しは動かさない（iPhone の Safari で中の文字が出なくなったため）
+  assert.ok(!/\.adv-bubble[^{]*\{[^}]*animation/.test(css));
   ["js/hero_advice.js", "js/board_quotes_data.js", "css/hero_advice.css"].forEach(function (file) {
     assert.ok(!/LIVE|いま会議中/.test(read(file)), file);
   });

@@ -24,8 +24,9 @@
   text-align:left;
 }
 .adv-eyebrow{margin:0 0 10px;font-size:var(--fs-adv-eyebrow);font-weight:700;letter-spacing:.06em;color:var(--adv-blue)}
-.adv-row{display:grid;grid-template-columns:var(--adv-face) minmax(0,1fr);gap:14px;align-items:start}
-.adv-who{display:flex;flex-direction:column;align-items:center;gap:6px}
+/* 顔と吹き出しを横に並べる。iPhone の Safari で吹き出しの文字が消えたため、grid ではなく単純な flex にしている */
+.adv-row{display:flex;gap:14px;align-items:flex-start}
+.adv-who{flex:0 0 var(--adv-face);display:flex;flex-direction:column;align-items:center;gap:6px}
 /* 役員の大きな顔（今は顔の絵 speakers.svg を大きくしたもの。差し替えは js/site_config.js の SPEAKER_FACE_FILE） */
 .avatar.adv-face{
   width:var(--adv-face);
@@ -51,6 +52,8 @@
 .adv-name small{font-size:10px;font-weight:400;color:var(--hero-text-sub)}
 /* 吹き出し：黄色い枠。三角は左（役員の顔の側）を向ける */
 .adv-bubble{
+  flex:1 1 0;
+  min-width:0;
   position:relative;
   margin-top:6px;
   padding:12px 14px;
@@ -70,7 +73,7 @@
   border-bottom:2px solid var(--adv-yellow);
   transform:rotate(45deg);
 }
-.adv-text{margin:0;font-size:var(--fs-adv-text);font-weight:700;line-height:1.6;color:var(--hero-text);overflow-wrap:anywhere}
+.adv-text{margin:0;font-size:var(--fs-adv-text);font-weight:700;line-height:1.6;color:var(--hero-text);word-break:normal;overflow-wrap:break-word}
 /* 「→ Yu へ提案／指摘」と受け取る Yu */
 .adv-to{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:12px}
 .adv-tag{
@@ -153,12 +156,11 @@
   from{transform:translateY(8px)}
   to{transform:none}
 }
+/* 吹き出しは動かさない（iPhone の Safari で中の文字が出なくなったため） */
 .adv-who,
-.adv-bubble,
 .adv-to{animation:adv-rise var(--t-rise) ease-out}
 /* 動きを減らす設定の人には動かさず、最後の形だけ見せる */
 @media (prefers-reduced-motion:reduce){
   .adv-who,
-  .adv-bubble,
   .adv-to{animation:none}
 }
