@@ -146,14 +146,16 @@
 .advice.no-quote .quote-foot,
 .advice.no-quote .adv-eyebrow{display:none}
 
-/* 動き：顔・吹き出し・ラベルが下から浮かんで止まる（1回だけ。くり返さない） */
+/* 動き：顔・吹き出し・ラベルが少し下から浮かんで止まる（1回だけ。くり返さない）
+ * 透明（opacity:0）から始めると、動きが止まる環境（省電力・裏のタブなど）で吹き出しが見えないままになる。
+ * そのため位置だけを動かし、文字は最初から見えるようにしておく */
 @keyframes adv-rise{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:none}
+  from{transform:translateY(8px)}
+  to{transform:none}
 }
-.adv-who{animation:adv-rise var(--t-rise) ease-out both}
+.adv-who,
 .adv-bubble,
-.adv-to{animation:adv-rise var(--t-rise) ease-out both;animation-delay:calc(var(--t-quote-delay) / 2)}
+.adv-to{animation:adv-rise var(--t-rise) ease-out}
 /* 動きを減らす設定の人には動かさず、最後の形だけ見せる */
 @media (prefers-reduced-motion:reduce){
   .adv-who,
