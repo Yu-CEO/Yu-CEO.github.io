@@ -225,3 +225,12 @@ test("第3回：古い机の場面（meeting_scene・scene_layout・scene_quote�
   });
   assert.ok(!read("index.html").includes("meeting_scene"));
 });
+
+test("ヒーローの丸いボタンに「Zennの記事を読む」「LINEで友だち追加」があり、設定のURLで表示される（2026-11-21 追加）", function () {
+  const html = read("index.html");
+  assert.ok(/id="hero-zenn"[^>]*rel="noopener"[^>]*hidden>Zennの記事</.test(html));
+  assert.ok(/id="hero-line"[^>]*rel="noopener"[^>]*hidden>LINE友だち追加</.test(html));
+  const main = read("js/main.js");
+  assert.ok(main.includes('applyLinkButton("hero-zenn", SITE_CONFIG.ZENN_URL)'));
+  assert.ok(main.includes('applyLinkButton("hero-line", SITE_CONFIG.LINE_OFFICIAL_URL)'));
+});

@@ -111,14 +111,14 @@
   border-color:transparent transparent transparent var(--hero-accent);
 }
 
-/* 丸いボタン2つ（「TikTokを見る」「無料ツールを見る」）を横に並べる行。行は増やさない（ヒーローの高さを変えないため） */
+/* 丸いボタン（「TikTokを見る」「無料ツールを見る」「Zennの記事を読む」「LINEで友だち追加」）を並べる行。スマホでは2つずつ2行になる */
 .hero-pills{
-  display:flex;
-  flex-wrap:wrap;                   /* 幅が足りない端末では2行に折り返す */
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, max-content)); /* 2つずつ2行に並べる */
   justify-content:center;
   gap:8px;
   margin-top:18px;
 }
-.hero-pills .btn-pill{margin-top:0;padding:0 18px}
+.hero-pills .btn-pill{margin-top:0;padding:0 14px;gap:8px;white-space:nowrap}
 /* 丸いボタンが2つとも隠れているときは、行ごと隠す（場所が空いて見えないようにする） */
 .hero-pills:not(:has(.btn-pill:not([hidden]))){display:none}

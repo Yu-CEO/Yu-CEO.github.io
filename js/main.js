@@ -21,6 +21,8 @@ document.getElementById("hero-tools-pill").href = toolsTarget;
 applyLinkButton("bar-tiktok", SITE_CONFIG.TIKTOK_URL);
 applyLinkButton("hero-tiktok", SITE_CONFIG.TIKTOK_URL);
 applyLinkButton("hero-openchat", SITE_CONFIG.LINE_OPENCHAT_URL);
+applyLinkButton("hero-zenn", SITE_CONFIG.ZENN_URL);
+applyLinkButton("hero-line", SITE_CONFIG.LINE_OFFICIAL_URL);
 applyLinkButton("line-openchat", SITE_CONFIG.LINE_OPENCHAT_URL);
 applyLinkButton("diary-zenn", SITE_CONFIG.ZENN_URL);
 applyLinkButton("line-official", SITE_CONFIG.LINE_OFFICIAL_URL);
