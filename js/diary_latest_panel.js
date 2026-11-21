@@ -71,10 +71,11 @@ function createTakeaway(takeaway) {
  * @param {object} entry 検査を通った日記1件
  * @param {string} faceFile speakers.svg の場所
  * @param {string} heroFolder diary/heroes/ の場所（hero のない日は使わない）
+ * @param {string} [entryHref] その日のページの場所。渡すと見出しがリンクになり、カードのどこを触ってもその日のページへ行く（css/diary.css の .d-card-link）
  * @returns {void}
- * @example fillLatestCard(card, entry, "assets/speakers.svg", "diary/heroes/")
+ * @example fillLatestCard(card, entry, "assets/speakers.svg", "diary/heroes/", "diary/entry.html?date=2026-11-21")
  */
-function fillLatestCard(card, entry, faceFile, heroFolder) {
+function fillLatestCard(card, entry, faceFile, heroFolder, entryHref) {
   card.textContent = "";
   card.className = "diary-card";
   // 入口画像はカードの一番上。hero のない日は何も足さない
@@ -83,7 +84,16 @@ function fillLatestCard(card, entry, faceFile, heroFolder) {
     card.appendChild(heroImage);
   }
   card.appendChild(createDiaryMetaRow(entry.date));
-  card.appendChild(makeDiaryElement("h3", "", entry.title));
+  const heading = makeDiaryElement("h3", "", "");
+  if (typeof entryHref === "string" && entryHref !== "") {
+    // 見出しのリンクを、CSS でカード全体に広げる（カードを触れば日記が開く）
+    const link = makeDiaryElement("a", "d-card-link", entry.title);
+    link.href = entryHref;
+    heading.appendChild(link);
+  } else {
+    heading.textContent = entry.title;
+  }
+  card.appendChild(heading);
   // 今日の学びは書いてある日だけ出す（無い日は枠ごと出さない）
   if (typeof entry.takeaway === "string" && entry.takeaway !== "") {
     card.className += " " + CARD_HAS_TAKEAWAY_CLASS;
@@ -126,9 +136,9 @@ function revealLatestDiary(entry, recentEntries, paths) {
   if (parts === null) {
     return false;
   }
-  fillLatestCard(parts.card, entry, paths.faceFile, paths.heroFolder);
   // 日付は検査で YYYY-MM-DD の形と確かめ済みなので、そのまま場所に使ってよい
   const entryHref = paths.entryPage + "?date=" + entry.date;
+  fillLatestCard(parts.card, entry, paths.faceFile, paths.heroFolder, entryHref);
   parts.readButton.href = entryHref;
   parts.readButton.setAttribute("aria-label", "読む：" + formatDayLong(entry.date) + " " + entry.title);
   showRecentDiaries(recentEntries, paths);

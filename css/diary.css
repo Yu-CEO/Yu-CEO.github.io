@@ -98,6 +98,12 @@
   overflow-wrap:anywhere;
 }
 .diary-card .faces{margin-top:14px}
+/* 見出しのリンクをカード全体に広げる（カードのどこを触っても、その日の日記が開く） */
+.d-card-link{color:inherit;text-decoration:none}
+.d-card-link::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
+.diary-card:has(.d-card-link):hover{border-color:var(--diary-accent)}
+.d-card-link:focus-visible{outline:none}
+.diary-card:has(.d-card-link:focus-visible){outline:2px solid var(--diary-accent);outline-offset:2px}
 .diary-panel .actions{margin-top:28px}
 
 /* ===== 「戻る」リンク（一覧・1件の上部） ===== */

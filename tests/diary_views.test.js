@@ -254,6 +254,10 @@ test("AC-1・AC-29：入口ページに最新の日記（新しい日付）を�
   assert.strictEqual(parts["diary-latest-read"].target, undefined);
   assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "3日目");
   assert.ok(findByClass(parts["diary-latest-card"], "d-summary"));
+  // カードを触っても日記が開くよう、見出しがその日のページへのリンクになっている
+  const cardLink = findByClass(parts["diary-latest-card"], "d-card-link");
+  assert.strictEqual(cardLink.href, "diary/entry.html?date=2026-11-16");
+  assert.strictEqual(cardLink.target, undefined);
 });
 
 test("AC-3：日記が0件・読み込めない・最新の日記の形が壊れているときは、パネルも主役ボタンも隠したまま（「無料ツールを見る」が主役のまま）", async function () {
