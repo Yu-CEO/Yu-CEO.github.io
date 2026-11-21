@@ -2,7 +2,7 @@
  * diary_list_view.js：日記の一覧ページ（/diary/）の表示
  * 主な関数：showDiaryList（一覧・0件・読み込み失敗のどれかを表示する）、createDiaryListItem（カード1枚を作る）
  * カード1枚は Day N・日付・見出し・抜粋（2行まで）・登場した話者の小さな顔・「読む」で、カード全体が1つのリンク。
- * 使うもの：diary_parts.js。diary_list_main.js から使われる。tests/diary_views.test.js でテストする。
+ * 使うもの：diary_parts.js・diary_hero_view.js（カード一番上の入口画像）。diary_list_main.js から使われる。tests/diary_views.test.js でテストする。
  */
 
 // Node.js（テスト）では、ほかのファイルの関数を require で読み込んで、ブラウザと同じ名前で使えるようにする
@@ -11,6 +11,7 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.createDiaryMetaRow = require("./diary_parts.js").createDiaryMetaRow;
   globalThis.createFacesRow = require("./diary_parts.js").createFacesRow;
   globalThis.createDiaryNotice = require("./diary_parts.js").createDiaryNotice;
+  globalThis.createDiaryHero = require("./diary_hero_view.js").createDiaryHero;
 }
 
 // 件数がこれを超えたら、月の区切りを出す（見た目だけ。絞り込みはしない）
@@ -28,15 +29,20 @@ const DIARY_LIST_FAILED = {
 /**
  * 日記1件ぶんのカード（全体が1つのリンク）を作る。
  * @param {object} entry 検査を通った日記1件
- * @param {{ faceFile: string, entryPage: string }} paths 顔の絵の場所と、1件のページの場所
+ * @param {{ faceFile: string, entryPage: string, heroFolder: string }} paths 顔の絵の場所と、1件のページの場所と、入口画像の場所
  * @returns {HTMLElement} カードの要素（li）
- * @example createDiaryListItem(entry, { faceFile: "../assets/speakers.svg", entryPage: "entry.html" })
+ * @example createDiaryListItem(entry, { faceFile: "../assets/speakers.svg", entryPage: "entry.html", heroFolder: "heroes/" })
  */
 function createDiaryListItem(entry, paths) {
   const item = makeDiaryElement("li", "d-item", "");
   const link = makeDiaryElement("a", "", "");
   // 日付は検査で YYYY-MM-DD の形と確かめ済みなので、そのまま場所に使ってよい
   link.href = paths.entryPage + "?date=" + entry.date;
+  // 入口画像はカードの一番上。hero のない日は何も足さない
+  const heroImage = createDiaryHero(entry, paths.heroFolder, "list");
+  if (heroImage !== null) {
+    link.appendChild(heroImage);
+  }
   link.appendChild(createDiaryMetaRow(entry.date));
   link.appendChild(makeDiaryElement("h2", "", entry.title));
   link.appendChild(makeDiaryElement("p", "d-summary", entry.summary));

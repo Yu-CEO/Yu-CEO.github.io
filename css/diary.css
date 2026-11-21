@@ -243,3 +243,7 @@
 .d-zenn{margin-top:12px}
 .d-zenn[hidden]{display:none}
 .d-zenn p{margin:0 0 4px}
+
+/* ===== カードの一番上の入口画像（入口の「最新の日記」・日記一覧）。16:9・幅いっぱい・角丸 ===== */
+.d-card-hero{display:block;width:100%;height:auto;aspect-ratio:16 / 9;margin:0 0 12px;border-radius:calc(var(--diary-card-radius) - 6px)}
+.d-card-hero[hidden]{display:none}

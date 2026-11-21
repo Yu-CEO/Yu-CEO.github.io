@@ -1,9 +1,9 @@
 /*
  * diary_story3_view.js：3版目（"format": 3・太字とハイライト・図2枚・今日の学び）の日記1件のページの表示
- * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 道しるべ（問題›意見›決定›結果›学び）
+ * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 入口画像（hero がある日だけ）→ 道しるべ（問題›意見›決定›結果›学び）
  *       → 01 何が問題だったか → 1枚目の図 → 02 役員の意見 → 03 Yuの決定 → 04 結果 → 2枚目の図 → 今日の学び → オープンチャットへの出口
  * 主な関数：showStory3Entry（3版目の1件を表示）
- * 使うもの：diary_entry_view.js の部品（紺の帯・節・吹き出し・出口）・diary_figure_view.js・diary_takeaway_view.js・diary_markup_view.js。
+ * 使うもの：diary_entry_view.js の部品（紺の帯・節・吹き出し・出口）・diary_figure_view.js・diary_hero_view.js（一番上の入口画像）・diary_takeaway_view.js・diary_markup_view.js。
  * diary_story_view.js の showEntryByFormat から呼ばれる。日記の文字は textContent / createTextNode だけで入れる（HTMLとしては読ませない）。
  * tests/diary_story3_view.test.js でテストする。
  */
@@ -21,6 +21,7 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.createSpeakerFace = require("./diary_speakers.js").createSpeakerFace;
   globalThis.HUMAN_SPEAKER = require("./diary_speakers.js").HUMAN_SPEAKER;
   globalThis.createDiaryFigure = require("./diary_figure_view.js").createDiaryFigure;
+  globalThis.createDiaryHero = require("./diary_hero_view.js").createDiaryHero;
   globalThis.appendMarkedText = require("./diary_markup_view.js").appendMarkedText;
   globalThis.createTakeawayBox = require("./diary_takeaway_view.js").createTakeawayBox;
 }
@@ -138,15 +139,20 @@ function createStory3Results(results) {
  * 図は2枚とも、読み込めなければその図と caption だけが隠れる（もう1枚と本文は出る）。
  * @param {HTMLElement} area 表示する場所
  * @param {object} entry 検査を通った3版目の日記1件
- * @param {{ faceFile: string, listPage: string, figureFolder: string }} paths 場所の設定
+ * @param {{ faceFile: string, listPage: string, figureFolder: string, heroFolder: string }} paths 場所の設定
  * @returns {void}
- * @example showStory3Entry(area, entry, { faceFile: "../assets/speakers.svg", listPage: "./", figureFolder: "figures/" })
+ * @example showStory3Entry(area, entry, { faceFile: "../assets/speakers.svg", listPage: "./", figureFolder: "figures/", heroFolder: "heroes/" })
  */
 function showStory3Entry(area, entry, paths) {
   area.textContent = "";
   area.className = (area.className + " " + STORY3_PAGE_CLASS).trim();
   area.appendChild(createEntryHead(entry, paths));
   const body = makeDiaryElement("div", "d-body", "");
+  // 入口画像は本文の一番上（道しるべより前）。hero のない日は何も足さない
+  const heroImage = createDiaryHero(entry, paths.heroFolder, "page");
+  if (heroImage !== null) {
+    body.appendChild(heroImage);
+  }
   body.appendChild(createStory3Flow(typeof entry.takeaway === "string"));
   body.appendChild(createStory3Problem(entry, paths.figureFolder));
   body.appendChild(createLinesSection(entry.lines, paths.faceFile, "役員の意見", appendMarkedText));

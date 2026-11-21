@@ -1,6 +1,6 @@
 /*
  * diary_contents.js：自動公開の前に、その日の日記・index.json・図の中身を確かめる（requirements_diary.md 2-5 の②(b)）
- * 主な関数：checkDiaryContents（日付・index.json の変更・日記の検査・figure と図・図の検査をまとめて行う）、
+ * 主な関数：checkDiaryContents（日付・index.json の変更・日記の検査・figure と図・図の検査・入口画像の検査をまとめて行う）、
  *   readRepoFile・readRepoText（リポジトリの中のファイルを読む。無いときをはっきり扱う）
  * 検査は js/diary_format.js・js/diary_svg_check.js（画面・CI と同じもの）を使う。
  * tools/diary_publish.js から使われる。tests/diary_publish.test.js で、練習用のリポジトリを使って確かめる。
@@ -8,9 +8,14 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const changesRule = require("./diary_changes.js");
+const fileMatch = require("./diary_file_match.js");
 const git = require("./diary_git.js");
 const { findEntryProblems } = require("../js/diary_format.js");
 const { findSvgProblems } = require("../js/diary_svg_check.js");
+
+// 入口画像（JPEG）の決まり。先頭3バイトが JPEG の印（FF D8 FF）であること・400KB 以下（ページを軽く保つため）
+const JPEG_SIGNATURE = Buffer.from([0xff, 0xd8, 0xff]);
+const HERO_MAX_BYTES = 400 * 1024;
 
 // JSON の「\u と16進数4文字」の書き方（例：ファイルに \u3042 と書くと、読み込んだあとは「あ」になる）。ファイルの文字のままの照合では「あ」と見えないので、すり抜けうる。
 // 日記ではこの書き方を使わず、日本語はそのまま書く決まりにする（機密の言葉の照合を確実にするため）
@@ -103,7 +108,9 @@ function checkEntryFile(context, plan) {
   if (entry === undefined) {
     return ["日記の JSON を読めません（書き方を確かめてください）"];
   }
-  return findEntryProblems(entry, plan.date).concat(changesRule.checkFigureMatch(entry, plan.hasFigure, plan.hasFigure2));
+  return findEntryProblems(entry, plan.date)
+    .concat(fileMatch.checkFigureMatch(entry, plan.hasFigure, plan.hasFigure2))
+    .concat(fileMatch.checkHeroMatch(entry, plan.hasHero));
 }
 
 /**
@@ -143,6 +150,32 @@ function checkFigureFile(context, plan) {
 }
 
 /**
+ * その日の入口画像（JPEG）の中身を確かめる（先頭が JPEG の印か・大きさが上限以内か）。入口画像が無い日は何もしない。
+ * @param {object} context 動かす場所
+ * @param {{ date: string, hasHero: boolean }} plan 変更の判定の結果
+ * @returns {string[]} 問題点（なければ空）
+ * @example checkHeroFile(context, { date: "2026-11-21", hasHero: true })
+ */
+function checkHeroFile(context, plan) {
+  if (!plan.hasHero) {
+    return [];
+  }
+  const filePath = "diary/heroes/" + plan.date + ".jpg";
+  const content = readRepoFile(context, filePath);
+  if (content === null) {
+    return [filePath + " がありません"];
+  }
+  const problems = [];
+  if (content.length < JPEG_SIGNATURE.length || !content.subarray(0, JPEG_SIGNATURE.length).equals(JPEG_SIGNATURE)) {
+    problems.push("入口画像：JPEG の画像ではありません（先頭の印が違います）");
+  }
+  if (content.length > HERO_MAX_BYTES) {
+    problems.push("入口画像：大きさが " + Math.floor(HERO_MAX_BYTES / 1024) + "KB を超えています（今は " + Math.ceil(content.length / 1024) + "KB）");
+  }
+  return problems;
+}
+
+/**
  * その日の日記・index.json・図の中身を確かめる（日付・index の変更・日記の検査・figure と図・図の検査）。
  * @param {object} context 動かす場所・run・today
  * @param {{ date: string, hasFigure: boolean }} plan 変更の判定の結果
@@ -153,7 +186,8 @@ function checkDiaryContents(context, plan) {
   return changesRule.checkPublishDate(plan.date, context.today)
     .concat(checkIndexFile(context, plan.date))
     .concat(checkEntryFile(context, plan))
-    .concat(checkFigureFile(context, plan));
+    .concat(checkFigureFile(context, plan))
+    .concat(checkHeroFile(context, plan));
 }
 
 module.exports = { readRepoFile, readRepoText, checkDiaryContents, hasUnicodeEscape };

@@ -13,6 +13,8 @@ const DIARY_ENTRY_PATHS = {
   folder: "entries/",
   faceFile: "../assets/speakers.svg",
   listPage: "./",
+  // 入口画像（JPEG）のフォルダ。場所は、検査を通った日付からだけ組み立てる（diary_hero_view.js）
+  heroFolder: "heroes/",
   // 〔v3〕図（SVG）のフォルダ。図の場所は、検査を通った日付からだけ組み立てる（diary_figure_view.js）
   figureFolder: "figures/"
 };

@@ -6,8 +6,9 @@
 const test = require("node:test");
 const assert = require("node:assert");
 const {
-  parseGitStatus, judgeDiaryChanges, checkIndexChange, checkFigureMatch, checkPublishDate, previousDate, NEEDS_DEV_FLOW_MESSAGE
+  parseGitStatus, judgeDiaryChanges, checkIndexChange, checkPublishDate, previousDate, NEEDS_DEV_FLOW_MESSAGE
 } = require("../tools/diary_changes.js");
+const { checkFigureMatch } = require("../tools/diary_file_match.js");
 
 const NEW_ENTRY = { state: "??", path: "diary/entries/2026-11-16.json" };
 const INDEX_CHANGE = { state: " M", path: "diary/entries/index.json" };

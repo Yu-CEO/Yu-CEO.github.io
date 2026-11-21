@@ -3,7 +3,7 @@
  * 最新1件の Day N・日付・見出し・抜粋（3行まで）・登場した話者の小さな顔と、「読む」の行き先を入れる。
  * 日記が1件もない・読み込めない（ファイルを直接開いたときなど）・形が正しくないときは、パネルとボタンを両方隠したままにする。
  * 主な関数：showLatestDiary（読み込みから表示までの流れ）、fillLatestCard（カードの中身を入れる）
- * 使うもの：diary_load.js・diary_day.js・diary_parts.js。main.js から使われる。tests/diary_views.test.js でテストする。
+ * 使うもの：diary_load.js・diary_day.js・diary_parts.js・diary_hero_view.js（カード一番上の入口画像）。main.js から使われる。tests/diary_views.test.js でテストする。
  */
 
 // Node.js（テスト）では、ほかのファイルの関数を require で読み込んで、ブラウザと同じ名前で使えるようにする
@@ -14,6 +14,7 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.makeDiaryElement = require("./diary_parts.js").makeDiaryElement;
   globalThis.createDiaryMetaRow = require("./diary_parts.js").createDiaryMetaRow;
   globalThis.createFacesRow = require("./diary_parts.js").createFacesRow;
+  globalThis.createDiaryHero = require("./diary_hero_view.js").createDiaryHero;
 }
 
 // index.html に書いた部品の id
@@ -29,11 +30,17 @@ const LATEST_DIARY_IDS = {
  * @param {HTMLElement} card カードの要素
  * @param {object} entry 検査を通った日記1件
  * @param {string} faceFile speakers.svg の場所
+ * @param {string} heroFolder diary/heroes/ の場所（hero のない日は使わない）
  * @returns {void}
- * @example fillLatestCard(card, entry, "assets/speakers.svg")
+ * @example fillLatestCard(card, entry, "assets/speakers.svg", "diary/heroes/")
  */
-function fillLatestCard(card, entry, faceFile) {
+function fillLatestCard(card, entry, faceFile, heroFolder) {
   card.textContent = "";
+  // 入口画像はカードの一番上。hero のない日は何も足さない
+  const heroImage = createDiaryHero(entry, heroFolder, "latest");
+  if (heroImage !== null) {
+    card.appendChild(heroImage);
+  }
   card.appendChild(createDiaryMetaRow(entry.date));
   card.appendChild(makeDiaryElement("h3", "", entry.title));
   card.appendChild(makeDiaryElement("p", "d-summary", entry.summary));
@@ -43,7 +50,7 @@ function fillLatestCard(card, entry, faceFile) {
 /**
  * 最新の日記をパネルに出し、パネルとヒーローの「会議の日記」ボタンを表示する。
  * @param {object} entry 検査を通った日記1件
- * @param {{ faceFile: string, entryPage: string }} paths 場所の設定
+ * @param {{ faceFile: string, entryPage: string, heroFolder: string }} paths 場所の設定
  * @returns {boolean} 表示できたら true（index.html に部品がないときは false）
  * @example revealLatestDiary(entry, paths)
  */
@@ -56,7 +63,7 @@ function revealLatestDiary(entry, paths) {
     console.warn("「最新の日記」の部品が index.html に見つかりません。id の書き間違いがないか確かめてください。");
     return false;
   }
-  fillLatestCard(card, entry, paths.faceFile);
+  fillLatestCard(card, entry, paths.faceFile, paths.heroFolder);
   // 日付は検査で YYYY-MM-DD の形と確かめ済みなので、そのまま場所に使ってよい
   readButton.href = paths.entryPage + "?date=" + entry.date;
   readButton.setAttribute("aria-label", "読む：Day " + getDayNumber(entry.date) + " " + entry.title);
@@ -69,9 +76,9 @@ function revealLatestDiary(entry, paths) {
  * 最新の日記を読み込んで、パネルとボタンを出す。出せないときは隠したまま（index.html で最初から隠してある）。
  * 最新の1件が正しくないときは、古い日記で代わりにせず、パネルごと隠す（最新でない日記を「最新」と見せないため）。
  * @param {string} folder diary/entries/ の場所
- * @param {{ faceFile: string, entryPage: string }} paths 場所の設定
+ * @param {{ faceFile: string, entryPage: string, heroFolder: string }} paths 場所の設定
  * @returns {Promise<boolean>} 出せたら true
- * @example showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html" })
+ * @example showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/" })
  */
 function showLatestDiary(folder, paths) {
   return loadDiaryIndex(folder)

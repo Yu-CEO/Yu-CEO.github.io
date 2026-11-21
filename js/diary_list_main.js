@@ -9,6 +9,7 @@
 const DIARY_LIST_PATHS = {
   folder: "entries/",
   faceFile: "../assets/speakers.svg",
+  heroFolder: "heroes/",
   entryPage: "entry.html",
   homePage: "../"
 };

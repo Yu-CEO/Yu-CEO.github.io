@@ -40,7 +40,7 @@ startRevealMotion();
 jumpToHashTarget();
 
 // 最新の日記は読み込みに少し時間がかかるので、出せたあとで背景の色をつけ直し、#diary-latest への移動もやり直す
-showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html" }).then(function (shown) {
+showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/" }).then(function (shown) {
   if (shown) {
     paintPanelTones(TONED_PANELS);
     jumpToHashTarget();

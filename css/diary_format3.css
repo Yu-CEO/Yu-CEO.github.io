@@ -55,3 +55,7 @@
 /* 学びの枠はもともと黄色。中のハイライトは下半分だけの線＋太字にして、背景に沈まないようにする */
 .d-take mark{padding:0;font-weight:700;background:linear-gradient(transparent 62%, var(--diary-mark-bg) 62%)}
 .d-fig + .d-take{margin-top:var(--diary-section-gap)}
+
+/* ===== 入口画像（hero）：本文の一番上。16:9・幅いっぱい・角丸。読み込めないときは JS が hidden にする ===== */
+.f3 .d-hero{display:block;width:100%;height:auto;aspect-ratio:16 / 9;margin:0 0 var(--diary-section-gap);border-radius:var(--diary-card-radius)}
+.f3 .d-hero[hidden]{display:none}

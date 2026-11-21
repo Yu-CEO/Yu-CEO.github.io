@@ -1,8 +1,8 @@
 /*
  * diary_validate_format3.js：3版目（"format": 3）の日記1件が決まった形か、公開してはいけない書き方がないかを調べる。画面には触れない
- * 2版目との違い：太字・ハイライト（** と ==）が書ける項目がある／今日の学び takeaway／2枚目の図 figure2／文字数は記号を除いて数える。
+ * 2版目との違い：太字・ハイライト（** と ==）が書ける項目がある／今日の学び takeaway／2枚目の図 figure2／入口画像 hero／文字数は記号を除いて数える。
  * 主な関数：findFormat3Problems（日記1件の問題点を日本語の一覧で返す。空なら正しい）、countFormat3Characters（本文の合計の文字数）
- * 強調の数・本文の合計の文字数の数え方は diary_format3_counts.js に分けた。
+ * 強調の数・本文の合計の文字数の数え方は diary_format3_counts.js に、図（figure・figure2）と入口画像（hero）の説明の検査は diary_validate_format3_media.js に分けた。
  * 使うもの：diary_markup.js（強調の読み取り）・diary_validate.js の部品（checkUnknownFields・checkPick など）・diary_safety.js・diary_speakers.js。
  * diary_format.js から使われる。tests/diary_validate_format3.test.js でテストする。形の見分けと日付の決まりは diary_format.js が調べる。
  */
@@ -16,6 +16,11 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.countCharacters = oldFormatParts.countCharacters;
   globalThis.checkUnknownFields = oldFormatParts.checkUnknownFields;
   globalThis.checkPick = oldFormatParts.checkPick;
+  // 図・入口画像の検査（diary_validate_format3_media.js）が、ここの関数 checkPlainText を使うため（ブラウザでは同じ名前が最初から共有される）
+  globalThis.checkPlainText = checkPlainText;
+  const mediaParts = require("./diary_validate_format3_media.js");
+  globalThis.checkFigureDescription = mediaParts.checkFigureDescription;
+  globalThis.checkHeroDescription = mediaParts.checkHeroDescription;
   const markupParts = require("./diary_markup.js");
   globalThis.parseMarkup = markupParts.parseMarkup;
   globalThis.stripMarkup = markupParts.stripMarkup;
@@ -29,20 +34,17 @@ if (typeof module !== "undefined" && module.exports) {
 
 // 3版目の日記に書いてよい項目の名前。これ以外の項目があると形の誤りにする
 const FORMAT3_ALLOWED_FIELDS = [
-  "format", "date", "title", "summary", "problem", "lines", "decision", "result", "takeaway", "pick", "figure", "figure2"
+  "format", "date", "title", "summary", "problem", "lines", "decision", "result", "takeaway", "pick", "figure", "figure2", "hero"
 ];
 // 旧形式だけの項目。3版目に混ざっていたら、分かりやすい理由で止める
 const FORMAT3_OLD_ONLY_FIELDS = ["agenda", "decisions", "lessons"];
-// セリフ1つ・図の説明に書いてよい項目の名前
+// セリフ1つに書いてよい項目の名前
 const FORMAT3_LINE_FIELDS = ["speaker", "text"];
-const FORMAT3_FIGURE_FIELDS = ["alt", "caption"];
 // 文字の長さの上限（記号を除いた、読者に見える文字数）
 const FORMAT3_MAX_TITLE = 40;
 const FORMAT3_MAX_SUMMARY = 120;
 const FORMAT3_MAX_DECISION = 120;
 const FORMAT3_MAX_TAKEAWAY = 60;
-const FORMAT3_MAX_FIGURE_ALT = 200;
-const FORMAT3_MAX_FIGURE_CAPTION = 60;
 // 記号を含めたもとの長さの歯止め（上限＋この文字数）。記号を大量に並べたデータを止めるため。強調は多くても数か所なので20文字あれば足りる
 const FORMAT3_MARKUP_ALLOWANCE = 20;
 // 文の配列の決まり：min〜max 個・1つあたり maxLength 文字まで
@@ -217,27 +219,6 @@ function checkTakeaway(takeaway, problems) {
 }
 
 /**
- * 図の説明（figure・figure2）を調べる。書かなくてよいが、書くなら { alt, caption } の形。強調の記号は書けない。
- * @param {*} figure 調べる値
- * @param {string} fieldName 項目の名前（"figure" か "figure2"）
- * @param {string[]} problems 問題を足していく一覧
- * @returns {void}
- * @example checkFigureDescription({ alt: "説明", caption: "下の説明" }, "figure", problems)
- */
-function checkFigureDescription(figure, fieldName, problems) {
-  if (figure === undefined) {
-    return;
-  }
-  if (figure === null || typeof figure !== "object" || Array.isArray(figure)) {
-    problems.push("「" + fieldName + "」が { } の形になっていません");
-    return;
-  }
-  checkUnknownFields(figure, FORMAT3_FIGURE_FIELDS, "「" + fieldName + "」に、", problems);
-  checkPlainText(figure.alt, "「" + fieldName + "」の「alt」", FORMAT3_MAX_FIGURE_ALT, problems);
-  checkPlainText(figure.caption, "「" + fieldName + "」の「caption」", FORMAT3_MAX_FIGURE_CAPTION, problems);
-}
-
-/**
  * 項目の名前が決まったものだけかを調べる。旧形式の項目は「混ざっている」という理由にする。
  * @param {object} entry 日記1件
  * @param {string[]} problems 問題を足していく一覧
@@ -283,6 +264,7 @@ function findFormat3Problems(entry, fileDate) {
   checkPick(entry.pick, entry.lines, problems);
   checkFigureDescription(entry.figure, "figure", problems);
   checkFigureDescription(entry.figure2, "figure2", problems);
+  checkHeroDescription(entry.hero, problems);
   // 強調の数と合計の文字数は、ほかの形が正しいときだけ数える（形が崩れていると正しく数えられないため）
   if (problems.length === 0) {
     checkMarkupCounts(entry, problems);
