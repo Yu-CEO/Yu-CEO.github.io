@@ -75,7 +75,8 @@
         <p class="talk-eyebrow" id="talk-eyebrow"></p>
         <div class="talk-row">
           <div class="talk-who"><span id="talk-face-holder"></span><span class="talk-name" id="talk-name"></span></div>
-          <div class="talk-bubble"><p class="talk-text" id="talk-text"></p></div>
+          <!-- 吹き出し全体がリンク。押すと、その名言が出た日の日記へ飛ぶ（2026-11-21 追加。href は js/hero_advice.js が入れる） -->
+          <a class="talk-bubble" id="talk-bubble-link" href="diary/"><p class="talk-text" id="talk-text"></p><span class="talk-more" aria-hidden="true">この日の話を読む ›</span></a>
         </div>
         <div class="talk-to">
           <span class="talk-tag" id="talk-tag"></span>

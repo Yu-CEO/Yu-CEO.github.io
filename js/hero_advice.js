@@ -1,6 +1,6 @@
 /*
  * hero_advice.js：ヒーローの「AI役員が Yu に提案・指摘する場面」と「AI会社を始めて N 日目」を出す（第3回）
- * 場面の中身：ランダムに選んだ役員の大きな顔・名札・名言の吹き出し・「→ Yu へ提案／指摘」のラベル・出典リンク・AI役員8人の小さな顔の列。
+ * 場面の中身：ランダムに選んだ役員の大きな顔・名札・名言の吹き出し（押すとその日の日記へ）・「→ Yu へ提案／指摘」のラベル・出典リンク・AI役員8人の小さな顔の列。
  * 主な関数：formatQuoteText（記号を外し80字で省く）、buildQuoteTexts（出す文字をまとめる・画面に触れない）、
  *           showHeroAdvice（場面に出す）、showHeroDays（「今日で、AI会社を始めて N 日目」を出す）、readBoardQuotes（名言の一覧を安全に取り出す）
  * 前提：diary_day.js・diary_markup.js・diary_speakers.js・diary_parts.js・board_quote_pick.js が先に読み込まれている。
@@ -48,7 +48,8 @@ const HERO_ADVICE_IDS = {
   text: "talk-text",
   tag: "talk-tag",
   board: "talk-board",
-  link: "hero-quote-link"
+  link: "hero-quote-link",
+  bubbleLink: "talk-bubble-link"
 };
 
 /**
@@ -161,6 +162,9 @@ function fillAdviceQuote(parts, texts, faceFile) {
   parts.tag.className = "talk-tag " + texts.kindClass;
   parts.tag.textContent = texts.kindLabel;
   parts.link.setAttribute("href", texts.href);
+  // 吹き出し全体も同じ日記へのリンクにする。読み上げでは「名言＋この日の話を読む」と伝わるようにする
+  parts.bubbleLink.setAttribute("href", texts.href);
+  parts.bubbleLink.setAttribute("aria-label", texts.text + "（この日の話を読む）");
 }
 
 /**

@@ -31,7 +31,8 @@ function read(file) {
 function setUpAdvice() {
   const ids = {
     "hero-talk": "div", "talk-eyebrow": "p", "talk-face-holder": "span", "talk-name": "span",
-    "talk-text": "p", "talk-tag": "span", "talk-board": "div", "hero-quote-link": "a"
+    "talk-text": "p", "talk-tag": "span", "talk-board": "div", "hero-quote-link": "a",
+    "talk-bubble-link": "a"
   };
   const parts = {};
   Object.keys(ids).forEach(function (id) {
@@ -87,6 +88,9 @@ test("第3回：名言を選ぶと、大きな顔・名札・吹き出し・ラ�
   assert.strictEqual(parts["talk-tag"].textContent, "→ Yu へ提案");
   assert.match(parts["talk-tag"].className, /k-teian/);
   assert.strictEqual(parts["hero-quote-link"].getAttribute("href"), "diary/entry.html?date=2026-11-14");
+  // 吹き出し全体も同じ日記へ飛ぶ（2026-11-21 追加）
+  assert.strictEqual(parts["talk-bubble-link"].getAttribute("href"), "diary/entry.html?date=2026-11-14");
+  assert.match(parts["talk-bubble-link"].getAttribute("aria-label"), /^金額を出さないなら.*（この日の話を読む）$/);
   assert.strictEqual(parts["talk-eyebrow"].textContent, "1日目の会議で（2026.11.14）");
   assert.ok(!/no-quote/.test(parts["hero-talk"].className));
   const face = parts["talk-face-holder"].children[0];
@@ -179,7 +183,7 @@ test("第3回：役員の絵の場所は js/site_config.js の SPEAKER_FACE_FILE
 test("第3回：入口に場面の部品が全部あり、最初は no-quote（空の吹き出しを残さない）。Yu の写真は WebP を先に使い、背景画像（url）を使わない", function () {
   const html = read("index.html");
   assert.ok(/class="talk no-quote" id="hero-talk"/.test(html));
-  ["talk-eyebrow", "talk-face-holder", "talk-name", "talk-text", "talk-tag", "talk-board", "hero-quote-link", "hero-days", "hero-days-number"].forEach(function (id) {
+  ["talk-eyebrow", "talk-face-holder", "talk-name", "talk-text", "talk-tag", "talk-board", "hero-quote-link", "talk-bubble-link", "hero-days", "hero-days-number"].forEach(function (id) {
     assert.ok(html.includes('id="' + id + '"'), id);
   });
   assert.ok(html.includes("この日の話を読む") && html.includes("人間・社長"));

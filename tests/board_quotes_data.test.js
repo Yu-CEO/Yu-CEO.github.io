@@ -25,7 +25,7 @@ function readEntry(date) {
 }
 
 test("AC-32：全件が正しい形（許可された役員・80字以内・日付）で、アオイ・Yu・秘書がいない", function () {
-  assert.strictEqual(BOARD_QUOTES.length, 13);
+  assert.strictEqual(BOARD_QUOTES.length, 12);
   BOARD_QUOTES.forEach(function (quote) {
     assert.ok(isValidBoardQuote(quote), quote.text);
     assert.ok(BOARD_QUOTE_SPEAKERS.includes(quote.speaker));
@@ -82,10 +82,10 @@ test("2-1-1：一覧に機密・投資を勧める言葉がない", function () 
   });
 });
 
-// 第3回（2026-11-21 決定）：試作どおりの提案7・指摘6（役員・日付で指す）
-const SHITEKI_QUOTES = ["CFO 2026-11-20", "CTO 2026-11-18", "CTO 2026-11-20", "CISO 2026-11-15", "ブランドディレクター 2026-11-14", "プロデューサー 2026-11-16"];
+// 第3回（2026-11-21 決定）：試作どおりの提案7・指摘6（役員・日付で指す）。同日、CTO 11-20 は誤った再生数にもとづくため外した → 指摘5
+const SHITEKI_QUOTES = ["CFO 2026-11-20", "CTO 2026-11-18", "CISO 2026-11-15", "ブランドディレクター 2026-11-14", "プロデューサー 2026-11-16"];
 
-test("第3回：全件に kind があり、提案7件・指摘6件で、試作どおりの振り分け", function () {
+test("第3回：全件に kind があり、提案7件・指摘5件で、試作どおりの振り分け", function () {
   const teian = BOARD_QUOTES.filter(function (quote) {
     return quote.kind === "teian";
   });
@@ -93,7 +93,7 @@ test("第3回：全件に kind があり、提案7件・指摘6件で、試作�
     return quote.kind === "shiteki";
   });
   assert.strictEqual(teian.length, 7);
-  assert.strictEqual(shiteki.length, 6);
+  assert.strictEqual(shiteki.length, 5);
   const shitekiKeys = shiteki.map(function (quote) {
     return quote.speaker + " " + quote.date;
   });

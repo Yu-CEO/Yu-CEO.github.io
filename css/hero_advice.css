@@ -52,6 +52,11 @@
 .talk-name small{font-size:10px;font-weight:400;color:var(--hero-text-sub)}
 /* 吹き出し：黄色い枠。三角は左（役員の顔の側）を向ける */
 .talk-bubble{
+  display:block;
+  color:inherit;
+  text-decoration:none;
+  cursor:pointer;
+  transition:border-color var(--t-hover) ease,transform var(--t-hover) ease;
   flex:1 1 0;
   min-width:0;
   position:relative;
@@ -61,6 +66,11 @@
   background:var(--talk-bubble-bg);
   border:2px solid var(--talk-yellow);
 }
+.talk-bubble:hover,.talk-bubble:focus-visible{border-color:var(--talk-bubble-hover);transform:translateY(-1px)}
+.talk-bubble:focus-visible{outline:3px solid var(--talk-yellow);outline-offset:3px}
+/* 押せることが分かる小さな目印（右下） */
+.talk-more{display:block;margin-top:6px;text-align:right;font-size:12px;font-weight:700;color:var(--talk-yellow)}
+@media (prefers-reduced-motion:reduce){.talk-bubble{transition:none}.talk-bubble:hover,.talk-bubble:focus-visible{transform:none}}
 .talk-bubble::before{
   content:"";
   position:absolute;
