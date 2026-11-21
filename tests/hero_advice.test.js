@@ -199,9 +199,9 @@ test("script は読み込み順どおり（日記の部品 → 名言の一覧 �
   assert.deepStrictEqual(order.slice().sort(function (a, b) { return a - b; }), order);
 });
 
-test("CSP を緩めていない：style 属性・HTML 直書きの挿入がない", function () {
+test("自前のコードは style 属性・HTML 直書きの挿入をしない（CSP の 'unsafe-inline' は AdSense のためだけ）", function () {
   const html = read("index.html");
-  assert.ok(html.includes("script-src 'self' https://www.googletagmanager.com; style-src 'self';"));
+  assert.ok(html.includes("script-src 'self' https://www.googletagmanager.com https://pagead2.googlesyndication.com"));
   assert.ok(!/<[a-z][^>]* style="/.test(html));
   ["js/hero_advice.js", "js/diary_recent_view.js", "js/diary_latest_panel.js"].forEach(function (file) {
     assert.ok(!/innerHTML|setAttribute\("style"|\.cssText/.test(read(file)), file);

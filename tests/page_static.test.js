@@ -179,7 +179,8 @@ test("道具箱 AC-18：外部の <script>・<iframe> がなく、計測用画�
   });
   readAllScripts().forEach(function (script) {
     // 例外：gtm_loader.js だけは Google タグマネージャーの本体を読み込むために script を作る（仕様 2-10。CSP で読み込み先を限る）
-    if (script.fileName === "gtm_loader.js") {
+    // adsense_loader.js も同じく Google AdSense の本体を読み込むために script を作る（CSP で読み込み先を限る）
+    if (script.fileName === "gtm_loader.js" || script.fileName === "adsense_loader.js") {
       return;
     }
     assert.ok(!/createElement\(\s*["'](script|iframe)/.test(script.code), script.fileName + " で script・iframe を作っています");

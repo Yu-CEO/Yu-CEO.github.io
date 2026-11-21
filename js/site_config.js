@@ -29,7 +29,10 @@ const SITE_CONFIG = {
   ANALYTICS_PUBLIC_HOST: "yu-ceo.github.io",
   // Google タグマネージャーのコンテナID（GTM-で始まる。公開の値）。空にすると GTM は読み込まない（gtm_loader.js）。
   // 読み込む条件は GoatCounter と同じ（ANALYTICS_ENABLED・公開サイト・トラッキングしない）
-  GTM_ID: "GTM-PH2VNGMC"
+  GTM_ID: "GTM-PH2VNGMC",
+  // Google AdSense のサイト運営者ID（ca-pub- で始まる。公開の値）。空にすると広告は読み込まない（adsense_loader.js）。
+  // 公開サイトで開いたときだけ読み込む。変えたら、3ページの <meta name="google-adsense-account"> と ads.txt も同じにする（テストが確かめる）
+  ADSENSE_CLIENT: "ca-pub-4030921387057007"
 };
 
 // 道具箱で使うアフィリエイトサービス（ASP：紹介リンクを発行する会社）の一覧。toolbox_validate.js・toolbox_view.js が使う。

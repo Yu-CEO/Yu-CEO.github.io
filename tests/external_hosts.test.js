@@ -17,14 +17,24 @@ const { removeJsComments, findHostsWithLines } = require("./helpers/source_scan.
 
 const PORTAL_FOLDER = path.join(__dirname, "..");
 const PAGE_FILES = ["index.html", "diary/index.html", "diary/entry.html"];
+// Google AdSense（adsense_loader.js。2026-11-21 追加）が使う場所。広告の本体・iframe・画像・通信のため CSP を広げる
+const ADSENSE_SCRIPT_SOURCES = ["https://pagead2.googlesyndication.com", "https://*.googlesyndication.com", "https://*.doubleclick.net",
+  "https://*.googletagservices.com", "https://adservice.google.com", "https://*.adtrafficquality.google", "https://fundingchoicesmessages.google.com"];
+const ADSENSE_IMAGE_SOURCES = ["https://*.googlesyndication.com", "https://*.doubleclick.net", "https://*.google.com", "https://*.gstatic.com",
+  "https://*.adtrafficquality.google"];
+const ADSENSE_CONNECT_SOURCES = ["https://*.googlesyndication.com", "https://*.doubleclick.net", "https://*.google.com", "https://csi.gstatic.com",
+  "https://*.adtrafficquality.google"];
+const ADSENSE_FRAME_SOURCES = ["https://*.googlesyndication.com", "https://*.doubleclick.net", "https://www.google.com", "https://*.adtrafficquality.google"];
+const ADSENSE_HOST = "pagead2.googlesyndication.com";
 // 外部のホストを書かずに、読み込み先が同じサイトだけと決める指定（CSP の値は2-5の表のとおり）
 const CSP_FIXED_DIRECTIVES = {
   "default-src": ["'self'"],
-  "script-src": ["'self'", "https://www.googletagmanager.com"],
-  "style-src": ["'self'"],
-  "connect-src": ["'self'", "https://www.googletagmanager.com", "https://*.google-analytics.com", "https://*.analytics.google.com"],
+  "script-src": ["'self'", "https://www.googletagmanager.com"].concat(ADSENSE_SCRIPT_SOURCES),
+  // 'unsafe-inline'：AdSense が広告の枠に style を付けるため（script は 'self' と Google の場所だけのまま）
+  "style-src": ["'self'", "'unsafe-inline'"],
+  "connect-src": ["'self'", "https://www.googletagmanager.com", "https://*.google-analytics.com", "https://*.analytics.google.com"].concat(ADSENSE_CONNECT_SOURCES),
   "font-src": ["'none'"],
-  "frame-src": ["'none'"],
+  "frame-src": ADSENSE_FRAME_SOURCES,
   "object-src": ["'none'"],
   "base-uri": ["'self'"],
   "form-action": ["'none'"]
@@ -131,7 +141,7 @@ function expectedImageSources(pageFile) {
   if (pageFile === "index.html") {
     hosts = hosts.concat(beaconHosts());
   }
-  return hosts.map(function (host) { return "https://" + host; }).concat(GTM_IMAGE_SOURCES).sort();
+  return hosts.map(function (host) { return "https://" + host; }).concat(GTM_IMAGE_SOURCES, ADSENSE_IMAGE_SOURCES).sort();
 }
 
 /**
@@ -169,7 +179,7 @@ test("AC-14：外部の <script src> を足すと、ファイル名と行の番�
 });
 
 test("2-7-2・AC-12・AC-14：js/ に書かれた外部の場所は、許可リストかリンク用のURLだけ", function () {
-  const allowed = analyticsHosts().concat(beaconHosts(), linkOnlyHosts(), NAMESPACE_HOSTS, [GTM_HOST]);
+  const allowed = analyticsHosts().concat(beaconHosts(), linkOnlyHosts(), NAMESPACE_HOSTS, [GTM_HOST, ADSENSE_HOST]);
   readFolder("js", ".js").forEach(function (file) {
     findHostsWithLines(removeJsComments(file.text)).forEach(function (found) {
       assert.ok(allowed.includes(found.host),

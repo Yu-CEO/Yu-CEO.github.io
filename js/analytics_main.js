@@ -13,3 +13,8 @@ if (typeof startAnalytics === "function" && typeof SITE_CONFIG !== "undefined") 
 if (typeof startGtm === "function" && typeof SITE_CONFIG !== "undefined") {
   startGtm(SITE_CONFIG, window);
 }
+
+// Google AdSense（adsense_loader.js）。読み込めなかったとき（広告ブロッカーなど）は何もしない
+if (typeof startAdsense === "function" && typeof SITE_CONFIG !== "undefined") {
+  startAdsense(SITE_CONFIG, window);
+}

@@ -74,4 +74,5 @@ test("AC-9：sitemap.xml はリポジトリに置かない（公開の手順で�
   const ci = fs.readFileSync(path.join(__dirname, "..", ".github", "workflows", "ci.yml"), "utf8");
   assert.ok(ci.includes("node tools/build_sitemap.js _site"));
   assert.ok(ci.includes("cp index.html robots.txt _site/"));
+  assert.ok(ci.includes("cp ads.txt _site/"), "ads.txt（AdSense）を公開していません");
 });

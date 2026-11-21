@@ -101,6 +101,7 @@ jobs:
         run: |
           mkdir _site
           cp index.html robots.txt _site/
+          cp ads.txt _site/
           for dir in css js diary assets images; do
             if [ -d "$dir" ]; then cp -r "$dir" _site/; fi
           done
