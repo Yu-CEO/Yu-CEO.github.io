@@ -1,6 +1,6 @@
 /*
  * diary_entry_view.js：日記1件のページ（/diary/entry.html?date=YYYY-MM-DD）の表示
- * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・冒頭のつかみ）→ 01 議題 → 02 役員の一言（顔つきの吹き出し）
+ * 並び：紺の帯（一覧へ戻る・N日目・日付・見出し・まとめ・冒頭のつかみ）→ 01 議題 → 02 役員の一言（顔つきの吹き出し）
  *       → 03 決定 → 04 失敗・学び → 出口（オープンチャット・一覧へ戻る・Zenn の説明と文字リンク）
  * 〔v3〕このファイルは旧形式（format なし）の日の表示。新しい形（format 2）の日は diary_story_view.js が、
  *       ここの部品（紺の帯・節・吹き出し・出口など）を使って表示する。
@@ -12,7 +12,8 @@
 
 // Node.js（テスト）では、ほかのファイルの関数を require で読み込んで、ブラウザと同じ名前で使えるようにする
 if (typeof module !== "undefined" && module.exports) {
-  globalThis.getDayNumber = require("./diary_day.js").getDayNumber;
+  globalThis.formatDayShort = require("./diary_day.js").formatDayShort;
+  globalThis.createDayBand = require("./diary_parts.js").createDayBand;
   globalThis.formatDateJa = require("./diary_day.js").formatDateJa;
   globalThis.makeDiaryElement = require("./diary_parts.js").makeDiaryElement;
   globalThis.createDiaryHook = require("./diary_hook_view.js").createDiaryHook;
@@ -48,7 +49,7 @@ function createBackRow(text, href) {
 }
 
 /**
- * 紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・記録：秘書・冒頭のつかみ）を作る。
+ * 紺の帯（一覧へ戻る・N日目・日付・見出し・まとめ・記録：秘書・冒頭のつかみ）を作る。
  * @param {object} entry 検査を通った日記1件
  * @param {{ faceFile: string, listPage: string }} paths 場所の設定
  * @returns {HTMLElement} 帯の要素
@@ -59,7 +60,7 @@ function createEntryHead(entry, paths) {
   head.appendChild(createBackRow("一覧へ戻る", paths.listPage));
   const inner = makeDiaryElement("div", "d-head-inner", "");
   inner.appendChild(makeDiaryElement("p", "d-eyebrow", "BOARD MEETING DIARY"));
-  inner.appendChild(makeDiaryElement("p", "d-day-big", "Day " + getDayNumber(entry.date)));
+  inner.appendChild(createDayBand(entry.date));
   inner.appendChild(makeDiaryElement("p", "d-date", formatDateJa(entry.date)));
   inner.appendChild(makeDiaryElement("h1", "d-h1", entry.title));
   inner.appendChild(makeDiaryElement("p", "d-lead", entry.summary));
@@ -248,7 +249,7 @@ function createExitBox(listPage) {
 }
 
 /**
- * 日記1件を、決まった並びで表示し、タブの題名を「Day N 見出し｜経営会議の日記」にする。
+ * 日記1件を、決まった並びで表示し、タブの題名を「N日目 見出し｜経営会議の日記」にする。
  * @param {HTMLElement} area 表示する場所
  * @param {object} entry 検査を通った日記1件
  * @param {{ faceFile: string, listPage: string }} paths 場所の設定
@@ -267,7 +268,7 @@ function showDiaryEntry(area, entry, paths) {
   body.appendChild(lessons);
   area.appendChild(body);
   area.appendChild(createExitBox(paths.listPage));
-  document.title = "Day " + getDayNumber(entry.date) + " " + entry.title + DIARY_TITLE_SUFFIX;
+  document.title = formatDayShort(entry.date) + " " + entry.title + DIARY_TITLE_SUFFIX;
 }
 
 /**

@@ -1,7 +1,9 @@
 /*
- * diary_day.js：日記の日付を扱う（形の確認・Day N の計算・表示用の文字）。画面には触れない
- * 主な関数：isDiaryDate（YYYY-MM-DD の形で、実在する日付か）、getDayNumber（Day N を計算）、
- *           formatDateJa（「2026年11月16日（月）」の形にする）
+ * diary_day.js：日記の日付を扱う（形の確認・「N日目」の計算・表示用の文字）。画面には触れない
+ * 主な関数：isDiaryDate（YYYY-MM-DD の形で、実在する日付か）、getDayNumber（何日目かを計算）、
+ *           formatDayShort（「8日目」）、formatDayLong（「AI会社を始めて8日目」）、formatLocalDate（端末の今日を YYYY-MM-DD に）、
+ *           getTodayDayNumber（今日は何日目か）、formatDateJa（「2026年11月16日（月）」）、formatDateDot（「2026.11.16」）
+ * 〔第3回〕画面の「Day N」は「N日目」に統一した（初めての人にも、数字の意味が通じるように）。数え方は今までと同じ。
  * diary_validate.js・diary_load.js・日記の表示のファイルから使われる。tests/diary_day.test.js でテストする。
  */
 
@@ -44,9 +46,9 @@ function isDiaryDate(date) {
 }
 
 /**
- * 日付から Day N を計算する（Day 1 ＝ 2026-11-14）。
+ * 日付から何日目かを計算する（1日目 ＝ 2026-11-14）。
  * @param {string} date "YYYY-MM-DD" の形の日付
- * @returns {number} Day の番号
+ * @returns {number} 何日目か
  * @example getDayNumber("2026-11-14") // 1
  * @example getDayNumber("2027-02-11") // 90
  */
@@ -67,7 +69,61 @@ function formatDateJa(date) {
     "（" + WEEKDAY_NAMES[time.getUTCDay()] + "）";
 }
 
+/**
+ * 「8日目」の形の短い表示にする（カード・ボタンの名前など、せまい所で使う）。
+ * @param {string} date "YYYY-MM-DD" の形の日付
+ * @returns {string} 「8日目」の形の文字
+ * @example formatDayShort("2026-11-21") // "8日目"
+ */
+function formatDayShort(date) {
+  return getDayNumber(date) + "日目";
+}
+
+/**
+ * 「AI会社を始めて8日目」の形の長い表示にする（広い所・1件のページの帯・読み上げ用）。
+ * @param {string} date "YYYY-MM-DD" の形の日付
+ * @returns {string} 「AI会社を始めて8日目」の形の文字
+ * @example formatDayLong("2026-11-21") // "AI会社を始めて8日目"
+ */
+function formatDayLong(date) {
+  return "AI会社を始めて" + getDayNumber(date) + "日目";
+}
+
+/**
+ * 端末の「今日」を、時差の影響を受けない YYYY-MM-DD の文字にする（利用者の暮らす日付で数えるため、端末の日付を使う）。
+ * @param {Date} now 今の時刻
+ * @returns {string} "YYYY-MM-DD" の形の日付
+ * @example formatLocalDate(new Date(2026, 10, 21, 23, 59)) // "2026-11-21"
+ */
+function formatLocalDate(now) {
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return now.getFullYear() + "-" + month + "-" + day;
+}
+
+/**
+ * 端末の「今日」が何日目かを返す（1日目 ＝ 2026-11-14。日記と同じ数え方）。
+ * @param {Date} now 今の時刻
+ * @returns {number} 何日目か
+ * @example getTodayDayNumber(new Date(2026, 10, 21)) // 8
+ */
+function getTodayDayNumber(now) {
+  return getDayNumber(formatLocalDate(now));
+}
+
+/**
+ * 日付を、点で区切った短い形にする（小さなカード用）。
+ * @param {string} date "YYYY-MM-DD" の形の日付
+ * @returns {string} 「2026.11.16」の形の文字
+ * @example formatDateDot("2026-11-16") // "2026.11.16"
+ */
+function formatDateDot(date) {
+  return date.replace(/-/g, ".");
+}
+
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { isDiaryDate, getDayNumber, formatDateJa };
+  module.exports = {
+    isDiaryDate, getDayNumber, formatDateJa, formatDayShort, formatDayLong, formatLocalDate, getTodayDayNumber, formatDateDot
+  };
 }

@@ -14,6 +14,9 @@ const SITE_CONFIG = {
   TIKTOK_URL: "https://www.tiktok.com/@yu_from_l2w",
   // Zenn（エンジニア向けの記事サイト）の記事一覧のURL。文字のリンク「作り方の記事を読む（Zenn）」に使う
   ZENN_URL: "https://zenn.dev/yuceo",
+  // 入口で使う役員の顔の絵（SVG）の場所。ヒーローの大きな顔・小さな顔の列・日記カードの顔がすべてここを見る。
+  // 役員ごとの立体の絵に差し替えるときは、新しい絵のファイルを assets/ に置き、ここの1行だけを直す（絵の中の名前は diary_speakers.js の表の key と同じにする）
+  SPEAKER_FACE_FILE: "assets/speakers.svg",
 
   // ここから アクセス解析（GoatCounter）の設定。analytics_path.js・analytics_beacon.js が使う。止め方・始め方は README の「アクセス解析」
   // 計測のスイッチ。false にすると、どのページでも計測サービスと通信しない（JSを消さずに止められる）

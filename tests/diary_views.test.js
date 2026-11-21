@@ -71,10 +71,13 @@ function setUpLatestPanel() {
     "diary-latest": createFakeElement("section"),
     "diary-latest-card": createFakeElement("article"),
     "diary-latest-read": createFakeElement("a"),
-    "hero-diary": createFakeElement("a")
+    "hero-main": createFakeElement("a"),
+    "hero-tools": createFakeElement("a"),
+    "hero-tools-pill": createFakeElement("a")
   };
   parts["diary-latest"].hidden = true;
-  parts["hero-diary"].hidden = true;
+  parts["hero-main"].hidden = true;
+  parts["hero-tools-pill"].hidden = true;
   installFakeDocument(parts);
   return parts;
 }
@@ -87,7 +90,7 @@ test("AC-4：一覧は渡した順（新しい順）にカードが並び、カ�
   const links = findAllByTag(area, "a");
   assert.deepStrictEqual(links.map(function (link) { return link.href; }), ["entry.html?date=2026-11-16", "entry.html?date=2026-11-15"]);
   const first = links[0];
-  assert.strictEqual(findByClass(first, "d-day").textContent, "Day 3");
+  assert.strictEqual(findByClass(first, "d-day").textContent, "3日目");
   assert.ok(findByClass(first, "d-summary"));
   assert.ok(findAllByClass(first, "avatar-small").length > 0);
   assert.strictEqual(findByClass(first, "read-label").textContent, "読む");
@@ -113,19 +116,19 @@ test("AC-2：登場した話者が6人以上なら、顔は5人分と「+N」", 
   assert.strictEqual(findByClass(area, "faces-more").textContent, "+1");
 });
 
-test("AC-7：1件のページは決まった順に並び、タブの題名が「Day N 見出し｜経営会議の日記」になる", function () {
+test("AC-7：1件のページは決まった順に並び、タブの題名が「N日目 見出し｜経営会議の日記」になる", function () {
   const doc = installFakeDocument({});
   const area = createFakeElement("main");
   const entry = readSample("2026-11-14");
   showDiaryEntry(area, entry, LIST_PATHS);
   const head = area.children[0];
-  assert.strictEqual(findByClass(head, "d-day-big").textContent, "Day 1");
+  assert.strictEqual(findByClass(head, "d-day-big").textContent, "AI会社を始めて1日目");
   assert.strictEqual(findByClass(head, "d-h1").textContent, entry.title);
   assert.ok(findByClass(head, "d-hook"));
   const sectionTitles = findAllByClass(area, "d-sec-title").map(function (title) { return title.textContent; });
   assert.deepStrictEqual(sectionTitles, ["01今日の議題", "02役員の一言", "03今日の決定", "04今日の失敗・学び"]);
   assert.ok(findByClass(area.children[2], "d-cta-box"));
-  assert.strictEqual(doc.title, "Day 1 " + entry.title + "｜経営会議の日記");
+  assert.strictEqual(doc.title, "1日目 " + entry.title + "｜経営会議の日記");
 });
 
 test("AC-7：セリフは名前が吹き出しの上に出て、読み上げ・コピーでは「話者：セリフ」になる", function () {
@@ -236,20 +239,24 @@ test("AC-9：見つからないときは「この日の日記は見つかりま�
   assert.strictEqual(doc.title, "見つかりませんでした｜経営会議の日記");
 });
 
-test("AC-1・AC-29：入口ページに最新の日記（新しい日付）を出し、「読む」は同じタブでその日のページへ。日記ボタンも出る", async function () {
+test("AC-1・AC-29：入口ページに最新の日記（新しい日付）を出し、「読む」は同じタブでその日のページへ。主役ボタンが「最新の会議を読む」になる", async function () {
   const parts = setUpLatestPanel();
   installFakeFetch(["2026-11-15", "2026-11-16"], { "2026-11-15": readSample("2026-11-15"), "2026-11-16": readSample("2026-11-16") });
-  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html" });
+  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
   assert.strictEqual(shown, true);
   assert.strictEqual(parts["diary-latest"].hidden, false);
-  assert.strictEqual(parts["hero-diary"].hidden, false);
+  assert.strictEqual(parts["hero-main"].hidden, false);
+  assert.strictEqual(parts["hero-main"].textContent, "最新の会議を読む");
+  assert.strictEqual(parts["hero-main"].href, "diary/entry.html?date=2026-11-16");
+  assert.strictEqual(parts["hero-tools"].hidden, true);
+  assert.strictEqual(parts["hero-tools-pill"].hidden, false);
   assert.strictEqual(parts["diary-latest-read"].href, "diary/entry.html?date=2026-11-16");
   assert.strictEqual(parts["diary-latest-read"].target, undefined);
-  assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "Day 3");
+  assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "3日目");
   assert.ok(findByClass(parts["diary-latest-card"], "d-summary"));
 });
 
-test("AC-3：日記が0件・読み込めない・最新の日記の形が壊れているときは、パネルも日記ボタンも隠したまま", async function () {
+test("AC-3：日記が0件・読み込めない・最新の日記の形が壊れているときは、パネルも主役ボタンも隠したまま（「無料ツールを見る」が主役のまま）", async function () {
   const broken = readSample("2026-11-16");
   delete broken.title;
   const cases = [
@@ -263,10 +270,11 @@ test("AC-3：日記が0件・読み込めない・最新の日記の形が壊れ
     for (const item of cases) {
       const parts = setUpLatestPanel();
       installFakeFetch(item.index, item.entries);
-      const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html" });
+      const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
       assert.strictEqual(shown, false);
       assert.strictEqual(parts["diary-latest"].hidden, true);
-      assert.strictEqual(parts["hero-diary"].hidden, true);
+      assert.strictEqual(parts["hero-main"].hidden, true);
+      assert.notStrictEqual(parts["hero-tools"].hidden, true);
     }
   } finally {
     console.warn = originalWarn;
@@ -276,7 +284,7 @@ test("AC-3：日記が0件・読み込めない・最新の日記の形が壊れ
 test("AC-3：ファイルを直接開いたときのように fetch が使えなくても、止まらずに隠したまま", async function () {
   const parts = setUpLatestPanel();
   delete global.fetch;
-  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html" });
+  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
   assert.strictEqual(shown, false);
   assert.strictEqual(parts["diary-latest"].hidden, true);
 });

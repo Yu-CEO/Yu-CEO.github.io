@@ -1,6 +1,6 @@
 /*
  * diary_parts.js：日記の画面で何度も使う小さな部品を作る（入口のパネル・一覧・1件のページで共通）
- * 主な関数：makeDiaryElement（文字入りの要素）、createDiaryMetaRow（Day N と日付の行）、
+ * 主な関数：makeDiaryElement（文字入りの要素）、createDiaryMetaRow（「N日目」と日付の行）、createDayBand（1件のページの帯の「AI会社を始めて N 日目」）、
  *           createFacesRow（登場した話者の小さな顔の列）、createDiaryNotice（見つからない・0件などの案内）
  * 日記の文字はすべて textContent（文字としてそのまま入れる書き方）で入れる。HTMLとしては読ませない。
  * 使うもの：diary_day.js・diary_pick.js・diary_speakers.js。tests/diary_views.test.js で（ほかの表示のテストを通して）確かめる。
@@ -9,6 +9,7 @@
 // Node.js（テスト）では、ほかのファイルの関数を require で読み込んで、ブラウザと同じ名前で使えるようにする
 if (typeof module !== "undefined" && module.exports) {
   globalThis.getDayNumber = require("./diary_day.js").getDayNumber;
+  globalThis.formatDayShort = require("./diary_day.js").formatDayShort;
   globalThis.formatDateJa = require("./diary_day.js").formatDateJa;
   globalThis.listSpeakers = require("./diary_pick.js").listSpeakers;
   globalThis.createSpeakerFace = require("./diary_speakers.js").createSpeakerFace;
@@ -37,16 +38,30 @@ function makeDiaryElement(tagName, className, text) {
 }
 
 /**
- * 「Day N　2026年11月16日（月）」の小さな行を作る。
+ * 「3日目　2026年11月16日（月）」の小さな行を作る。
  * @param {string} date 日記の日付（"YYYY-MM-DD"）
  * @returns {HTMLElement} 行の要素
  * @example createDiaryMetaRow("2026-11-16")
  */
 function createDiaryMetaRow(date) {
   const row = makeDiaryElement("p", "d-meta", "");
-  row.appendChild(makeDiaryElement("span", "d-day", "Day " + getDayNumber(date)));
+  row.appendChild(makeDiaryElement("span", "d-day", formatDayShort(date)));
   row.appendChild(makeDiaryElement("span", "", formatDateJa(date)));
   return row;
+}
+
+/**
+ * 1件のページの紺の帯の「AI会社を始めて 3 日目」を作る。数字だけ大きく見せる（文字は「AI会社を始めて3日目」と読み上げる）。
+ * @param {string} date 日記の日付（"YYYY-MM-DD"）
+ * @returns {HTMLElement} 帯の日数の要素（class="d-day-big"）
+ * @example createDayBand("2026-11-16").textContent // "AI会社を始めて3日目"
+ */
+function createDayBand(date) {
+  const band = makeDiaryElement("p", "d-day-big", "");
+  band.appendChild(makeDiaryElement("span", "d-day-pre", "AI会社を始めて"));
+  band.appendChild(makeDiaryElement("b", "d-day-num", String(getDayNumber(date))));
+  band.appendChild(makeDiaryElement("span", "d-day-post", "日目"));
+  return band;
 }
 
 /**
@@ -94,5 +109,5 @@ function createDiaryNotice(notice) {
 
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { makeDiaryElement, createDiaryMetaRow, createFacesRow, createDiaryNotice };
+  module.exports = { makeDiaryElement, createDiaryMetaRow, createDayBand, createFacesRow, createDiaryNotice };
 }

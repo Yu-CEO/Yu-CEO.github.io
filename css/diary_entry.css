@@ -1,13 +1,13 @@
 /*
  * diary_entry.css：日記1件のページ（diary/entry.html）だけで使う見た目
- * 紺の帯の中の Day N・冒頭のつかみ（今日の一言・今日の決定・今日の参加）、節（議題・役員の一言・決定・失敗と学び）、
+ * 紺の帯の中の「N日目」・冒頭のつかみ（今日の一言・今日の決定・今日の参加）、節（議題・役員の一言・決定・失敗と学び）、
  * 顔つきの吹き出し、本文の最後のオープンチャットへの出口、見つからないときの表示。
  * 〔v3〕新しい形（1トピックの話）の、道しるべ・01 の段落・03 Yuの決定の箱・図・04 結果と学び の見た目もここ（ファイルの最後）。
  * 〔v4〕3版目の見た目（太字・ハイライト・2枚目の図の札・今日の学びの枠）は css/diary_format3.css に分けた。
  * diary/entry.html から読み込まれる。色・大きさの値は variables.css、共通の見た目は diary.css。
  */
 
-/* ===== 紺の帯：Day N・日付・記録者 ===== */
+/* ===== 紺の帯：「AI会社を始めて N 日目」・日付・記録者 ===== */
 .d-entry-head .d-day-big{
   display:block;
   margin:0;
@@ -16,6 +16,10 @@
   font-weight:300;                  /* 細字（ヒーローの表示名とそろえる） */
   letter-spacing:.08em;
 }
+/* 「AI会社を始めて 8 日目」：数字だけ大きく、前後の文字は小さく（360px でも1行に収まる） */
+.d-entry-head .d-day-pre,
+.d-entry-head .d-day-post{font-size:var(--fs-diary-day-label);letter-spacing:.06em}
+.d-entry-head .d-day-num{font-size:var(--fs-diary-day);font-weight:300;margin:0 .15em}
 .d-entry-head .d-date{margin:6px 0 18px;font-size:var(--fs-diary-link);color:var(--hero-text-sub);letter-spacing:.06em}
 /* 日付の下の短い線（ヒーローの細い線とそろえる） */
 .d-entry-head .d-date::after{

@@ -1,6 +1,6 @@
 /*
  * hero.css：最初の全画面パネル（ヒーロー）の見た目
- * 夜の紺の背景（グリッド線とほのかな光をCSSだけで描く）・表示名・丸い「TikTokを見る」。会議の場面（机・顔）は css/meeting_scene.css。
+ * 夜の紺の背景（グリッド線とほのかな光をCSSだけで描く）・表示名・「N日目」・丸いボタン。役員が Yu に提案・指摘する場面は css/hero_advice.css。
  * index.html と日記のページから読み込まれる。色・大きさの値は variables.css。ボタンの共通の形は style.css の「⑤ ボタン」。
  * 夜の紺の背景（グリッド線・光）は、日記の見出しの帯（.night）でも同じものを使う。
  */
@@ -66,6 +66,9 @@
 }
 .hero-title span{display:inline-block}            /* 「Yu｜」「AI仮想会社の社長」の切れ目で改行させる */
 .hero-title span:first-child{font-weight:600}
+/* 「今日で、AI会社を始めて 8 日目」。数字だけ少し大きく */
+.hero-days{margin:8px 0 0;font-size:var(--fs-hero-days);color:var(--hero-text-sub)}
+.hero-days b{font-size:18px;color:var(--hero-text);margin:0 2px}
 .hero-profile{
   text-wrap:pretty;                 /* 最後の行が1文字だけにならないようにする */
   margin:20px auto 0;
@@ -108,7 +111,7 @@
   border-color:transparent transparent transparent var(--hero-accent);
 }
 
-/* 丸いボタン2つ（「TikTokを見る」「会議の日記」）を横に並べる行。行は増やさない（ヒーローの高さを変えないため） */
+/* 丸いボタン2つ（「TikTokを見る」「無料ツールを見る」）を横に並べる行。行は増やさない（ヒーローの高さを変えないため） */
 .hero-pills{
   display:flex;
   flex-wrap:wrap;                   /* 幅が足りない端末では2行に折り返す */
@@ -119,14 +122,3 @@
 .hero-pills .btn-pill{margin-top:0;padding:0 18px}
 /* 丸いボタンが2つとも隠れているときは、行ごと隠す（場所が空いて見えないようにする） */
 .hero-pills:not(:has(.btn-pill:not([hidden]))){display:none}
-/* 「会議の日記」の印：小さなノートの形（画像を使わず、CSSの線だけで描く。再生の三角の代わり） */
-.pill-diary::before{
-  border:0;
-  width:9px;
-  height:11px;
-  border-radius:1.5px;
-  background:
-    linear-gradient(var(--hero-accent), var(--hero-accent)) 2px 3px / 5px 1px no-repeat,
-    linear-gradient(var(--hero-accent), var(--hero-accent)) 2px 6px / 5px 1px no-repeat;
-  box-shadow:inset 0 0 0 1.2px var(--hero-accent);
-}

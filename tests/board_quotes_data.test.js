@@ -66,7 +66,11 @@ test("AC-32：一覧の文が承認済みの表（design_notes.md）と1字も�
     // 出典の欄「2026-11-14（Day 1）・2」から日付だけ取り出す
     return { speaker: cells[1], text: cells[2], date: cells[4].slice(0, 10) };
   });
-  assert.deepStrictEqual(BOARD_QUOTES, rows);
+  // 種類（kind）は第3回で足した欄なので、表との照合では除く
+  const withoutKind = BOARD_QUOTES.map(function (quote) {
+    return { speaker: quote.speaker, text: quote.text, date: quote.date };
+  });
+  assert.deepStrictEqual(withoutKind, rows);
 });
 
 test("2-1-1：一覧に機密・投資を勧める言葉がない", function () {
@@ -76,4 +80,29 @@ test("2-1-1：一覧に機密・投資を勧める言葉がない", function () 
       assert.ok(!quote.text.includes(word), quote.text + " に「" + word + "」");
     });
   });
+});
+
+// 第3回（2026-11-21 決定）：試作どおりの提案7・指摘6（役員・日付で指す）
+const SHITEKI_QUOTES = ["CFO 2026-11-20", "CTO 2026-11-18", "CTO 2026-11-20", "CISO 2026-11-15", "ブランドディレクター 2026-11-14", "プロデューサー 2026-11-16"];
+
+test("第3回：全件に kind があり、提案7件・指摘6件で、試作どおりの振り分け", function () {
+  const teian = BOARD_QUOTES.filter(function (quote) {
+    return quote.kind === "teian";
+  });
+  const shiteki = BOARD_QUOTES.filter(function (quote) {
+    return quote.kind === "shiteki";
+  });
+  assert.strictEqual(teian.length, 7);
+  assert.strictEqual(shiteki.length, 6);
+  const shitekiKeys = shiteki.map(function (quote) {
+    return quote.speaker + " " + quote.date;
+  });
+  assert.deepStrictEqual(shitekiKeys.sort(), SHITEKI_QUOTES.slice().sort());
+});
+
+test("第3回：kind が teian・shiteki 以外の名言は正しくない扱いになる", function () {
+  const sample = { speaker: "CFO", text: "数字で確かめます。", date: "2026-11-16" };
+  assert.strictEqual(isValidBoardQuote(sample), false);
+  assert.strictEqual(isValidBoardQuote(Object.assign({ kind: "other" }, sample)), false);
+  assert.strictEqual(isValidBoardQuote(Object.assign({ kind: "teian" }, sample)), true);
 });

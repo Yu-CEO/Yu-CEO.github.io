@@ -1,0 +1,78 @@
+/*
+ * diary_recent.css：入口の「最新の日記」パネルの〔第3回〕の追加分の見た目
+ * 今日の学び（ある日だけ）・「これまでの会議」（最新の前の3件の小カード）。中身は js/diary_latest_panel.js・js/diary_recent_view.js が作る。
+ * index.html から読み込まれる（diary.css の後）。色・大きさの値は variables.css。
+ */
+
+/* ===== 〔第3回〕入口の「最新の日記」：今日の学び・これまでの会議（小カード） ===== */
+/* 今日の学び（ある日だけ）。薄い黄色の枠・左に太い線 */
+.take-mini{
+  margin:12px 0 0;
+  padding:var(--take-mini-pad);
+  border-radius:10px;
+  background:var(--diary-take-bg);
+  border:1px solid var(--diary-take-border);
+  border-left:5px solid var(--diary-take-bar);
+  text-align:left;
+}
+.take-mini small{display:block;font-size:var(--fs-take-mini-label);font-weight:700;color:var(--diary-take-label);letter-spacing:.06em}
+.take-mini p{
+  margin:2px 0 0;
+  font-size:var(--fs-take-mini);
+  font-weight:700;
+  line-height:1.55;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  overflow:hidden;                  /* 3行目以降は「…」で省く */
+}
+/* 学びがある日は抜粋を2行にして、カードが長くなりすぎないようにする */
+.diary-card.has-take .d-summary{-webkit-line-clamp:2;line-clamp:2}
+
+.recent{width:100%;max-width:var(--list-max);margin:28px auto 0;text-align:left}
+.sub-head{margin:0 0 10px;font-size:var(--fs-sub-head);font-weight:700;letter-spacing:.1em;color:var(--color-text-sub)}
+.rc-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--rc-gap)}
+.rc-list a{
+  display:grid;
+  grid-template-columns:var(--rc-thumb-w) minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  min-height:var(--rc-min-h);
+  padding:9px;
+  border-radius:12px;
+  background:var(--diary-card-bg);
+  border:1px solid var(--diary-card-border);
+  text-decoration:none;
+}
+.rc-list a:hover{border-color:var(--diary-accent)}
+/* 入口画像（16:9）の場所。画像が無い・読めない日は、紺の札の「N日目」がそのまま見える */
+.rc-thumb{
+  position:relative;
+  width:var(--rc-thumb-w);
+  aspect-ratio:16 / 9;
+  border-radius:8px;
+  overflow:hidden;
+  background:var(--rc-thumb-bg);
+  color:var(--hero-text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:var(--fs-rc-thumb-day);
+  font-weight:600;
+  letter-spacing:.06em;
+}
+.rc-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rc-list .d-meta{font-size:12px;gap:2px 8px}
+.rc-title{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  overflow:hidden;
+  margin:2px 0 0;
+  font-size:var(--fs-rc-title);
+  font-weight:700;
+  line-height:1.45;
+  overflow-wrap:anywhere;
+}

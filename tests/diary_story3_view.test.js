@@ -76,7 +76,7 @@ test("AC-71・AC-73：3版目は、01 → 02 → 03 → 04 → 2枚目の図 →
   const problemSection = findByClass(shown.area, "d-body").children[1];
   assert.deepStrictEqual(problemSection.children.map(function (child) { return child.className; }), ["d-sec-title", "d-story", "d-fig"]);
   assert.strictEqual(shown.area.children[2].className, "d-cta");
-  assert.strictEqual(shown.doc.title, "Day 7 " + entry.title + "｜経営会議の日記");
+  assert.strictEqual(shown.doc.title, "7日目 " + entry.title + "｜経営会議の日記");
   assert.match(shown.area.className, /\bf3\b/);
 });
 
@@ -219,7 +219,9 @@ test("AC-62：入口のパネルは、形に関係なく最新の1件（3版目�
     "diary-latest": createFakeElement("section"),
     "diary-latest-card": createFakeElement("article"),
     "diary-latest-read": createFakeElement("a"),
-    "hero-diary": createFakeElement("a")
+    "hero-main": createFakeElement("a"),
+    "hero-tools": createFakeElement("a"),
+    "hero-tools-pill": createFakeElement("a")
   };
   installFakeDocument(parts);
   global.fetch = function (url) {
@@ -229,10 +231,10 @@ test("AC-62：入口のパネルは、形に関係なく最新の1件（3版目�
     }
     return Promise.resolve({ ok: true, json: function () { return Promise.resolve(body); } });
   };
-  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html" });
+  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
   assert.strictEqual(shown, true);
   assert.strictEqual(parts["diary-latest-read"].href, "diary/entry.html?date=2026-11-20");
-  assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "Day 7");
+  assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "7日目");
   assert.ok(!parts["diary-latest-card"].textContent.includes("**") && !parts["diary-latest-card"].textContent.includes("=="));
   assert.strictEqual(findAllByTag(parts["diary-latest-card"], "img").length, 0);
 });

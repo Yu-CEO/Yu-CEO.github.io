@@ -73,7 +73,7 @@ test("AC-41：新しい形の1件のページは、帯（今日の一言・Yuの
   const entry = readSample("2026-11-17");
   const shown = renderStory(entry);
   const head = shown.area.children[0];
-  assert.strictEqual(findByClass(head, "d-day-big").textContent, "Day 4");
+  assert.strictEqual(findByClass(head, "d-day-big").textContent, "AI会社を始めて4日目");
   assert.strictEqual(findByClass(head, "d-h1").textContent, entry.title);
   const hookParts = findByClass(head, "d-hook").children.map(function (child) {
     return child.className.split(" ")[0];
@@ -86,7 +86,7 @@ test("AC-41：新しい形の1件のページは、帯（今日の一言・Yuの
   });
   assert.deepStrictEqual(titles, ["01何が問題だったか", "02役員の意見", "03Yuの決定", "04結果と学び"]);
   assert.ok(findByClass(shown.area.children[2], "d-cta-box"));
-  assert.strictEqual(shown.doc.title, "Day 4 " + entry.title + "｜経営会議の日記");
+  assert.strictEqual(shown.doc.title, "4日目 " + entry.title + "｜経営会議の日記");
 });
 
 test("AC-41：道しるべは「問題 › 意見 › 決定 › 結果」の4つで、「決定」だけ紺。読み上げでは流れの説明だけを読む", function () {
@@ -231,7 +231,9 @@ test("AC-40：入口のパネルは、形に関係なく最新の1件（新し�
     "diary-latest": createFakeElement("section"),
     "diary-latest-card": createFakeElement("article"),
     "diary-latest-read": createFakeElement("a"),
-    "hero-diary": createFakeElement("a")
+    "hero-main": createFakeElement("a"),
+    "hero-tools": createFakeElement("a"),
+    "hero-tools-pill": createFakeElement("a")
   };
   installFakeDocument(parts);
   global.fetch = function (url) {
@@ -241,10 +243,10 @@ test("AC-40：入口のパネルは、形に関係なく最新の1件（新し�
     }
     return Promise.resolve({ ok: true, json: function () { return Promise.resolve(body); } });
   };
-  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html" });
+  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
   assert.strictEqual(shown, true);
   assert.strictEqual(parts["diary-latest-read"].href, "diary/entry.html?date=2026-11-17");
-  assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "Day 4");
+  assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "4日目");
   assert.strictEqual(findAllByTag(parts["diary-latest-card"], "img").length, 0);
 });
 

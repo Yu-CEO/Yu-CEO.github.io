@@ -1,6 +1,6 @@
 /*
  * diary_story3_view.js：3版目（"format": 3・太字とハイライト・図2枚・今日の学び）の日記1件のページの表示
- * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 入口画像（hero がある日だけ）→ 道しるべ（問題›意見›決定›結果›学び）
+ * 並び：紺の帯（一覧へ戻る・N日目・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 入口画像（hero がある日だけ）→ 道しるべ（問題›意見›決定›結果›学び）
  *       → 01 何が問題だったか → 1枚目の図 → 02 役員の意見 → 03 Yuの決定 → 04 結果 → 2枚目の図 → 今日の学び → オープンチャットへの出口
  * 主な関数：showStory3Entry（3版目の1件を表示）
  * 使うもの：diary_entry_view.js の部品（紺の帯・節・吹き出し・出口）・diary_figure_view.js・diary_hero_view.js（一番上の入口画像）・diary_takeaway_view.js・diary_markup_view.js。
@@ -16,7 +16,7 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.createLinesSection = entryParts.createLinesSection;
   globalThis.createExitBox = entryParts.createExitBox;
   globalThis.DIARY_TITLE_SUFFIX = entryParts.DIARY_TITLE_SUFFIX;
-  globalThis.getDayNumber = require("./diary_day.js").getDayNumber;
+  globalThis.formatDayShort = require("./diary_day.js").formatDayShort;
   globalThis.makeDiaryElement = require("./diary_parts.js").makeDiaryElement;
   globalThis.createSpeakerFace = require("./diary_speakers.js").createSpeakerFace;
   globalThis.HUMAN_SPEAKER = require("./diary_speakers.js").HUMAN_SPEAKER;
@@ -135,7 +135,7 @@ function createStory3Results(results) {
 }
 
 /**
- * 3版目の日記1件を、決まった並びで表示し、タブの題名を「Day N 見出し｜経営会議の日記」にする。
+ * 3版目の日記1件を、決まった並びで表示し、タブの題名を「N日目 見出し｜経営会議の日記」にする。
  * 図は2枚とも、読み込めなければその図と caption だけが隠れる（もう1枚と本文は出る）。
  * @param {HTMLElement} area 表示する場所
  * @param {object} entry 検査を通った3版目の日記1件
@@ -165,7 +165,7 @@ function showStory3Entry(area, entry, paths) {
   }
   area.appendChild(body);
   area.appendChild(createExitBox(paths.listPage));
-  document.title = "Day " + getDayNumber(entry.date) + " " + entry.title + DIARY_TITLE_SUFFIX;
+  document.title = formatDayShort(entry.date) + " " + entry.title + DIARY_TITLE_SUFFIX;
 }
 
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）

@@ -77,34 +77,51 @@
   --btn-radius:12px;
   --btn-max:300px;                /* PC幅で横に2つ並べるときの1つの幅 */
   --pill-height:44px;             /* ヒーロー中央の丸い「TikTokを見る」。指で押せる最小の44px */
-  /* ヒーローの会議の場面（css/meeting_scene.css）。値はデザインの確定版 */
+  /* ヒーローの「役員が Yu に提案・指摘する場面」（css/hero_advice.css）。色は日記の入口画像（design/portal_diary/make_hero.py）と同じ */
   --scene-max:460px;              /* 場面の最大幅。PC幅で大きくなりすぎないため */
-  --scene-table:#121a2b;          /* 机の面（紺の背景より少し明るい） */
-  --scene-table-edge:rgba(124,196,255,.38); /* 机のふちの細い線 */
-  --scene-day:#ffffff;            /* 机の上の「Day N」 */
-  --scene-sub:#c3c8d2;            /* 机の上の「AI役員会議・毎日開催」（背景に対して約11:1） */
-  --scene-ring:#7cc4ff;           /* 話している人の顔のまわりの輪 */
   --fs-scene-cap:11px;            /* 場面の下の小さな説明（架空の人物の表示） */
-  /* 名言の吹き出し：紺の上の白い吹き出し（文字との差 約17:1） */
-  --quote-bg:#ffffff;
-  --quote-text:#16171a;
-  --fs-quote:clamp(14px, 4vw, 17px); /* スマホ幅でも読める大きさ。17pxまで */
-  --fs-quote-who:12px;
-  --quote-radius:14px;
-  --quote-pad:12px 14px;
-  --quote-tail:9px;               /* 吹き出しの三角の大きさ */
-  --t-quote-delay:.6s;            /* 開いてから吹き出しを出すまで（顔が出そろうころ）。1回だけ */
-  --t-rise:.35s;                  /* 顔が下から浮かぶ時間 */
-  --t-step:.06s;                  /* 顔を1人ずつずらす間隔 */
-  /* ツールのスクリーンショット。高さの上限は「画面の高さ − 見出し・説明・状態・ボタンの分（約470px）」で、パネルを1画面に収める
-     160px＝何のツールか見てわかる最小の高さ／420px＝PC幅で大きくなりすぎない上限 */
-  --shot-radius:14px;
-  --shot-max-h:clamp(160px, calc(100svh - 470px), 420px);
-  --shot-max-h-fallback:clamp(160px, calc(100vh - 470px), 420px); /* svh が使えないブラウザ用 */
+  --adv-bg-1:#0b1730;             /* 場面の背景（左上）。入口画像の紺 */
+  --adv-bg-2:#050a16;             /* 場面の背景（右下） */
+  --adv-glow:rgba(63,124,192,.55);/* 役員の後ろの青い光 */
+  --adv-border:rgba(127,178,234,.28);
+  --adv-blue:#7fb2ea;             /* 小見出し・名札の枠・「提案」。紺の上で約8:1 */
+  --adv-yellow:#f2c94c;           /* 吹き出しの枠・「指摘」。紺の上で約11:1（赤は入口画像で「まちがい」に使うので避けた） */
+  --adv-blue-soft:rgba(127,178,234,.12); /* 「提案」ラベルの中の薄い青 */
+  --adv-yellow-soft:rgba(242,201,76,.12); /* 「指摘」ラベルの中の薄い黄 */
+  --adv-face-ring:rgba(127,178,234,.5);  /* 大きな顔のまわりの輪 */
+  --adv-board-line:rgba(127,178,234,.16);/* 役員の顔の列の上の線 */
+  --adv-bubble-bg:rgba(13,26,51,.92); /* 吹き出しの中 */
+  --adv-tag-bg:#10213f;           /* 名札の中 */
+  --adv-face:88px;                /* 役員の大きな顔 */
+  --adv-yu:40px;                  /* 受け取る Yu の写真 */
+  --fs-adv-eyebrow:13px;
+  --fs-adv-text:clamp(15px, 4.2vw, 18px);
+  --fs-adv-name:13px;
+  --fs-adv-to:14px;
+  --fs-hero-days:14px;            /* 「今日で、AI会社を始めて N 日目」 */
+  --t-quote-delay:.6s;            /* 開いてから吹き出しを出すまで。1回だけ */
+  --t-rise:.35s;                  /* 下から浮かぶ時間 */
+
+  /* ===== 〔第3回〕日記パネル：今日の学び・これまでの会議／無料ツールを1枚に ===== */
+  --fs-take-mini:clamp(15px, 4.2vw, 17px); /* カードの「今日の学び」の文 */
+  --fs-take-mini-label:12px;      /* 「今日の学び」の札 */
+  --take-mini-pad:10px 12px 10px 14px;
+  --rc-thumb-w:96px;              /* 小カードの入口画像の幅（16:9 で高さ54px） */
+  --rc-min-h:72px;                /* 小カード1枚の押せる高さ（44px以上） */
+  --rc-gap:8px;                   /* 小カードどうしの間 */
+  --fs-rc-title:clamp(14px, 3.9vw, 16px); /* 小カードの見出し（2行まで） */
+  --rc-thumb-bg:#0f1626;          /* 画像が無い日の札（紺）。中の文字は白で約17:1 */
+  --fs-rc-thumb-day:13px;
+  --tl-shot-w:84px;               /* 無料ツールの行の画面写真の幅 */
+  --tl-min-h:88px;                /* 無料ツールの1行の押せる高さ */
+  --fs-tl-name:clamp(16px, 4.4vw, 18px);
+  --fs-tl-desc:clamp(13px, 3.7vw, 15px);
+  --fs-sub-head:13px;             /* 「これまでの会議」などの小見出し */
+  --list-max:520px;               /* 小カード・ツールの行を並べる幅の上限 */
 
   /* ===== 日記（一覧・1件のページ・入口の「最新の日記」パネル） ===== */
   /* 色 */
-  --diary-accent:#2563a8;         /* 明るい面の差し色（Day N・読む・節の番号・Yuの名前）。白で約6:1 */
+  --diary-accent:#2563a8;         /* 明るい面の差し色（N日目・読む・節の番号・Yuの名前）。白で約6:1 */
   --diary-card-bg:#ffffff;        /* カードの背景 */
   --diary-card-border:#e3e5e9;    /* カードの細い枠 */
   --diary-card-shadow:0 2px 10px rgba(16,18,24,.06); /* カードの薄い影 */
@@ -124,14 +141,15 @@
   --sp-ciso:#9f1239;              /* CISO */
   --sp-yu:#7cc4ff;                /* Yu（紺の面の上で使うとき） */
   /* 文字の大きさ */
-  --fs-diary-day:clamp(40px, 12vw, 72px);         /* 1件のページの「Day N」（細字） */
+  --fs-diary-day:clamp(40px, 12vw, 72px);         /* 1件のページの帯の「N」（細字） */
+  --fs-diary-day-label:clamp(14px, 4vw, 18px);    /* 帯の「AI会社を始めて」「日目」 */
   --fs-diary-h1:clamp(22px, 6vw, 34px);           /* 一覧・1件の見出し */
   --fs-diary-card-title:clamp(17px, 4.6vw, 20px); /* カードの見出し・節の見出し */
   --fs-diary-body:clamp(15px, 4.1vw, 17px);       /* 本文・抜粋・吹き出し */
   --fs-diary-pick:clamp(16px, 4.5vw, 19px);       /* 今日の一言のセリフ */
   --fs-diary-notice-title:clamp(20px, 5.4vw, 26px);   /* 0件・読み込み失敗の見出し */
   --fs-diary-notfound-title:clamp(22px, 6vw, 32px);   /* 「見つかりませんでした」の見出し */
-  --fs-diary-meta:13px;           /* Day N・日付・凡例・名前 */
+  --fs-diary-meta:13px;           /* N日目・日付・凡例・名前 */
   --fs-diary-link:14px;           /* 「戻る」リンク・1件のページの日付 */
   --fs-diary-read:15px;           /* 一覧のカードの「読む」 */
   --fs-diary-small:12px;          /* 小さな補足（今日の一言の名前・+N・節の番号） */

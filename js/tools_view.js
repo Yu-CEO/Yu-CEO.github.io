@@ -1,8 +1,8 @@
 /*
- * tools_view.js：検査を通ったツールから、1件1枚の全画面パネルを作って画面に並べる
- * 主な関数：showToolPanels（検査→問題の報告→パネルの表示までの流れ）、createToolPanel（パネル1枚を作る）、
+ * tools_view.js：検査を通ったツールから、「無料ツール」の1枚のパネル（1ツール＝1行）を作って画面に並べる（第3回で1枚にまとめた）
+ * 主な関数：showToolPanels（検査→問題の報告→パネルの表示までの流れ）、createToolListPanel（パネル1枚を作る）、createToolRow（1行を作る）、
  *           createEmptyPanel（0件のときの「ただいま準備中です」）、getToolsJumpTarget（「無料ツールを見る」の行き先）
- * 「公開中」は「開く」ボタンつき、「準備中」はボタンなし。画像がある項目はスクリーンショットも出す。
+ * 「公開中」は行全体が新しいタブで開くリンク（「開く ›」つき）、「準備中」はリンクなし。画像がある項目は画面写真も出す。説明は省略しない。
  * main.js から使われる。データは tools_data.js、検査は tools_validate.js、読めない画像を隠すのは hero_image.js。tests/tools_view.test.js でテストする。
  */
 
@@ -11,12 +11,18 @@ const EMPTY_TOOLS_TITLE = "ただいま準備中です";
 const EMPTY_TOOLS_DESCRIPTION = "ツールができたら、ここに並びます。";
 // 開くボタンを出す状態の値（tools_validate.js で認めている値の1つ）
 const STATUS_PUBLISHED = "公開中";
-// パネルの id のつけ方。1件目は "tool-1"。ヒーローの「無料ツールを見る」の行き先にも使う
-const TOOL_PANEL_ID_PREFIX = "tool-";
+// パネルの id。ヒーローの「無料ツールを見る」の行き先にも使う
+const TOOL_LIST_PANEL_ID = "tool-list";
 const EMPTY_PANEL_ID = "tools-empty";
-// パネル上部の英字の小見出し（飾り）。番号はデータの順から自動でつける
-const TOOL_EYEBROW_PREFIX = "FREE TOOL ";
-const EMPTY_EYEBROW = "FREE TOOLS";
+// パネル上部の英字の小見出し（飾り）と見出し
+const TOOL_EYEBROW = "FREE TOOLS";
+const TOOL_LIST_TITLE = "無料ツール";
+// パネルの説明文（仮の文言。CEOが変えたいときはここだけ直す）
+const TOOL_LIST_DESCRIPTION = "会議で決めて作った道具です。登録なしで使えます。";
+// 1行の右下の「開く」の文字
+const TOOL_OPEN_LABEL = "開く ›";
+// 行全体を押したときの読み上げ名のつけ足し
+const TOOL_ROW_LABEL_SUFFIX = "を開く（新しいタブ）";
 // imageAlt がないときに、ツール名のあとにつける言葉（例：「おかね収支シミュレーターの画面」）
 const IMAGE_ALT_SUFFIX = "の画面";
 
@@ -34,17 +40,6 @@ function createElementWithText(tagName, className, text) {
   element.className = className;
   element.textContent = text;
   return element;
-}
-
-/**
- * 番号を2けたの文字にする（小見出し「FREE TOOL 01」用）。
- * @param {number} number 1から数えた番号
- * @returns {string} 2けたの文字
- * @example toTwoDigits(1)  // "01"
- * @example toTwoDigits(12) // "12"
- */
-function toTwoDigits(number) {
-  return String(number).padStart(2, "0");
 }
 
 /**
@@ -70,7 +65,7 @@ function getImageAlt(tool) {
  */
 function createToolImage(tool) {
   const image = document.createElement("img");
-  image.className = "tool-shot";
+  image.className = "tl-shot";
   // 最初の画面（ヒーロー）の下にある画像なので、見える場所に近づいてから読み込む（最初の表示を軽くするため）
   image.loading = "lazy";
   image.decoding = "async";
@@ -81,58 +76,79 @@ function createToolImage(tool) {
 }
 
 /**
- * 「開く」ボタンを入れた、パネル下部のボタンの場所を作る。
- * @param {string} url ツールのURL（検査で https:// で始まることを確かめ済み）
- * @returns {HTMLElement} ボタンの場所
- * @example createOpenButtonArea("https://example.com/")
+ * 行の文字の部分（名前・説明・状態・「開く ›」）を作る。
+ * @param {{ name: string, description: string, status: string }} tool ツール1件
+ * @returns {HTMLElement} 文字の部分の要素
  */
-function createOpenButtonArea(url) {
-  const actions = document.createElement("div");
-  actions.className = "actions";
-  const openButton = createElementWithText("a", "btn btn-main", "開く");
-  openButton.href = url;
-  // 外部のページは新しいタブで開く。noopener は、開いた先のページからこのページを操作されないようにする指定
-  openButton.target = "_blank";
-  openButton.rel = "noopener";
-  actions.appendChild(openButton);
-  return actions;
+function createToolRowText(tool) {
+  const text = document.createElement("span");
+  text.appendChild(createElementWithText("p", "tl-name", tool.name));
+  text.appendChild(createElementWithText("p", "tl-desc", tool.description));
+  let statusClass = "status status-preparing";
+  if (tool.status === STATUS_PUBLISHED) {
+    statusClass = "status status-published";
+  }
+  const foot = document.createElement("span");
+  foot.className = "tl-foot";
+  foot.appendChild(createElementWithText("span", statusClass, tool.status));
+  // 「準備中」は開けないので「開く ›」を出さない
+  if (tool.status === STATUS_PUBLISHED) {
+    foot.appendChild(createElementWithText("b", "", TOOL_OPEN_LABEL));
+  }
+  text.appendChild(foot);
+  return text;
 }
 
 /**
- * ツール1件ぶんの全画面パネルを作る。「公開中」なら「開く」ボタン、「準備中」ならボタンなしにする。
+ * ツール1件ぶんの1行を作る。「公開中」なら行全体が新しいタブで開くリンク、「準備中」ならリンクなし（まだ開けないページへ移動させないため）。
  * @param {{ name: string, description: string, url: string, status: string, image?: string, imageAlt?: string }} tool 検査を通ったツール1件
- * @param {number} position 何件目か（1から数える）。id と小見出しの番号に使う
- * @returns {HTMLElement} パネルの要素
- * @example createToolPanel({ name: "A", description: "B", url: "https://x", status: "公開中" }, 1)
+ * @returns {HTMLElement} li 要素
+ * @example createToolRow({ name: "A", description: "B", url: "https://x", status: "公開中" })
  */
-function createToolPanel(tool, position) {
+function createToolRow(tool) {
+  const item = document.createElement("li");
+  let row = document.createElement("div");
+  if (tool.status === STATUS_PUBLISHED) {
+    row = document.createElement("a");
+    row.href = tool.url;
+    // 外部のページは新しいタブで開く。noopener は、開いた先のページからこのページを操作されないようにする指定
+    row.target = "_blank";
+    row.rel = "noopener";
+    row.setAttribute("aria-label", tool.name + TOOL_ROW_LABEL_SUFFIX);
+  }
+  row.className = "tl-row";
+  // 画像がないツールは、画像の場所を空けずに表示する
+  if (typeof tool.image === "string" && tool.image !== "") {
+    row.appendChild(createToolImage(tool));
+  }
+  row.appendChild(createToolRowText(tool));
+  item.appendChild(row);
+  return item;
+}
+
+/**
+ * 「無料ツール」の1枚のパネル（小見出し・見出し・説明・ツールの行のリスト）を作る。
+ * @param {object[]} tools 検査を通ったツール（1件以上）
+ * @returns {HTMLElement} パネルの要素
+ * @example createToolListPanel([{ name: "A", description: "B", url: "https://x", status: "公開中" }])
+ */
+function createToolListPanel(tools) {
   const panel = document.createElement("section");
   panel.className = "panel tool-panel";
-  panel.id = TOOL_PANEL_ID_PREFIX + position;
-
-  const isPublished = tool.status === STATUS_PUBLISHED;
-  let statusClass = "status status-preparing";
-  if (isPublished) {
-    statusClass = "status status-published";
-  }
-
+  panel.id = TOOL_LIST_PANEL_ID;
   // reveal は、スクロールで少し浮かび上がる動きの対象につける印（reveal_motion.js）
   const body = document.createElement("div");
   body.className = "panel-body reveal";
-  body.appendChild(createElementWithText("p", "eyebrow", TOOL_EYEBROW_PREFIX + toTwoDigits(position)));
-  body.appendChild(createElementWithText("h2", "panel-title", tool.name));
-  body.appendChild(createElementWithText("p", "panel-desc", tool.description));
-  body.appendChild(createElementWithText("p", statusClass, tool.status));
-  // 画像がないツールは、画像の場所を空けずに表示する
-  if (typeof tool.image === "string" && tool.image !== "") {
-    body.appendChild(createToolImage(tool));
-  }
+  body.appendChild(createElementWithText("p", "eyebrow", TOOL_EYEBROW));
+  body.appendChild(createElementWithText("h2", "panel-title", TOOL_LIST_TITLE));
+  body.appendChild(createElementWithText("p", "panel-desc", TOOL_LIST_DESCRIPTION));
+  const list = document.createElement("ul");
+  list.className = "tl-list";
+  tools.forEach(function (tool) {
+    list.appendChild(createToolRow(tool));
+  });
+  body.appendChild(list);
   panel.appendChild(body);
-
-  // 「準備中」はリンクを出さない（まだ開けないページへ移動させないため）
-  if (isPublished) {
-    panel.appendChild(createOpenButtonArea(tool.url));
-  }
   return panel;
 }
 
@@ -147,7 +163,7 @@ function createEmptyPanel() {
   panel.id = EMPTY_PANEL_ID;
   const body = document.createElement("div");
   body.className = "panel-body reveal";
-  body.appendChild(createElementWithText("p", "eyebrow", EMPTY_EYEBROW));
+  body.appendChild(createElementWithText("p", "eyebrow", TOOL_EYEBROW));
   body.appendChild(createElementWithText("h2", "panel-title", EMPTY_TOOLS_TITLE));
   body.appendChild(createElementWithText("p", "panel-desc", EMPTY_TOOLS_DESCRIPTION));
   panel.appendChild(body);
@@ -157,13 +173,13 @@ function createEmptyPanel() {
 /**
  * ヒーローの「無料ツールを見る」の行き先（ページ内の場所）を決める。画面には触れない。
  * @param {number} shownCount 表示したツールの数
- * @returns {string} 行き先（"#tool-1" か、0件なら "#tools-empty"）
- * @example getToolsJumpTarget(1) // "#tool-1"
+ * @returns {string} 行き先（"#tool-list" か、0件なら "#tools-empty"）
+ * @example getToolsJumpTarget(1) // "#tool-list"
  * @example getToolsJumpTarget(0) // "#tools-empty"
  */
 function getToolsJumpTarget(shownCount) {
   if (shownCount > 0) {
-    return "#" + TOOL_PANEL_ID_PREFIX + "1";
+    return "#" + TOOL_LIST_PANEL_ID;
   }
   return "#" + EMPTY_PANEL_ID;
 }
@@ -194,7 +210,7 @@ function reportToolProblems(result) {
 }
 
 /**
- * ツール一覧のデータを検査し、問題を報告してから、正しい項目だけを1件1枚のパネルにして並べる。
+ * ツール一覧のデータを検査し、問題を報告してから、正しい項目だけを1枚のパネル（1ツール＝1行）にして並べる。
  * 1件も表示できないときは「ただいま準備中です」のパネルを出す。
  * @param {string} areaId パネルを入れる場所の id（index.html に書いたもの）
  * @param {*} tools ツール一覧のデータ（tools_data.js の TOOLS_DATA）
@@ -216,16 +232,14 @@ function showToolPanels(areaId, tools) {
     area.appendChild(createEmptyPanel());
     return 0;
   }
-  result.validTools.forEach(function (tool, index) {
-    area.appendChild(createToolPanel(tool, index + 1));
-  });
+  area.appendChild(createToolListPanel(result.validTools));
   return result.validTools.length;
 }
 
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
-    getImageAlt, createToolPanel, createEmptyPanel, getToolsJumpTarget,
-    reportToolProblems, showToolPanels, toTwoDigits
+    getImageAlt, createToolListPanel, createToolRow, createEmptyPanel, getToolsJumpTarget,
+    reportToolProblems, showToolPanels
   };
 }

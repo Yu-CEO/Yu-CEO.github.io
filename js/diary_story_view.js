@@ -1,6 +1,6 @@
 /*
  * diary_story_view.js：新しい形（"format": 2・1トピックの話）の日記1件のページの表示
- * 並び：紺の帯（一覧へ戻る・Day N・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 話の流れの道しるべ（問題›意見›決定›結果）
+ * 並び：紺の帯（一覧へ戻る・N日目・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 話の流れの道しるべ（問題›意見›決定›結果）
  *       → 01 何が問題だったか → 02 役員の意見（顔つきの吹き出し）→ 03 Yuの決定 →（図がある日は図と説明）→ 04 結果と学び → オープンチャットへの出口
  * 主な関数：showStoryEntry（2版目の1件を表示）、showEntryByFormat（形を見て、旧形式・2版目・3版目（diary_story3_view.js）の表示を呼び分ける）
  * 使うもの：diary_entry_view.js の部品・diary_figure_view.js・diary_format.js・diary_speakers.js。diary_entry_main.js から使われる。
@@ -17,7 +17,7 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.createLinesSection = entryParts.createLinesSection;
   globalThis.createExitBox = entryParts.createExitBox;
   globalThis.DIARY_TITLE_SUFFIX = entryParts.DIARY_TITLE_SUFFIX;
-  globalThis.getDayNumber = require("./diary_day.js").getDayNumber;
+  globalThis.formatDayShort = require("./diary_day.js").formatDayShort;
   globalThis.makeDiaryElement = require("./diary_parts.js").makeDiaryElement;
   globalThis.createSpeakerFace = require("./diary_speakers.js").createSpeakerFace;
   globalThis.HUMAN_SPEAKER = require("./diary_speakers.js").HUMAN_SPEAKER;
@@ -94,7 +94,7 @@ function createYuDecisionSection(decision, faceFile) {
 }
 
 /**
- * 新しい形の日記1件を、決まった並びで表示し、タブの題名を「Day N 見出し｜経営会議の日記」にする。
+ * 新しい形の日記1件を、決まった並びで表示し、タブの題名を「N日目 見出し｜経営会議の日記」にする。
  * 図は「03 Yuの決定」と「04 結果と学び」のあいだに置く（決めた結果、何が変わったかを見せる位置。デザイン承認の案A）。
  * @param {HTMLElement} area 表示する場所
  * @param {object} entry 検査を通った新しい形の日記1件
@@ -121,7 +121,7 @@ function showStoryEntry(area, entry, paths) {
   body.appendChild(results);
   area.appendChild(body);
   area.appendChild(createExitBox(paths.listPage));
-  document.title = "Day " + getDayNumber(entry.date) + " " + entry.title + DIARY_TITLE_SUFFIX;
+  document.title = formatDayShort(entry.date) + " " + entry.title + DIARY_TITLE_SUFFIX;
 }
 
 /**

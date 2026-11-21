@@ -1,5 +1,5 @@
 /*
- * tools_view.test.js：js/tools_view.js（ツールのパネルを作って並べる処理）の自動テスト
+ * tools_view.test.js：js/tools_view.js（「無料ツール」の1枚のパネルを作る処理）の自動テスト（第3回：3枚のパネル→1枚・1ツール1行）
  * Node.js にはブラウザの画面（document）がないので、テストに必要な分だけをまねた「にせの画面」を作って確かめる。
  * 実行方法：portal フォルダで `node --test`
  */
@@ -34,6 +34,10 @@ function createFakeElement(tagName) {
     },
     appendChild: function (child) {
       this.children.push(child);
+    },
+    attributes: {},
+    setAttribute: function (name, value) {
+      this.attributes[name] = String(value);
     },
     // 画像の読み込み失敗を見張る登録。にせの画面では読み込みが起きないので、何もしない
     addEventListener: function () {}
@@ -111,41 +115,55 @@ function makePublishedTool() {
   };
 }
 
-test("AC-3：「公開中」のパネルには、名前・説明・状態・新しいタブで開く「開く」ボタンが出る", function () {
+/**
+ * 表示した「無料ツール」の1枚のパネルの中の、ツールの行（li）を取り出す。
+ * @param {object} area ツールの場所
+ * @returns {object[]} 行の一覧
+ */
+function getRows(area) {
+  return findByClass(area.children[0], "tl-list").children;
+}
+
+test("AC-3：「公開中」のツールは、名前・説明・公開中・「開く ›」が出て、行全体が新しいタブで開くリンクになる", function () {
   const area = setUpFakeDocument();
   const count = showToolPanels("tool-area", [makePublishedTool()]);
   assert.strictEqual(count, 1);
   assert.strictEqual(area.children.length, 1);
   const panel = area.children[0];
-  assert.strictEqual(panel.id, "tool-1");
+  assert.strictEqual(panel.id, "tool-list");
   assert.match(panel.className, /panel/);
-  assert.strictEqual(findByClass(panel, "panel-title").textContent, "おかね収支シミュレーター");
-  assert.strictEqual(findByClass(panel, "panel-desc").textContent, "テスト用の説明です");
+  assert.strictEqual(findByClass(panel, "panel-title").textContent, "無料ツール");
+  assert.strictEqual(findByClass(panel, "tl-name").textContent, "おかね収支シミュレーター");
+  assert.strictEqual(findByClass(panel, "tl-desc").textContent, "テスト用の説明です");
   assert.strictEqual(findByClass(panel, "status").textContent, "公開中");
-  const openButton = findByClass(panel, "btn-main");
-  assert.strictEqual(openButton.textContent, "開く");
-  assert.strictEqual(openButton.href, "https://yu-ceo.github.io/okane-simulator/");
-  assert.strictEqual(openButton.target, "_blank");
-  assert.strictEqual(openButton.rel, "noopener");
+  const row = getRows(area)[0].children[0];
+  assert.strictEqual(row.tagName, "a");
+  assert.strictEqual(row.href, "https://yu-ceo.github.io/okane-simulator/");
+  assert.strictEqual(row.target, "_blank");
+  assert.strictEqual(row.rel, "noopener");
+  assert.match(row.attributes["aria-label"], /おかね収支シミュレーターを開く/);
+  assert.strictEqual(findByClass(row, "tl-foot").children[1].textContent, "開く ›");
 });
 
-test("AC-4：ツールを2件にすると、パネルが2枚になり、足した順に並ぶ", function () {
+test("AC-4：ツールを2件にすると、同じ1枚のパネルの中で2行になり、足した順に並ぶ（パネルは増えない）", function () {
   const area = setUpFakeDocument();
   const second = Object.assign(makePublishedTool(), { name: "2つ目のツール" });
   showToolPanels("tool-area", [makePublishedTool(), second]);
-  assert.strictEqual(area.children.length, 2);
-  assert.strictEqual(area.children[1].id, "tool-2");
-  assert.strictEqual(findByClass(area.children[1], "panel-title").textContent, "2つ目のツール");
-  assert.strictEqual(findByClass(area.children[1], "eyebrow").textContent, "FREE TOOL 02");
+  assert.strictEqual(area.children.length, 1);
+  const rows = getRows(area);
+  assert.strictEqual(rows.length, 2);
+  assert.strictEqual(findByClass(rows[1], "tl-name").textContent, "2つ目のツール");
 });
 
-test("AC-5：「準備中」のパネルには「準備中」と出て、開くボタンは出ない", function () {
+test("AC-5：「準備中」の行には「準備中」と出て、リンクも「開く ›」も出ない", function () {
   const area = setUpFakeDocument();
   const preparing = Object.assign(makePublishedTool(), { status: "準備中" });
   showToolPanels("tool-area", [preparing]);
-  const panel = area.children[0];
-  assert.strictEqual(findByClass(panel, "status").textContent, "準備中");
-  assert.strictEqual(findByClass(panel, "btn-main"), undefined);
+  const row = getRows(area)[0].children[0];
+  assert.strictEqual(row.tagName, "div");
+  assert.strictEqual(row.href, undefined);
+  assert.strictEqual(findByClass(row, "status").textContent, "準備中");
+  assert.strictEqual(findByClass(row, "tl-foot").children.length, 1);
 });
 
 test("AC-6：正しくない項目は表示せず、何件目のどの項目かをコンソールに日本語で出す", function () {
@@ -155,7 +173,7 @@ test("AC-6：正しくない項目は表示せず、何件目のどの項目か�
   const warnings = captureWarnings(function () {
     showToolPanels("tool-area", [makePublishedTool(), noName]);
   });
-  assert.strictEqual(area.children.length, 1);
+  assert.strictEqual(getRows(area).length, 1);
   assert.strictEqual(warnings.length, 1);
   assert.match(warnings[0], /2件目/);
   assert.match(warnings[0], /「name」/);
@@ -172,27 +190,22 @@ test("AC-7：表示できるツールが0件なら「ただいま準備中です
   assert.strictEqual(findByClass(panel, "panel-desc").textContent, "ツールができたら、ここに並びます。");
 });
 
-test("AC-28：「無料ツールを見る」の行き先は、最初のツールのパネル（0件なら準備中の場所）", function () {
-  assert.strictEqual(getToolsJumpTarget(1), "#tool-1");
-  assert.strictEqual(getToolsJumpTarget(3), "#tool-1");
+test("AC-28：「無料ツールを見る」の行き先は、1枚の無料ツールのパネル（0件なら準備中の場所）", function () {
+  assert.strictEqual(getToolsJumpTarget(1), "#tool-list");
+  assert.strictEqual(getToolsJumpTarget(3), "#tool-list");
   assert.strictEqual(getToolsJumpTarget(0), "#tools-empty");
 });
 
-test("AC-31・AC-32：画像があるパネルには、説明の下・ボタンの上にスクリーンショットが出て、alt は imageAlt の文", function () {
+test("AC-31・AC-32：画像があるツールの行には、名前の左に画面写真が出て、alt は imageAlt の文", function () {
   const area = setUpFakeDocument();
   showToolPanels("tool-area", [makePublishedTool()]);
-  const panel = area.children[0];
-  const image = findByClass(panel, "tool-shot");
+  const row = getRows(area)[0].children[0];
+  const image = findByClass(row, "tl-shot");
   assert.ok(image, "スクリーンショットがありません");
   assert.strictEqual(image.src, "assets/tool_simulator.jpg");
   assert.strictEqual(image.alt, "おかね収支シミュレーターの画面（NISA積立の計算例）");
-  // 並び：本文の場所（説明 → 状態 → 画像）のあとに、ボタンの場所
-  const body = panel.children[0];
-  const classNames = body.children.map(function (child) {
-    return child.className;
-  });
-  assert.ok(classNames.indexOf("panel-desc") < classNames.indexOf("tool-shot"));
-  assert.match(panel.children[1].className, /actions/);
+  // 並び：画像（左）→ 文字の部分
+  assert.strictEqual(row.children[0].className, "tl-shot");
 });
 
 test("AC-32：imageAlt が空・ないときは「（ツール名）の画面」を alt に入れ、画像は表示する", function () {
@@ -202,20 +215,20 @@ test("AC-32：imageAlt が空・ないときは「（ツール名）の画面」
   const noAlt = makePublishedTool();
   delete noAlt.imageAlt;
   showToolPanels("tool-area", [noAlt]);
-  assert.strictEqual(findByClass(area.children[0], "tool-shot").alt, "おかね収支シミュレーターの画面");
+  assert.strictEqual(findByClass(area.children[0], "tl-shot").alt, "おかね収支シミュレーターの画面");
 });
 
-test("AC-33：image がない・空のツールは、画像なしのパネルになり、ほかは今までどおり", function () {
+test("AC-33：image がない・空のツールは、画像なしの行になり、ほかは今までどおり", function () {
   const area = setUpFakeDocument();
   const noImage = makePublishedTool();
   delete noImage.image;
   const emptyImage = Object.assign(makePublishedTool(), { image: "" });
   showToolPanels("tool-area", [noImage, emptyImage]);
-  assert.strictEqual(area.children.length, 2);
-  area.children.forEach(function (panel) {
-    assert.strictEqual(findByClass(panel, "tool-shot"), undefined);
-    assert.ok(findByClass(panel, "panel-title"));
-    assert.ok(findByClass(panel, "btn-main"));
+  const rows = getRows(area);
+  assert.strictEqual(rows.length, 2);
+  rows.forEach(function (row) {
+    assert.strictEqual(findByClass(row, "tl-shot"), undefined);
+    assert.ok(findByClass(row, "tl-name"));
   });
 });
 
@@ -225,8 +238,16 @@ test("AC-34：image が外部URLのツールは、画像なしで表示され、
   const warnings = captureWarnings(function () {
     showToolPanels("tool-area", [makePublishedTool(), external]);
   });
-  assert.strictEqual(area.children.length, 2);
-  assert.strictEqual(findByClass(area.children[1], "tool-shot"), undefined);
+  const rows = getRows(area);
+  assert.strictEqual(rows.length, 2);
+  assert.strictEqual(findByClass(rows[1], "tl-shot"), undefined);
   assert.strictEqual(warnings.length, 1);
   assert.match(warnings[0], /2件目の、画像の項目/);
+});
+
+test("第3回：説明文は省略せず全文を出す（為替の注意の文を隠さないため）", function () {
+  const area = setUpFakeDocument();
+  const longText = "あ".repeat(120);
+  showToolPanels("tool-area", [Object.assign(makePublishedTool(), { description: longText })]);
+  assert.strictEqual(findByClass(area.children[0], "tl-desc").textContent, longText);
 });
