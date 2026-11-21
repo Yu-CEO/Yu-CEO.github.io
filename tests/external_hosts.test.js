@@ -24,7 +24,9 @@ const ADSENSE_IMAGE_SOURCES = ["https://*.googlesyndication.com", "https://*.dou
   "https://*.adtrafficquality.google"];
 const ADSENSE_CONNECT_SOURCES = ["https://*.googlesyndication.com", "https://*.doubleclick.net", "https://*.google.com", "https://csi.gstatic.com",
   "https://*.adtrafficquality.google"];
-const ADSENSE_FRAME_SOURCES = ["https://*.googlesyndication.com", "https://*.doubleclick.net", "https://www.google.com", "https://*.adtrafficquality.google"];
+// fundingchoicesmessages.google.com：欧州向けの同意画面（Google の同意管理）の iframe
+const ADSENSE_FRAME_SOURCES = ["https://*.googlesyndication.com", "https://*.doubleclick.net", "https://www.google.com", "https://*.adtrafficquality.google",
+  "https://fundingchoicesmessages.google.com"];
 const ADSENSE_HOST = "pagead2.googlesyndication.com";
 // 外部のホストを書かずに、読み込み先が同じサイトだけと決める指定（CSP の値は2-5の表のとおり）
 const CSP_FIXED_DIRECTIVES = {
