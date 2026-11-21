@@ -80,24 +80,24 @@
   /* ヒーローの「役員が Yu に提案・指摘する場面」（css/hero_advice.css）。色は日記の入口画像（design/portal_diary/make_hero.py）と同じ */
   --scene-max:460px;              /* 場面の最大幅。PC幅で大きくなりすぎないため */
   --fs-scene-cap:11px;            /* 場面の下の小さな説明（架空の人物の表示） */
-  --adv-bg-1:#0b1730;             /* 場面の背景（左上）。入口画像の紺 */
-  --adv-bg-2:#050a16;             /* 場面の背景（右下） */
-  --adv-glow:rgba(63,124,192,.55);/* 役員の後ろの青い光 */
-  --adv-border:rgba(127,178,234,.28);
-  --adv-blue:#7fb2ea;             /* 小見出し・名札の枠・「提案」。紺の上で約8:1 */
-  --adv-yellow:#f2c94c;           /* 吹き出しの枠・「指摘」。紺の上で約11:1（赤は入口画像で「まちがい」に使うので避けた） */
-  --adv-blue-soft:rgba(127,178,234,.12); /* 「提案」ラベルの中の薄い青 */
-  --adv-yellow-soft:rgba(242,201,76,.12); /* 「指摘」ラベルの中の薄い黄 */
-  --adv-face-ring:rgba(127,178,234,.5);  /* 大きな顔のまわりの輪 */
-  --adv-board-line:rgba(127,178,234,.16);/* 役員の顔の列の上の線 */
-  --adv-bubble-bg:rgba(13,26,51,.92); /* 吹き出しの中 */
-  --adv-tag-bg:#10213f;           /* 名札の中 */
-  --adv-face:88px;                /* 役員の大きな顔 */
-  --adv-yu:40px;                  /* 受け取る Yu の写真 */
-  --fs-adv-eyebrow:13px;
-  --fs-adv-text:16px;
-  --fs-adv-name:13px;
-  --fs-adv-to:14px;
+  --talk-bg-1:#0b1730;             /* 場面の背景（左上）。入口画像の紺 */
+  --talk-bg-2:#050a16;             /* 場面の背景（右下） */
+  --talk-glow:rgba(63,124,192,.55);/* 役員の後ろの青い光 */
+  --talk-border:rgba(127,178,234,.28);
+  --talk-blue:#7fb2ea;             /* 小見出し・名札の枠・「提案」。紺の上で約8:1 */
+  --talk-yellow:#f2c94c;           /* 吹き出しの枠・「指摘」。紺の上で約11:1（赤は入口画像で「まちがい」に使うので避けた） */
+  --talk-blue-soft:rgba(127,178,234,.12); /* 「提案」ラベルの中の薄い青 */
+  --talk-yellow-soft:rgba(242,201,76,.12); /* 「指摘」ラベルの中の薄い黄 */
+  --talk-face-ring:rgba(127,178,234,.5);  /* 大きな顔のまわりの輪 */
+  --talk-board-line:rgba(127,178,234,.16);/* 役員の顔の列の上の線 */
+  --talk-bubble-bg:rgba(13,26,51,.92); /* 吹き出しの中 */
+  --talk-tag-bg:#10213f;           /* 名札の中 */
+  --talk-face:88px;                /* 役員の大きな顔 */
+  --talk-yu:40px;                  /* 受け取る Yu の写真 */
+  --fs-talk-eyebrow:13px;
+  --fs-talk-text:16px;
+  --fs-talk-name:13px;
+  --fs-talk-to:14px;
   --fs-hero-days:14px;            /* 「今日で、AI会社を始めて N 日目」 */
   --t-rise:.35s;                  /* 下から浮かぶ時間 */
 

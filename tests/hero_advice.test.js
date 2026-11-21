@@ -30,14 +30,14 @@ function read(file) {
  */
 function setUpAdvice() {
   const ids = {
-    "hero-advice": "div", "adv-eyebrow": "p", "adv-face-holder": "span", "adv-name": "span",
-    "adv-text": "p", "adv-tag": "span", "adv-board": "div", "hero-quote-link": "a"
+    "hero-talk": "div", "talk-eyebrow": "p", "talk-face-holder": "span", "talk-name": "span",
+    "talk-text": "p", "talk-tag": "span", "talk-board": "div", "hero-quote-link": "a"
   };
   const parts = {};
   Object.keys(ids).forEach(function (id) {
     parts[id] = createFakeElement(ids[id]);
   });
-  parts["hero-advice"].className = "advice no-quote";
+  parts["hero-talk"].className = "advice no-quote";
   installFakeDocument(parts);
   return parts;
 }
@@ -82,15 +82,15 @@ test("第3回：名言を選ぶと、大きな顔・名札・吹き出し・ラ�
   const shown = showHeroAdvice({ quotes: BOARD_QUOTES, rand: fixedRand([0, 0]), faceFile: FACE_FILE });
   assert.strictEqual(shown, true);
   // 一覧の最初の役員（CMO）の最初の名言（提案）
-  assert.strictEqual(parts["adv-name"].children[0].textContent, "発信の作戦");
-  assert.match(parts["adv-text"].textContent, /^金額を出さないなら/);
-  assert.strictEqual(parts["adv-tag"].textContent, "→ Yu へ提案");
-  assert.match(parts["adv-tag"].className, /k-teian/);
+  assert.strictEqual(parts["talk-name"].children[0].textContent, "発信の作戦");
+  assert.match(parts["talk-text"].textContent, /^金額を出さないなら/);
+  assert.strictEqual(parts["talk-tag"].textContent, "→ Yu へ提案");
+  assert.match(parts["talk-tag"].className, /k-teian/);
   assert.strictEqual(parts["hero-quote-link"].getAttribute("href"), "diary/entry.html?date=2026-11-14");
-  assert.strictEqual(parts["adv-eyebrow"].textContent, "1日目の会議で（2026.11.14）");
-  assert.ok(!/no-quote/.test(parts["hero-advice"].className));
-  const face = parts["adv-face-holder"].children[0];
-  assert.match(face.className, /adv-face/);
+  assert.strictEqual(parts["talk-eyebrow"].textContent, "1日目の会議で（2026.11.14）");
+  assert.ok(!/no-quote/.test(parts["hero-talk"].className));
+  const face = parts["talk-face-holder"].children[0];
+  assert.match(face.className, /talk-face/);
   assert.strictEqual(face.children[0].children[0].getAttribute("href"), FACE_FILE + "#cmo");
 });
 
@@ -98,14 +98,14 @@ test("第3回：「指摘」の名言は黄色のラベル（k-shiteki）と「�
   const parts = setUpAdvice();
   // 役員は一覧に初めて出た順：CMO・CFO・CTO・CISO・ブランド・プロデューサー。0.2 → CFO、0.99 → CFO の最後の名言（指摘）
   showHeroAdvice({ quotes: BOARD_QUOTES, rand: fixedRand([0.2, 0.99]), faceFile: FACE_FILE });
-  assert.strictEqual(parts["adv-tag"].textContent, "→ Yu へ指摘");
-  assert.match(parts["adv-tag"].className, /k-shiteki/);
+  assert.strictEqual(parts["talk-tag"].textContent, "→ Yu へ指摘");
+  assert.match(parts["talk-tag"].className, /k-shiteki/);
 });
 
 test("第3回：AI役員8人の小さな顔の列が出て、話した役員の顔だけ「on」（黄色い輪）になる。Yu は並ばない", function () {
   const parts = setUpAdvice();
   showHeroAdvice({ quotes: BOARD_QUOTES, rand: fixedRand([0, 0]), faceFile: FACE_FILE });
-  const faces = findAllByClass(parts["adv-board"], "avatar");
+  const faces = findAllByClass(parts["talk-board"], "avatar");
   assert.strictEqual(faces.length, 8);
   assert.strictEqual(HERO_BOARD_SPEAKERS.includes("Yu"), false);
   const lit = faces.filter(function (face) {
@@ -127,9 +127,9 @@ test("AC-4：名言が選べない（0件・一覧が読めない）ときは、
       console.warn = originalWarn;
     }
     assert.strictEqual(shown, false);
-    assert.match(parts["hero-advice"].className, /no-quote/);
-    assert.strictEqual(parts["adv-text"].textContent, "");
-    assert.strictEqual(findAllByClass(parts["adv-board"], "avatar").length, 8);
+    assert.match(parts["hero-talk"].className, /no-quote/);
+    assert.strictEqual(parts["talk-text"].textContent, "");
+    assert.strictEqual(findAllByClass(parts["talk-board"], "avatar").length, 8);
   });
 });
 
@@ -178,8 +178,8 @@ test("第3回：役員の絵の場所は js/site_config.js の SPEAKER_FACE_FILE
 
 test("第3回：入口に場面の部品が全部あり、最初は no-quote（空の吹き出しを残さない）。Yu の写真は WebP を先に使い、背景画像（url）を使わない", function () {
   const html = read("index.html");
-  assert.ok(/class="advice no-quote" id="hero-advice"/.test(html));
-  ["adv-eyebrow", "adv-face-holder", "adv-name", "adv-text", "adv-tag", "adv-board", "hero-quote-link", "hero-days", "hero-days-number"].forEach(function (id) {
+  assert.ok(/class="talk no-quote" id="hero-talk"/.test(html));
+  ["talk-eyebrow", "talk-face-holder", "talk-name", "talk-text", "talk-tag", "talk-board", "hero-quote-link", "hero-days", "hero-days-number"].forEach(function (id) {
     assert.ok(html.includes('id="' + id + '"'), id);
   });
   assert.ok(html.includes("この日の話を読む") && html.includes("人間・社長"));
@@ -211,9 +211,9 @@ test("CSP を緩めていない：style 属性・HTML 直書きの挿入がな�
 test("AC-5・AC-6：場面の動きは1回だけ（くり返さない）・動きを減らす設定で止める・「LIVE」などの言葉がない", function () {
   const css = read("css/hero_advice.css");
   assert.ok(!/infinite/.test(css));
-  assert.ok(/prefers-reduced-motion:reduce[\s\S]*\.adv-who/.test(css));
+  assert.ok(/prefers-reduced-motion:reduce[\s\S]*\.talk-who/.test(css));
   // 吹き出しは動かさない（iPhone の Safari で中の文字が出なくなったため）
-  assert.ok(!/\.adv-bubble[^{]*\{[^}]*animation/.test(css));
+  assert.ok(!/\.talk-bubble[^{]*\{[^}]*animation/.test(css));
   ["js/hero_advice.js", "js/board_quotes_data.js", "css/hero_advice.css"].forEach(function (file) {
     assert.ok(!/LIVE|いま会議中/.test(read(file)), file);
   });

@@ -41,13 +41,13 @@ const HERO_BOARD_ON_CLASS = "on";
 const NO_QUOTE_CLASS = "no-quote";
 // index.html に書いた部品の id
 const HERO_ADVICE_IDS = {
-  advice: "hero-advice",
-  eyebrow: "adv-eyebrow",
-  face: "adv-face-holder",
-  name: "adv-name",
-  text: "adv-text",
-  tag: "adv-tag",
-  board: "adv-board",
+  advice: "hero-talk",
+  eyebrow: "talk-eyebrow",
+  face: "talk-face-holder",
+  name: "talk-name",
+  text: "talk-text",
+  tag: "talk-tag",
+  board: "talk-board",
   link: "hero-quote-link"
 };
 
@@ -154,11 +154,11 @@ function fillBoardFaces(board, faceFile, activeSpeaker) {
 function fillAdviceQuote(parts, texts, faceFile) {
   parts.eyebrow.textContent = texts.eyebrow;
   parts.face.textContent = "";
-  parts.face.appendChild(createSpeakerFace(texts.speaker, "adv-face", faceFile));
+  parts.face.appendChild(createSpeakerFace(texts.speaker, "talk-face", faceFile));
   parts.name.textContent = texts.shortName;
   parts.name.appendChild(makeDiaryElement("small", "", texts.role));
   parts.text.textContent = texts.text;
-  parts.tag.className = "adv-tag " + texts.kindClass;
+  parts.tag.className = "talk-tag " + texts.kindClass;
   parts.tag.textContent = texts.kindLabel;
   parts.link.setAttribute("href", texts.href);
 }
