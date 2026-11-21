@@ -14,6 +14,6 @@
 <text x="72" y="118" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="26" font-weight="700" fill="#0f1626">6本以上</text>
 <line x1="138" y1="104" x2="162" y2="104" stroke="#5b5f66" stroke-width="2" marker-end="url(#ag)"/>
 <rect x="165" y="56" width="125" height="96" rx="10" fill="#ffffff" stroke="#a14a00" stroke-width="1.5"/>
-<text x="227" y="86" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#0f1626">動画181本の再生</text>
-<text x="227" y="118" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="22" font-weight="700" fill="#a14a00">最近は0〜数回</text>
+<text x="227" y="86" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#0f1626">動画の再生（1本）</text>
+<text x="227" y="118" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="18" font-weight="700" fill="#a14a00">約80〜160回</text>
 </svg>
