@@ -17,6 +17,21 @@ const { removeJsComments, findHostsWithLines } = require("./helpers/source_scan.
 
 const PORTAL_FOLDER = path.join(__dirname, "..");
 const PAGE_FILES = ["index.html", "diary/index.html", "diary/entry.html"];
+// 問い合わせページ（contact.html。2026-11-22 追加）。広告を読み込まないので、CSP は PAGE_FILES とは別に確かめる
+const CONTACT_PAGE_FILE = "contact.html";
+const ALL_PAGE_FILES = PAGE_FILES.concat([CONTACT_PAGE_FILE]);
+// 問い合わせページの CSP（広告・道具箱の ASP を入れず、計測と GTM だけ。フォームは埋め込まず、押したときの移動だけなので足さない）
+const CONTACT_CSP_DIRECTIVES = {
+  "default-src": ["'self'"],
+  "script-src": ["'self'", "https://www.googletagmanager.com"],
+  "style-src": ["'self'"],
+  "connect-src": ["'self'", "https://www.googletagmanager.com", "https://*.google-analytics.com", "https://*.analytics.google.com"],
+  "font-src": ["'none'"],
+  "frame-src": ["'none'"],
+  "object-src": ["'none'"],
+  "base-uri": ["'self'"],
+  "form-action": ["'none'"]
+};
 // Google AdSense（adsense_loader.js。2026-11-21 追加）が使う場所。広告の本体・iframe・画像・通信のため CSP を広げる
 const ADSENSE_SCRIPT_SOURCES = ["https://pagead2.googlesyndication.com", "https://*.googlesyndication.com", "https://*.doubleclick.net",
   "https://*.googletagservices.com", "https://adservice.google.com", "https://*.adtrafficquality.google", "https://fundingchoicesmessages.google.com"];
@@ -82,7 +97,7 @@ function hostOf(url) {
  * @returns {string[]} ホスト名
  */
 function linkOnlyHosts() {
-  const urls = [SITE_CONFIG.TIKTOK_URL, SITE_CONFIG.LINE_OPENCHAT_URL, SITE_CONFIG.LINE_OFFICIAL_URL, SITE_CONFIG.ZENN_URL]
+  const urls = [SITE_CONFIG.TIKTOK_URL, SITE_CONFIG.LINE_OPENCHAT_URL, SITE_CONFIG.LINE_OFFICIAL_URL, SITE_CONFIG.ZENN_URL, SITE_CONFIG.CONTACT_FORM_URL]
     .concat(TOOLBOX_DATA.filter(function (item) { return item.url; }).map(function (item) { return item.url; }))
     .concat(TOOLS_DATA.map(function (tool) { return tool.url; }));
   const aspLinkHosts = ASP_LIST.flatMap(function (asp) {
@@ -161,8 +176,8 @@ function readFolder(folderName, extension) {
     });
 }
 
-test("2-7-1・AC-12・AC-14：3ページに外部の script・stylesheet・iframe・object・embed・img が無い", function () {
-  PAGE_FILES.forEach(function (pageFile) {
+test("2-7-1・AC-12・AC-14：4ページ（問い合わせを含む）に外部の script・stylesheet・iframe・object・embed・img が無い", function () {
+  ALL_PAGE_FILES.forEach(function (pageFile) {
     const html = fs.readFileSync(path.join(PORTAL_FOLDER, pageFile), "utf8");
     const problems = findExternalLoadTags(html);
     assert.deepStrictEqual(problems, [], problems.map(function (problem) {
@@ -255,7 +270,7 @@ test("2-7-4：計測の送り先は ANALYTICS_HOST だけ（https:// で組み�
 });
 
 test("2-7-5：外部の <script>・<link rel=\"stylesheet\"> には integrity（SRI）が付いている（今は0件）", function () {
-  PAGE_FILES.forEach(function (pageFile) {
+  ALL_PAGE_FILES.forEach(function (pageFile) {
     const html = fs.readFileSync(path.join(PORTAL_FOLDER, pageFile), "utf8");
     const externalTags = (html.match(/<(script|link)\b[^>]*>/gi) || []).filter(function (tag) {
       return /\b(src|href)\s*=\s*["']?(https?:)?\/\//i.test(tag) && (/^<script/i.test(tag) || /rel="stylesheet"/i.test(tag));
@@ -267,8 +282,35 @@ test("2-7-5：外部の <script>・<link rel=\"stylesheet\"> には integrity（
 });
 
 test("AC-11：<noscript> の計測画像を置いていない", function () {
-  PAGE_FILES.forEach(function (pageFile) {
+  ALL_PAGE_FILES.forEach(function (pageFile) {
     const html = fs.readFileSync(path.join(PORTAL_FOLDER, pageFile), "utf8");
     assert.ok(!/<noscript/i.test(html), pageFile + " に <noscript> があります");
+  });
+});
+
+test("AC-8・AC-9（問い合わせ）：contact.html の CSP は仕様 2-5 のとおりで、AdSense・ASP のホストが無く、img-src は計測と GTM・GA だけ", function () {
+  const html = fs.readFileSync(path.join(PORTAL_FOLDER, CONTACT_PAGE_FILE), "utf8");
+  const csp = readCsp(html);
+  assert.ok(csp, "contact.html に CSP の meta がありません");
+  Object.keys(CONTACT_CSP_DIRECTIVES).forEach(function (name) {
+    assert.deepStrictEqual(csp[name], CONTACT_CSP_DIRECTIVES[name], "contact.html の CSP の " + name + " が仕様（2-5）と違います");
+  });
+  const expectedImages = analyticsHosts().map(function (host) { return "https://" + host; }).concat(GTM_IMAGE_SOURCES).sort();
+  assert.strictEqual(csp["img-src"][0], "'self'");
+  assert.deepStrictEqual(csp["img-src"].slice(1).sort(), expectedImages, "contact.html の CSP の img-src が許可リストと違います");
+  assert.deepStrictEqual(Object.keys(csp).sort(), Object.keys(CONTACT_CSP_DIRECTIVES).concat(["img-src"]).sort());
+  assert.ok(!html.includes("pagead2.googlesyndication.com") && !html.includes("adsense_loader") && !html.includes("google-adsense-account"),
+    "contact.html に AdSense の読み込みがあります");
+});
+
+test("AC-7（問い合わせ）：4ページの CSP の frame-src・form-action・connect-src に Google フォームのホストが足されていない。フォームの埋め込みも無い", function () {
+  ALL_PAGE_FILES.forEach(function (pageFile) {
+    const html = fs.readFileSync(path.join(PORTAL_FOLDER, pageFile), "utf8");
+    const csp = readCsp(html);
+    ["frame-src", "form-action", "connect-src"].forEach(function (name) {
+      const value = csp[name].join(" ");
+      assert.ok(!value.includes("forms.gle") && !value.includes("docs.google.com"), pageFile + " の " + name + " にフォームのホストがあります");
+    });
+    assert.ok(!/<iframe/i.test(html), pageFile + " に iframe があります");
   });
 });

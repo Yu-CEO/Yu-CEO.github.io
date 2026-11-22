@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!--
+  contact.html：お問い合わせページ（/contact.html）の骨組みだけを書くファイル。
+  受け付ける内容・返事の目安・受け付けないもの・個人情報の扱いを先に伝え、Google フォームへのボタンを置く。
+  フォームのURLは js/site_config.js の CONTACT_FORM_URL の1か所だけ。ボタンの出し分けは js/contact_link.js（判定）と js/contact_main.js（流れ）、見た目は css/contact.css。
+  フォームは「押したときの移動」だけ（埋め込まない）。広告（AdSense）はこのページでは読み込まない。
+  外部と通信するのは、アクセス解析（GoatCounter・Google タグマネージャー）だけ（js/analytics_*.js・js/gtm_loader.js。公開サイトで開いたときだけ）。
+  ここの文言は Google フォームの説明文と食い違わないようにする（フォームを直したら、ここも直す）。
+-->
+<!-- CSP（このページが読み込んでよい場所の制限）。AdSense・道具箱の計測用画像のホストは入れない。計測の送り先（ANALYTICS_HOST）を変えたら img-src も同じに直す。tests/external_hosts.test.js が一致を確かめる -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self'; img-src 'self' https://yuceo.goatcounter.com https://www.googletagmanager.com https://*.google-analytics.com; connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; font-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="description" content="Yuへのお問い合わせページです。お仕事のご相談・取材・感想・不具合のご報告を受け付けています。返事は3日以内が目安です。">
+<meta property="og:title" content="お問い合わせ｜Yu">
+<meta property="og:description" content="Yuへのお問い合わせページです。お仕事のご相談・取材・感想・不具合のご報告を受け付けています。返事は3日以内が目安です。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yu｜AI仮想会社の社長">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="https://yu-ceo.github.io/assets/og/og_default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="夜の部屋でパソコンに向かうYu（AIで作ったアバター）と、『Yu｜AI仮想会社の社長』『AI役員会議で人生を変えにいく、会社員エンジニアの実録』の文字">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://yu-ceo.github.io/contact.html">
+<link rel="canonical" href="https://yu-ceo.github.io/contact.html">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>お問い合わせ｜Yu</title>
+<!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/diary.css">
+<link rel="stylesheet" href="css/contact.css">
+</head>
+<body>
+<!-- 上部の固定バー（入口ページと同じ）。「Yu」で入口ページへ -->
+<nav class="bar" aria-label="サイトのメニュー">
+  <a class="bar-logo" href="./">Yu</a>
+</nav>
+<!-- 紺の帯：入口ページへ戻る・見出し -->
+<header class="night d-head">
+  <div class="back-row"><a class="back-link" href="./">ホームに戻る</a></div>
+  <div class="d-head-inner">
+    <p class="d-eyebrow">CONTACT</p>
+    <h1 class="d-h1">お問い合わせ</h1>
+    <p class="d-lead">お仕事のご相談や感想など、Yu への連絡はこのフォームから受け付けています。</p>
+  </div>
+</header>
+<main class="contact-wrap">
+  <section class="contact-section" aria-labelledby="contact-accept-title">
+    <h2 class="contact-title" id="contact-accept-title">受け付けているもの</h2>
+    <ul class="contact-list">
+      <li>お仕事のご相談（AIで仕事を回す仕組みづくりなど）</li>
+      <li>取材・コラボのご相談</li>
+      <li>日記・動画・ツールへの感想や質問</li>
+      <li>不具合のご報告</li>
+      <li>その他</li>
+    </ul>
+  </section>
+  <section class="contact-section" aria-labelledby="contact-reply-title">
+    <h2 class="contact-title" id="contact-reply-title">返事の目安</h2>
+    <p>3日以内を目安にお返事します（会社員なので、夜にまとめて読んでいます）。</p>
+  </section>
+  <section class="contact-section contact-section-caution" aria-labelledby="contact-refuse-title">
+    <h2 class="contact-title" id="contact-refuse-title">受け付けないもの</h2>
+    <p>投資・保険・不動産の個別のご相談（「何を買えばいい？」など）にはお答えできません。</p>
+  </section>
+  <section class="contact-section" aria-labelledby="contact-privacy-title">
+    <h2 class="contact-title" id="contact-privacy-title">個人情報の扱い</h2>
+    <p>フォームでいただいたお名前・メールアドレス・内容は、お返事とご用件への対応のためだけに使います。ご本人の同意なく第三者に渡すことはありません。お返事が済んだ内容は、半年を目安に削除します。パスワードやカード番号などの大事な情報は書かないでください。</p>
+  </section>
+  <section class="contact-section contact-send" aria-labelledby="contact-send-title">
+    <h2 class="contact-title" id="contact-send-title">フォームを開く</h2>
+    <p>フォームは Google フォームを使っています（Google のページが新しいタブで開きます）。</p>
+    <!-- href・target・rel は js/contact_main.js が入れる。URLが正しくないときは隠れたまま -->
+    <a class="btn btn-main contact-button" id="contact-form-button" hidden>フォームを開く（Google フォーム）</a>
+    <p class="contact-missing" id="contact-form-missing" hidden>ただいまフォームを準備中です。しばらくしてからもう一度お試しください。</p>
+  </section>
+  <a class="contact-back" href="./">ホームに戻る</a>
+</main>
+<!-- 共通の注意書き（広告の説明は、このページでは広告を出さないので載せない） -->
+<footer class="note d-page-note">
+  <p>このサイトは、特定の商品や売買をすすめるものではなく、投資の助言を行うものでもありません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
+  <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter と、Google タグマネージャー・Google アナリティクス）を使っています。ページを開くと、これらのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類などが届きます。Google のサービスは Cookie を使うことがあります。個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
+</footer>
+<!-- 設定 → 部品 → 流れ（contact_main.js）の順。公開するときは tools/build_bundle.js が1つのファイルにまとめる（計測は別の1つ） -->
+<script src="js/site_config.js" defer></script>
+<script src="js/contact_link.js" defer></script>
+<script src="js/contact_main.js" defer></script>
+<!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため）。広告の読み込みは、このページでは読み込まない -->
+<script src="js/gtm_loader.js" defer></script>
+<script src="js/analytics_path.js" defer></script>
+<script src="js/analytics_beacon.js" defer></script>
+<script src="js/analytics_main.js" defer></script>
+</body>
+</html>

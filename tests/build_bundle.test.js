@@ -15,7 +15,7 @@ const { findStylesheets, findScripts, splitScripts, bundleSite, PAGE_FILES } = r
 
 const PORTAL_FOLDER = path.join(__dirname, "..");
 // CI の公開の手順（.github/workflows/ci.yml）で _site にコピーするもののうち、このテストに要るもの
-const COPIED_ITEMS = ["index.html", "css", "js", "diary"];
+const COPIED_ITEMS = ["index.html", "contact.html", "css", "js", "diary"];
 // まとめたあとの数：CSS は1つ、JS は「表示用」と「アクセス解析用」の2つ
 const EXPECTED_STYLESHEETS = 1;
 const EXPECTED_SCRIPTS = 2;

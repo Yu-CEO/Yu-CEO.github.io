@@ -11,9 +11,9 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 
 // まとめる対象のページ（公開するフォルダの中の場所）
-const PAGE_FILES = ["index.html", "diary/index.html", "diary/entry.html"];
+const PAGE_FILES = ["index.html", "diary/index.html", "diary/entry.html", "contact.html"];
 // アクセス解析の JS は、ほかとは別の1ファイルにまとめる。
-// 理由：ページの表示の JS がエラーで止まっても、計測は動かす（今の「最後に別に読み込む」の決まりを守る）。3ページで同じ中身なので、2ページ目からはブラウザに保存された物を使える
+// 理由：ページの表示の JS がエラーで止まっても、計測は動かす（今の「最後に別に読み込む」の決まりを守る）。4ページで同じ中身なので、2ページ目からはブラウザに保存された物を使える
 const ANALYTICS_PREFIX = "analytics_";
 // まとめたファイルの名前に入れる、中身から作った印（ハッシュ）の長さ。中身が変わると名前も変わるので、古いファイルが使われ続けない
 const HASH_LENGTH = 10;

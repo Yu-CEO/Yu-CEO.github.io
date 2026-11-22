@@ -94,13 +94,13 @@ jobs:
           node-version: "20"
 
       # 公開するファイルだけを _site フォルダにまとめる
-      # 入れるもの：index.html・robots.txt・css/・js/・diary/（日記のページとデータ）（assets/・images/ があればそれも）
+      # 入れるもの：index.html・contact.html・robots.txt・css/・js/・diary/（日記のページとデータ）（assets/・images/ があればそれも）
       # 入れないもの：tests/・ci/・tools/・README.md・docs/・.github/
       # sitemap.xml はリポジトリに置かず、ここで diary/entries/index.json から作る（tools/build_sitemap.js。日付の形が違えば失敗して公開しない）
       - name: 公開するファイルをまとめる
         run: |
           mkdir _site
-          cp index.html robots.txt _site/
+          cp index.html contact.html robots.txt _site/
           cp ads.txt _site/
           for dir in css js diary assets images; do
             if [ -d "$dir" ]; then cp -r "$dir" _site/; fi

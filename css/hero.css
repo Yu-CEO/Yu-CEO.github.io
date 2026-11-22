@@ -78,7 +78,7 @@
   color:var(--hero-text-sub);
 }
 .hero > .actions{margin-top:14px}   /* 場面のすぐ下。名前・場面・主ボタンが最初の画面に収まるようにするため */
-.hero > .hero-pills{margin-bottom:auto} /* 上の余白（.hero-eyebrow の auto）と同じだけ下にも余白をとり、中身を真ん中寄りに置く */
+.hero > .hero-contact{margin-bottom:auto} /* 上の余白（.hero-eyebrow の auto）と同じだけ下にも余白をとり、中身を真ん中寄りに置く */
 
 /* ヒーロー中央の「TikTokを見る」：丸い小さめのボタン（下の2つのボタンより控えめ） */
 .btn-pill{
@@ -122,3 +122,23 @@
 .hero-pills .btn-pill{margin-top:0;padding:0 14px;gap:8px;white-space:nowrap}
 /* 丸いボタンが2つとも隠れているときは、行ごと隠す（場所が空いて見えないようにする） */
 .hero-pills:not(:has(.btn-pill:not([hidden]))){display:none}
+
+/* 「お問い合わせ」：丸ボタンより控えめな、枠線だけの小さなリンク（目立たせすぎない）。押せる高さは44px以上 */
+.hero-contact{display:flex;justify-content:center;margin-top:6px}
+.btn-contact{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:var(--pill-height);
+  padding:0 18px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.06em;
+  white-space:nowrap;               /* 文字が2行に割れないようにする */
+  text-decoration:none;
+  color:var(--hero-text-sub);
+  border:1px solid var(--hero-pill-border);
+  transition:background .15s;
+}
+.btn-contact:hover{background:var(--hero-pill-bg-hover)}

@@ -10,6 +10,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const SITE_URL = "https://yu-ceo.github.io/";
+// 問い合わせページ（日付は持たないので lastmod は書かない）
+const CONTACT_URL = SITE_URL + "contact.html";
 // 入口と同じホストにある、別のリポジトリのページ（日付は分からないので lastmod は書かない）
 const SIMULATOR_URL = SITE_URL + "okane-simulator/";
 const VIDEO_CHECK_URL = SITE_URL + "video-check/";
@@ -58,7 +60,7 @@ function checkSitemapDates(dates) {
 }
 
 /**
- * 日付の一覧から sitemap.xml の中身を作る。載せるのは入口・日記の一覧・日記1件（日付の数）・シミュレーター・動画診断・為替の学習ツール。
+ * 日付の一覧から sitemap.xml の中身を作る。載せるのは入口・日記の一覧・問い合わせページ・日記1件（日付の数）・シミュレーター・動画診断・為替の学習ツール。
  * 入口と一覧の lastmod は一番新しい日記の日付、日記1件はその日付。日記が0件なら入口と一覧の lastmod は書かない。
  * @param {string[]} dates 公開している日記の日付
  * @returns {string} sitemap.xml の中身（UTF-8 の XML）
@@ -69,7 +71,8 @@ function buildSitemapXml(dates) {
   const newest = checked.slice().sort().pop() || "";
   const elements = [
     buildUrlElement(SITE_URL, newest),
-    buildUrlElement(SITE_URL + "diary/", newest)
+    buildUrlElement(SITE_URL + "diary/", newest),
+    buildUrlElement(CONTACT_URL, "")
   ];
   checked.forEach(function (date) {
     elements.push(buildUrlElement(SITE_URL + "diary/entry.html?date=" + date, date));

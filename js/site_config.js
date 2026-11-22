@@ -14,6 +14,9 @@ const SITE_CONFIG = {
   TIKTOK_URL: "https://www.tiktok.com/@yu_from_l2w",
   // Zenn（エンジニア向けの記事サイト）の記事一覧のURL。文字のリンク「作り方の記事を読む（Zenn）」に使う
   ZENN_URL: "https://zenn.dev/yuceo",
+  // お問い合わせフォーム（Google フォーム）のURL。contact.html のボタン「フォームを開く」に使う。変えるときはこの1行だけ。
+  // 認めるのは https://forms.gle/… と https://docs.google.com/forms/… だけ（js/contact_link.js が判定。違う形だとボタンは出ない）
+  CONTACT_FORM_URL: "https://forms.gle/GaWdwJchzSrcvLmZA",
   // 顔の絵の場所の基準（Yu の線画 SVG）。ヒーローの大きな顔・小さな顔の列・日記カードの顔がすべてここを見る。
   // 秘書と役員7人の立体の絵は、ここと同じフォルダの faces/<key>.webp（key は diary_speakers.js の表）から読む
   SPEAKER_FACE_FILE: "assets/speakers.svg",

@@ -1,0 +1,41 @@
+/*
+ * contact.css：問い合わせページ（contact.html）だけで使う見た目
+ * 紺の帯の下に、白い1列の読み物（節ごとに見出し＋短い文）とフォームへのボタンを置く。色・大きさの値は variables.css、帯・戻るリンクは diary.css・hero.css。
+ * contact.html から読み込まれる。スマホ幅（360px）を基準にし、PC では文章が伸びすぎないよう --content-max で止める。
+ */
+
+.contact-wrap{
+  max-width:var(--content-max);
+  margin:0 auto;
+  padding:28px var(--gutter) 8px;
+  font-size:var(--fs-body);
+  line-height:1.8;
+}
+.contact-section{margin:0 0 26px}
+.contact-title{
+  margin:0 0 8px;
+  font-size:18px;
+  line-height:1.5;
+  font-weight:700;
+}
+.contact-section p{margin:0;color:var(--color-text)}
+.contact-list{margin:0;padding-left:1.3em}
+.contact-list li{margin-bottom:4px}
+/* 受け付けないものは、読み飛ばされないよう左に線を引く */
+.contact-section-caution{padding-left:14px;border-left:4px solid var(--color-line-green)}
+/* フォームへのボタン：横いっぱい（スマホ）。文字が2行に割れないよう、長い文は小さめにする */
+.contact-send .contact-button{
+  display:flex;
+  margin-top:14px;
+  font-size:15px;
+  text-align:center;
+}
+.contact-missing{margin-top:12px;color:var(--color-text-sub)}
+.contact-back{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;                  /* 指で押せる高さ */
+  margin:4px 0 24px;
+  font-size:15px;
+  color:var(--color-text-sub);
+}
