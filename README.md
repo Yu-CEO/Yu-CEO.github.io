@@ -189,7 +189,8 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 | `diary/figures/YYYY-MM-DD.svg` | その日の図（図がある日だけ） |
 | `diary/figures/YYYY-MM-DD-2.svg` | 3版目の2枚目の図（`figure2` がある日だけ） |
 | `diary/heroes/YYYY-MM-DD.jpg` | 3版目の入口画像（`hero` がある日だけ。1280×720・JPEG） |
-| `assets/speakers.svg` | 日記の話者9人の顔イラスト（オリジナル） |
+| `assets/speakers.svg` | Yu（人間）の線画の顔（ほかの8人の線画も残してある） |
+| `assets/faces/<key>.webp` | 秘書と役員7人の立体の顔（192角・透明・埋め込み情報なし） |
 | `assets/yu.jpg` | ヒーローの肖像（AIで作ったアバター。埋め込み情報なし）。WebP を表示できないブラウザ用の予備 |
 | `assets/yu.webp` | `yu.jpg` を WebP（軽い画像の形式）にしたもの（同じ 787×1400・約94KB・埋め込み情報なし）。ふだんはこちらを表示する |
 | `assets/tool_simulator.jpg` | おかね収支シミュレーターのスクリーンショット（埋め込み情報なし） |
@@ -205,7 +206,7 @@ URL を LINE・X などに貼ったときの画像と説明（共有カード）
 | `tests/toolbox_link.test.js` | リンクの種類ごとの出し方のテスト |
 | `tests/toolbox_data.test.js` | 実際の `toolbox_data.js` と `ASP_LIST` が検査を通るか・文面のテスト |
 | `tests/toolbox_view.test.js` | 道具箱の表示（ジャンルの順・PR表示・注意書き・計測用画像・0件）のテスト |
-| `js/site_config.js` | 設定値（LINEオープンチャット・LINE公式アカウント・TikTok・ZennのURL（`ZENN_URL`）・役員の顔の絵の場所（`SPEAKER_FACE_FILE`。差し替えはここ1か所）・アクセス解析の `ANALYTICS_*`）と、道具箱で使うASPの一覧 `ASP_LIST` |
+| `js/site_config.js` | 設定値（LINEオープンチャット・LINE公式アカウント・TikTok・ZennのURL（`ZENN_URL`）・顔の絵の基準の場所（`SPEAKER_FACE_FILE`。立体の絵はその隣の `faces/`、フォルダ名は `js/diary_speakers.js`）・アクセス解析の `ANALYTICS_*`）と、道具箱で使うASPの一覧 `ASP_LIST` |
 | `js/tools_data.js` | ツール一覧のデータ。ツールを足すときはここだけ |
 | `js/tools_validate.js` | 一覧データの形の検査と、画像の項目の検査（画面には触れない） |
 | `js/tools_view.js` | 検査を通ったツールを「無料ツール」の1枚のパネル（1ツール＝1行・行全体が押せる）にして並べる。問題のある項目をコンソールに出す |

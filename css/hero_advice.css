@@ -27,7 +27,7 @@
 /* 顔と吹き出しを横に並べる。iPhone の Safari で吹き出しの文字が消えたため、grid ではなく単純な flex にしている */
 .talk-row{display:flex;gap:14px;align-items:flex-start}
 .talk-who{flex:0 0 var(--talk-face);display:flex;flex-direction:column;align-items:center;gap:6px}
-/* 役員の大きな顔（今は顔の絵 speakers.svg を大きくしたもの。差し替えは js/site_config.js の SPEAKER_FACE_FILE） */
+/* 役員の大きな顔（立体の絵 assets/faces/<key>.webp を丸いっぱいに出す。場所は js/site_config.js の SPEAKER_FACE_FILE の隣の faces/） */
 .avatar.talk-face{
   width:var(--talk-face);
   height:var(--talk-face);

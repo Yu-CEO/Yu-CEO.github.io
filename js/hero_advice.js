@@ -5,7 +5,7 @@
  *           showHeroAdvice（場面に出す）、showHeroDays（「今日で、AI会社を始めて N 日目」を出す）、readBoardQuotes（名言の一覧を安全に取り出す）
  * 前提：diary_day.js・diary_markup.js・diary_speakers.js・diary_parts.js・board_quote_pick.js が先に読み込まれている。
  * 名言が選べない（0件）ときは、顔の列と説明だけ出す（空の吹き出しを残さない）。見た目は css/hero_advice.css。main.js から呼ばれる。
- * 役員の顔の絵の場所は呼ぶ側（main.js）が渡す。あとで立体の絵に差し替えるときは site_config.js の SPEAKER_FACE_FILE の1か所を直す。
+ * 役員の顔の絵の場所は呼ぶ側（main.js）が渡す。立体の絵は SPEAKER_FACE_FILE（speakers.svg）と同じ assets/ の中の faces/ から読む（diary_speakers.js）。
  * 吹き出しに出すのは一覧に書いた文字だけ（その場で文を作らない）。tests/hero_advice.test.js でテストする。
  */
 

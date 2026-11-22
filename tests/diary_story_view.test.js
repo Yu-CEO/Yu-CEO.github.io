@@ -41,7 +41,10 @@ function findAllByTag(element, tagName) {
     if (child.tagName === tagName) {
       found.push(child);
     }
-    found = found.concat(findAllByTag(child, tagName));
+    // 顔の丸（avatar）の中の立体の絵は、図・入口画像の検査の対象外（顔は飾りの絵）
+    if (!/avatar/.test(child.className || "")) {
+      found = found.concat(findAllByTag(child, tagName));
+    }
   });
   return found;
 }

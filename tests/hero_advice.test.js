@@ -95,7 +95,7 @@ test("第3回：名言を選ぶと、大きな顔・名札・吹き出し・ラ�
   assert.ok(!/no-quote/.test(parts["hero-talk"].className));
   const face = parts["talk-face-holder"].children[0];
   assert.match(face.className, /talk-face/);
-  assert.strictEqual(face.children[0].children[0].getAttribute("href"), FACE_FILE + "#cmo");
+  assert.strictEqual(face.children[0].getAttribute("src"), "assets/faces/cmo.webp");
 });
 
 test("第3回：「指摘」の名言は黄色のラベル（k-shiteki）と「→ Yu へ指摘」になる", function () {
