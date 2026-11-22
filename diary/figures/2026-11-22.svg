@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 170" role="img" aria-labelledby="t">
+<title id="t">LINEへの流し方、やりたかったことと実際</title>
+<defs>
+<marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#5b5f66"/></marker>
+</defs>
+<rect width="300" height="170" rx="12" fill="#f2f3f5"/>
+<rect x="10" y="12" width="125" height="30" rx="15" fill="#ffffff" stroke="#d9dbe0"/>
+<text x="72" y="27" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#5b5f66">やりたかった</text>
+<rect x="165" y="12" width="125" height="30" rx="15" fill="#0f1626"/>
+<text x="227" y="27" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#ffffff">実際</text>
+<rect x="10" y="56" width="125" height="96" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="72" y="86" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#0f1626">プログラムが</text>
+<text x="72" y="118" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="700" fill="#5b5f66">自動で投稿</text>
+<line x1="138" y1="104" x2="162" y2="104" stroke="#5b5f66" stroke-width="2" marker-end="url(#ag)"/>
+<rect x="165" y="56" width="125" height="96" rx="10" fill="#ffffff" stroke="#a14a00" stroke-width="1.5"/>
+<text x="227" y="86" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#0f1626">文を作って</text>
+<text x="227" y="118" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="20" font-weight="700" fill="#a14a00">貼るのは手</text>
+</svg>
