@@ -109,7 +109,7 @@ function checkEntryFile(context, plan) {
     return ["日記の JSON を読めません（書き方を確かめてください）"];
   }
   return findEntryProblems(entry, plan.date)
-    .concat(fileMatch.checkFigureMatch(entry, plan.hasFigure, plan.hasFigure2))
+    .concat(fileMatch.checkFigureMatch(entry, plan.hasFigure, plan.hasFigure2, plan.hasFigure3))
     .concat(fileMatch.checkHeroMatch(entry, plan.hasHero));
 }
 
@@ -132,11 +132,11 @@ function checkOneFigureFile(context, filePath, label) {
 }
 
 /**
- * その日の図（SVG。1枚目と、3版目は2枚目も）を読み、図の検査をする。図が無い日は何もしない。
+ * その日の図（SVG。1枚目と、3版目は2・3枚目も）を読み、図の検査をする。図が無い日は何もしない。
  * @param {object} context 動かす場所
- * @param {{ date: string, hasFigure: boolean, hasFigure2: boolean }} plan 変更の判定の結果
+ * @param {{ date: string, hasFigure: boolean, hasFigure2: boolean, hasFigure3: boolean }} plan 変更の判定の結果
  * @returns {string[]} 問題点（なければ空）
- * @example checkFigureFile(context, { date: "2026-11-16", hasFigure: true, hasFigure2: false })
+ * @example checkFigureFile(context, { date: "2026-11-16", hasFigure: true, hasFigure2: false, hasFigure3: false })
  */
 function checkFigureFile(context, plan) {
   let problems = [];
@@ -145,6 +145,9 @@ function checkFigureFile(context, plan) {
   }
   if (plan.hasFigure2) {
     problems = problems.concat(checkOneFigureFile(context, "diary/figures/" + plan.date + "-2.svg", "2枚目の図"));
+  }
+  if (plan.hasFigure3) {
+    problems = problems.concat(checkOneFigureFile(context, "diary/figures/" + plan.date + "-3.svg", "3枚目の図"));
   }
   return problems;
 }

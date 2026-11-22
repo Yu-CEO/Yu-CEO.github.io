@@ -1,6 +1,7 @@
 /*
- * diary_format3.css：日記1件のページの3版目（.f3）だけの見た目（太字・ハイライト・2枚目の図の札・今日の学びの枠）
- * diary/entry.html で diary_entry.css のあとに読み込まれる。値は css/variables.css の〔v4〕の節。
+ * diary_format3.css：日記1件のページの3版目（.f3）だけの見た目（太字・ハイライト・図の札・今日の学びの枠・〔v5〕番号の札と区切り線・付いてくる道しるべ）
+ * diary/entry.html で diary_entry.css のあとに読み込まれる。値は css/variables.css の〔v4〕〔v5〕の節。
+ * すべて .f3 の中だけに効かせる（2版目・旧形式の見た目に影響させないため）。
  */
 
 /* ===== 〔v4〕3版目（.f3）：太字・ハイライト。強調は diary_markup_view.js が strong・mark の要素で作る ===== */
@@ -17,9 +18,11 @@
 }
 .f3 mark strong{color:inherit}
 
-/* ===== 〔v4〕図は2枚：1枚目は 01 の下、2枚目は 04 の下。どちらも図の枠は同じ。2枚目の札「まとめ」だけ黄色系 ===== */
+/* ===== 〔v4〕図は3枚（〔v5〕3枚目を足した）：1枚目は 01 の下、2枚目は 04 の下。どちらも図の枠は同じ。2枚目の札「まとめ」だけ黄色系 ===== */
 .f3 .d-sec > .d-fig{margin-top:22px}
 .d-fig .fig-tag.is-summary{border-color:var(--diary-take-border);background:var(--diary-take-bg);color:var(--diary-take-label)}
+/* 〔v5〕3枚目（意見と決定のあいだ）の札「比べる」：1枚目と同じグレーの枠に、薄いグレーの背景 */
+.d-fig .fig-tag.is-compare{border-color:var(--diary-sec-rule);background:var(--color-gray)}
 
 /* ===== 〔v4〕今日の学び：本文の最後の枠。薄い黄色＋左の太い線 ===== */
 .d-take{
@@ -59,3 +62,76 @@
 /* ===== 入口画像（hero）：本文の一番上。16:9・幅いっぱい・角丸。読み込めないときは JS が hidden にする ===== */
 .f3 .d-hero{display:block;width:100%;height:auto;aspect-ratio:16 / 9;margin:0 0 var(--diary-section-gap);border-radius:var(--diary-card-radius)}
 .f3 .d-hero[hidden]{display:none}
+
+/* ===== 〔v5〕案A：区切りと余白（節の頭の細い線＋番号の札・節のあいだを広く・段落のあいだを広く・スマホで吹き出しを広く） ===== */
+.f3 .d-sec + .d-sec,
+.f3 .d-sec + .d-fig,
+.f3 .d-fig + .d-sec,
+.f3 .d-fig + .d-take,
+.f3 .d-sec + .d-take{margin-top:var(--diary-section-gap-long)}
+.f3 .d-sec-title{
+  padding-top:22px;
+  border-top:1px solid var(--diary-sec-rule);
+  font-size:var(--fs-diary-sec-title-long);
+  margin-bottom:18px;
+}
+/* 最初の節は道しるべのすぐ下なので線を引かない */
+.f3 .d-flow + .d-sec .d-sec-title{padding-top:0;border-top:0}
+.f3 .d-sec-title .section-number{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:34px;
+  height:var(--diary-sec-num-h);
+  padding:0 8px;
+  border-radius:999px;
+  background:var(--diary-sec-num-bg);
+  color:var(--diary-sec-num-text);
+  letter-spacing:.08em;
+}
+.f3 .d-sec-title .section-number::after{display:none}
+.f3 .d-story p + p{margin-top:var(--diary-para-gap-long)}
+.f3 .d-results li + li{margin-top:var(--diary-result-gap-long)}
+/* 紺の帯の「記録：秘書」の横の「読む目安 約N分」（押せない飾り） */
+.d-readtime{color:var(--diary-readtime-text)}
+.d-readtime::before{content:"・"}
+/* スマホ（480px以下）：100字の吹き出しが約6行に収まるよう、顔を小さく・反対側の空きを減らす */
+@media (max-width:480px){
+  .f3 .d-line{grid-template-columns:var(--av-size-line-sm) minmax(0, 1fr);gap:8px;margin:0 var(--diary-line-indent-sm) 0 0}
+  .f3 .d-line.is-yu{grid-template-columns:minmax(0, 1fr) var(--av-size-line-sm);margin:0 0 0 var(--diary-line-indent-sm)}
+  .f3 .d-line .avatar{width:var(--av-size-line-sm);height:var(--av-size-line-sm)}
+  .f3 .d-line .bubble{padding:var(--diary-bubble-pad-sm)}
+}
+
+/* ===== 〔v5〕案B：付いてくる道しるべ（押せない。今読んでいる節の札が青くなり、下の細い線で読んだ量が分かる） ===== */
+.f3 .d-flow{
+  position:sticky;
+  top:calc(var(--bar-height) + env(safe-area-inset-top));
+  z-index:10;                       /* 固定バー（z-index:20）の下、本文の上 */
+  margin:0 calc(var(--gutter) * -1) 28px;
+  padding:8px var(--gutter);
+  background:var(--diary-sticky-bg);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--diary-sticky-line);
+  flex-wrap:nowrap;
+  gap:4px;
+}
+.f3 .d-flow .flow-step{padding:0 10px;transition:background .2s, color .2s}
+.f3 .d-flow li + li::before{width:5px;height:5px}
+.f3 .d-flow .flow-step.is-now{background:var(--diary-flow-now-bg);color:var(--diary-flow-now-text)}
+/* 紺の「決定」の札が今の節のときは、青い輪で見分ける */
+.f3 .d-flow .flow-step.is-decision.is-now{box-shadow:0 0 0 2px var(--diary-flow-now-bg)}
+.f3 .d-flow::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  height:var(--diary-progress-height);
+  width:var(--read, 0%);            /* 幅は js/diary_flow_sticky.js が入れる */
+  background:var(--diary-progress);
+}
+/* 節・図・学びへ移ったとき、道しるべに見出しが隠れないようにする */
+.f3 .d-sec,
+.f3 .d-fig,
+.f3 .d-take{scroll-margin-top:calc(var(--bar-height) + var(--diary-sticky-offset))}

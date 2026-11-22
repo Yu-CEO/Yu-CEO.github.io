@@ -239,6 +239,11 @@ function addFormat3Entry(world, edit, withFigures) {
       const svg = fs.readFileSync(path.join(FIXTURES, "diary_figures", FORMAT3_DATE + suffix + ".svg"), "utf8");
       writeFile(world.repo, "diary/figures/" + FORMAT3_DATE + suffix + ".svg", svg);
     });
+    // 3枚目（figure3）がある日だけ、3枚目の図を置く。中身は2枚目の見本と同じ（図の検査を通る見本が1つあれば足りるため）
+    if (entry.figure3 !== undefined) {
+      const thirdSvg = fs.readFileSync(path.join(FIXTURES, "diary_figures", FORMAT3_DATE + "-2.svg"), "utf8");
+      writeFile(world.repo, "diary/figures/" + FORMAT3_DATE + "-3.svg", thirdSvg);
+    }
   }
 }
 
@@ -376,4 +381,57 @@ test("AC-77：3版目の日記でも、通る日は一時フォルダが残ら�
     assert.strictEqual(run.record.checks, 4);
   });
   assert.strictEqual(countPlainFolders(), foldersBefore);
+});
+
+test("AC-87：figure3 と3枚目の図がある日は --check が PASS で、指紋に3枚目が含まれる。--push は5つのファイルだけを同じ commit に入れる", { skip: SKIP_REASON }, function () {
+  const addThird = function (entry) { entry.figure3 = { alt: "（テスト用）比べた図", caption: "（テスト用）迷った点" }; };
+  withWorld(function (world) {
+    addFormat3Entry(world, addThird);
+    const before = format3Fingerprint(world);
+    fs.appendFileSync(path.join(world.repo, "diary/figures/" + FORMAT3_DATE + "-3.svg"), "\n");
+    const after = format3Fingerprint(world);
+    assert.notStrictEqual(before, after);
+    // 3枚目を変えた版では、前の指紋の記録で --push が止まる
+    writeFormat3AuditRecord(world, before);
+    const stale = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, stale, main(["--push"], stale.context), /指紋が合いません/);
+  });
+  withWorld(function (world) {
+    addFormat3Entry(world, addThird);
+    writeFormat3AuditRecord(world, format3Fingerprint(world));
+    const run = makeFormat3Context(world);
+    assert.strictEqual(main(["--push"], run.context), 0, run.record.logs.join("\n"));
+    const lines = run.record.pushes[0].split("\n").filter(Boolean);
+    assert.deepStrictEqual(lines.slice(2).sort(), [
+      "diary/entries/" + FORMAT3_DATE + ".json",
+      "diary/entries/index.json",
+      "diary/figures/" + FORMAT3_DATE + "-2.svg",
+      "diary/figures/" + FORMAT3_DATE + "-3.svg",
+      "diary/figures/" + FORMAT3_DATE + ".svg"
+    ]);
+  });
+});
+
+test("AC-84・AC-87：figure3 があるのに -3.svg がない・3枚目の図に <script> がある・-4.svg がある、は --check が止まる", { skip: SKIP_REASON }, function () {
+  const addThird = function (entry) { entry.figure3 = { alt: "（テスト用）比べた図", caption: "（テスト用）迷った点" }; };
+  withWorld(function (world) {
+    addFormat3Entry(world, addThird);
+    fs.rmSync(path.join(world.repo, "diary/figures/" + FORMAT3_DATE + "-3.svg"));
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--check"], run.context), /figure3 があるのに/);
+  });
+  withWorld(function (world) {
+    addFormat3Entry(world, addThird);
+    const third = "diary/figures/" + FORMAT3_DATE + "-3.svg";
+    const text = fs.readFileSync(path.join(world.repo, third), "utf8");
+    fs.writeFileSync(path.join(world.repo, third), text.replace("</svg>", "<script>1</script></svg>"), "utf8");
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--check"], run.context), /3枚目の図：/);
+  });
+  withWorld(function (world) {
+    addFormat3Entry(world, addThird);
+    writeFile(world.repo, "diary/figures/" + FORMAT3_DATE + "-4.svg", "<svg/>");
+    const run = makeFormat3Context(world);
+    assertStoppedWithoutPush(world, run, main(["--check"], run.context), /通常の \/dev フローとCEO承認が必要です/);
+  });
 });

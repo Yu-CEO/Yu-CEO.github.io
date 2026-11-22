@@ -204,6 +204,26 @@
   --fs-diary-take:clamp(17px, 4.7vw, 20px);     /* 今日の学びの1文（決定と同じ大きさ。太さは普通にして太字を見分けられるように） */
   --fs-diary-take-label:12px;                   /* 「今日の学び」の小見出し */
   --diary-take-pad:18px 18px 18px 22px;         /* 枠の内側 */
+  /* 〔v5〕3版目すべて（css/diary_format3.css の .f3 で使う）。見た目の正解は design/portal_diary_v5/design_notes.md（CEO承認 2026-11-22） */
+  --diary-section-gap-long:56px;                /* 節と節のあいだ（旧形式・2版目は 40px のまま）。「ここから次の話」をはっきりさせる */
+  --diary-sec-rule:#e3e5e9;                     /* 節の頭の細い区切り線（カードの枠と同じ色） */
+  --fs-diary-sec-title-long:clamp(19px, 5.2vw, 22px); /* 節の見出し。流し読みでも見出しが目に入る大きさ */
+  --diary-sec-num-bg:#2563a8;                   /* 番号の札の背景（日記の差し色。白い文字で約6:1） */
+  --diary-sec-num-text:#ffffff;
+  --diary-sec-num-h:24px;                       /* 番号の札の高さ（押せない飾り） */
+  --diary-para-gap-long:1.15em;                 /* 段落のあいだ。1段落＝1場面の切れ目を見せる */
+  --diary-result-gap-long:16px;                 /* 結果の項目のあいだ */
+  --diary-line-indent-sm:12px;                  /* 480px以下で、吹き出しの反対側の空き（通常は 28px） */
+  --av-size-line-sm:34px;                       /* 480px以下で、吹き出しの横の顔（通常は 40px） */
+  --diary-bubble-pad-sm:10px 12px;              /* 480px以下で、吹き出しの内側（通常は 10px 14px） */
+  --diary-readtime-text:#c3c8d2;                /* 紺の帯の「読む目安」。紺の上で約10:1 */
+  --diary-sticky-bg:rgba(255,255,255,.94);      /* 付いてくる道しるべの背景 */
+  --diary-sticky-line:#e3e5e9;                  /* 同じく、下の線 */
+  --diary-flow-now-bg:#2563a8;                  /* 今読んでいる節の札 */
+  --diary-flow-now-text:#ffffff;
+  --diary-progress:#2563a8;                     /* 読んだ量の線（高さ2px） */
+  --diary-progress-height:2px;
+  --diary-sticky-offset:56px;                   /* 節へ移ったときに、付いてくる道しるべ（約48px）に見出しが隠れないようにずらす分（固定バー＋道しるべ） */
 
   /* ===== 道具箱（css/toolbox.css で使う） ===== */
   --tb-card-bg:#ffffff;           /* 道具カードの背景 */

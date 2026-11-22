@@ -1,9 +1,9 @@
 /*
- * diary_story3_view.js：3版目（"format": 3・太字とハイライト・図2枚・今日の学び）の日記1件のページの表示
- * 並び：紺の帯（一覧へ戻る・N日目・日付・見出し・まとめ・今日の一言・Yuの決定・今日の参加）→ 入口画像（hero がある日だけ）→ 道しるべ（問題›意見›決定›結果›学び）
- *       → 01 何が問題だったか → 1枚目の図 → 02 役員の意見 → 03 Yuの決定 → 04 結果 → 2枚目の図 → 今日の学び → オープンチャットへの出口
+ * diary_story3_view.js：3版目（"format": 3・太字とハイライト・図3枚・今日の学び）の日記1件のページの表示
+ * 並び：紺の帯（一覧へ戻る・N日目・日付・見出し・まとめ・読む目安・今日の一言・Yuの決定・今日の参加）→ 入口画像（hero がある日だけ）→ 道しるべ（問題›意見›決定›結果›学び。画面の上に付いてくる）
+ *       → 01 何が問題だったか → 1枚目の図 → 02 役員の意見 → 3枚目の図（比べる） → 03 Yuの決定 → 04 結果 → 2枚目の図 → 今日の学び → オープンチャットへの出口
  * 主な関数：showStory3Entry（3版目の1件を表示）
- * 使うもの：diary_entry_view.js の部品（紺の帯・節・吹き出し・出口）・diary_figure_view.js・diary_hero_view.js（一番上の入口画像）・diary_takeaway_view.js・diary_markup_view.js。
+ * 使うもの：diary_entry_view.js の部品（紺の帯・節・吹き出し・出口）・diary_figure_view.js・diary_hero_view.js（一番上の入口画像）・diary_takeaway_view.js・diary_markup_view.js・diary_flow_sticky.js。
  * diary_story_view.js の showEntryByFormat から呼ばれる。日記の文字は textContent / createTextNode だけで入れる（HTMLとしては読ませない）。
  * tests/diary_story3_view.test.js でテストする。
  */
@@ -24,6 +24,7 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.createDiaryHero = require("./diary_hero_view.js").createDiaryHero;
   globalThis.appendMarkedText = require("./diary_markup_view.js").appendMarkedText;
   globalThis.createTakeawayBox = require("./diary_takeaway_view.js").createTakeawayBox;
+  globalThis.startFlowSticky = require("./diary_flow_sticky.js").startFlowSticky;
 }
 
 // 3版目の日だけ、強調の見た目（太字・ハイライト）を効かせるための印（css/diary_entry.css の .f3）
@@ -64,7 +65,7 @@ function createStory3Flow(hasTakeaway) {
  * @param {HTMLElement} parent 足す先
  * @param {object} entry 検査を通った3版目の日記
  * @param {string} figureFolder diary/figures/ の場所
- * @param {number} figureNumber 何枚目か（1 か 2）
+ * @param {number} figureNumber 何枚目か（1・2・3）
  * @returns {void}
  * @example appendFigure(section, entry, "figures/", 1)
  */
@@ -135,8 +136,23 @@ function createStory3Results(results) {
 }
 
 /**
+ * 付いてくる道しるべを動かす。画面（window）があるブラウザのときだけ動かす（テストの偽の画面では何もしない）。
+ * @param {HTMLElement} flow 道しるべ
+ * @param {HTMLElement[]} targets 札ごとの節の要素
+ * @param {HTMLElement} body 本文全体
+ * @returns {void}
+ * @example startStory3FlowIfPossible(flow, [section1, section2], body)
+ */
+function startStory3FlowIfPossible(flow, targets, body) {
+  if (typeof window === "undefined" || typeof window.addEventListener !== "function") {
+    return;
+  }
+  startFlowSticky(flow, targets, body);
+}
+
+/**
  * 3版目の日記1件を、決まった並びで表示し、タブの題名を「N日目 見出し｜経営会議の日記」にする。
- * 図は2枚とも、読み込めなければその図と caption だけが隠れる（もう1枚と本文は出る）。
+ * 図は3枚とも、読み込めなければその図と caption だけが隠れる（ほかの図と本文は出る）。
  * @param {HTMLElement} area 表示する場所
  * @param {object} entry 検査を通った3版目の日記1件
  * @param {{ faceFile: string, listPage: string, figureFolder: string, heroFolder: string }} paths 場所の設定
@@ -153,18 +169,30 @@ function showStory3Entry(area, entry, paths) {
   if (heroImage !== null) {
     body.appendChild(heroImage);
   }
-  body.appendChild(createStory3Flow(typeof entry.takeaway === "string"));
-  body.appendChild(createStory3Problem(entry, paths.figureFolder));
-  body.appendChild(createLinesSection(entry.lines, paths.faceFile, "役員の意見", appendMarkedText));
-  body.appendChild(createStory3Decision(entry.decision, paths.faceFile));
-  body.appendChild(createStory3Results(entry.result));
+  const flow = createStory3Flow(typeof entry.takeaway === "string");
+  body.appendChild(flow);
+  // 道しるべの札と結ぶ節（札と同じ順：問題・意見・決定・結果・（あれば）学び）
+  const flowTargets = [];
+  const problemSection = createStory3Problem(entry, paths.figureFolder);
+  const linesSection = createLinesSection(entry.lines, paths.faceFile, "役員の意見", appendMarkedText);
+  const decisionSection = createStory3Decision(entry.decision, paths.faceFile);
+  const resultSection = createStory3Results(entry.result);
+  body.appendChild(problemSection);
+  body.appendChild(linesSection);
+  // 3枚目の図は、意見のあとの「何と何で迷ったか」を決定の前に整理する位置
+  appendFigure(body, entry, paths.figureFolder, 3);
+  body.appendChild(decisionSection);
+  body.appendChild(resultSection);
   appendFigure(body, entry, paths.figureFolder, 2);
+  flowTargets.push(problemSection, linesSection, decisionSection, resultSection);
   const takeawayBox = createTakeawayBox(entry.takeaway);
   if (takeawayBox !== null) {
     body.appendChild(takeawayBox);
+    flowTargets.push(takeawayBox);
   }
   area.appendChild(body);
   area.appendChild(createExitBox(paths.listPage));
+  startStory3FlowIfPossible(flow, flowTargets, body);
   document.title = formatDayShort(entry.date) + " " + entry.title + DIARY_TITLE_SUFFIX;
 }
 

@@ -122,10 +122,10 @@ test("AC-76：2枚目だけ（figure なしの figure2 だけの日）も進む"
   assert.strictEqual(result.hasFigure2, true);
 });
 
-test("AC-76：別の日の -2.svg・過去の -2.svg の変更・-3.svg・-1.svg・2枚目が2つ、は止まる", function () {
+test("AC-76：別の日の -2.svg・過去の -2.svg の変更・-4.svg・-1.svg・2枚目が2つ、は止まる", function () {
   assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-15-2.svg" }]);
   assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: " M", path: "diary/figures/2026-11-16-2.svg" }]);
-  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-16-3.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-16-4.svg" }]);
   assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-16-1.svg" }]);
   assertStopped([NEW_ENTRY, INDEX_CHANGE, NEW_FIGURE2, { state: "A ", path: "diary/figures/2026-11-16-2.svg" }]);
 });
@@ -139,4 +139,31 @@ test("AC-74・AC-76：figure2 と -2.svg の過不足（figure2 があるのに�
   assert.ok(extra.includes(NEEDS_DEV_FLOW_MESSAGE));
   // 今までの呼び方（2つ目の引数だけ）も同じ結果
   assert.deepStrictEqual(checkFigureMatch({ figure: figure }, true), []);
+});
+
+const NEW_FIGURE3 = { state: "??", path: "diary/figures/2026-11-16-3.svg" };
+
+test("AC-87：日記＋index.json＋図＋2枚目＋3枚目の図（その日の -3.svg）なら進み、上げるファイルに3枚目も入る", function () {
+  const result = judgeDiaryChanges([NEW_ENTRY, INDEX_CHANGE, NEW_FIGURE, NEW_FIGURE2, NEW_FIGURE3]);
+  assert.strictEqual(result.ok, true);
+  assert.strictEqual(result.hasFigure3, true);
+  assert.ok(result.files.includes("diary/figures/2026-11-16-3.svg"));
+  assert.strictEqual(judgeDiaryChanges([NEW_ENTRY, INDEX_CHANGE, NEW_FIGURE3]).ok, true);
+  assert.strictEqual(judgeDiaryChanges([NEW_ENTRY, INDEX_CHANGE]).hasFigure3, false);
+});
+
+test("AC-87：別の日の -3.svg・過去の -3.svg の変更・-4.svg・3枚目が2つ、は止まる", function () {
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-15-3.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: " M", path: "diary/figures/2026-11-16-3.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, { state: "??", path: "diary/figures/2026-11-16-4.svg" }]);
+  assertStopped([NEW_ENTRY, INDEX_CHANGE, NEW_FIGURE3, { state: "A ", path: "diary/figures/2026-11-16-3.svg" }]);
+});
+
+test("AC-83・AC-87：figure3 と -3.svg の過不足（figure3 があるのに無い／figure3 が無いのに有る）を見つける", function () {
+  const figure = { alt: "a", caption: "b" };
+  assert.deepStrictEqual(checkFigureMatch({ figure3: figure }, false, false, true), []);
+  assert.match(checkFigureMatch({ figure3: figure }, false, false, false).join("／"), /figure3 があるのに/);
+  const extra = checkFigureMatch({ title: "x" }, false, false, true);
+  assert.match(extra.join("／"), /figure3 がないのに/);
+  assert.ok(extra.includes(NEEDS_DEV_FLOW_MESSAGE));
 });

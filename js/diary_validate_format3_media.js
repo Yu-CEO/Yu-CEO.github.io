@@ -1,5 +1,5 @@
 /*
- * diary_validate_format3_media.js：3版目の日記の図の説明（figure・figure2）と入口画像の説明（hero）の検査。画面には触れない
+ * diary_validate_format3_media.js：3版目の日記の図の説明（figure・figure2・figure3）と入口画像の説明（hero）の検査。画面には触れない
  * 主な関数：checkFigureDescription（{ alt, caption } の形か）、checkHeroDescription（{ alt } の形か）。どちらも書かなくてよいが、書くなら強調の記号は不可。
  * 使うもの：diary_validate_format3.js の checkPlainText と diary_validate.js の checkUnknownFields（ブラウザでは同じ名前が共有される。
  *   読み込み順は本体より前でよい：関数は呼ばれるときに探す）。diary_validate_format3.js から使われる。tests/diary_validate_format3.test.js・tests/diary_hero.test.js でテストする。
@@ -13,9 +13,9 @@ const FORMAT3_MAX_FIGURE_ALT = 200;
 const FORMAT3_MAX_FIGURE_CAPTION = 60;
 
 /**
- * 図の説明（figure・figure2）を調べる。書かなくてよいが、書くなら { alt, caption } の形。強調の記号は書けない。
+ * 図の説明（figure・figure2・figure3）を調べる。書かなくてよいが、書くなら { alt, caption } の形。強調の記号は書けない。
  * @param {*} figure 調べる値
- * @param {string} fieldName 項目の名前（"figure" か "figure2"）
+ * @param {string} fieldName 項目の名前（"figure"・"figure2"・"figure3"）
  * @param {string[]} problems 問題を足していく一覧
  * @returns {void}
  * @example checkFigureDescription({ alt: "説明", caption: "下の説明" }, "figure", problems)

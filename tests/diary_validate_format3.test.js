@@ -156,22 +156,22 @@ test("AC-67：記号で区切って検査をすり抜ける書き方（3**万**�
   });
 });
 
-test("AC-68：記号を除いて120文字ちょうどの decision は通り（記号込み124文字）、121文字なら止まる", function () {
+test("AC-68・AC-80：記号を除いて200文字ちょうどの decision は通り（記号込み204文字）、201文字なら止まる", function () {
   const exact = readPlainSample();
-  exact.decision = "あ".repeat(116) + "**いうえお**";
-  assert.strictEqual(Array.from(exact.decision).length, 124);
+  exact.decision = "あ".repeat(196) + "**いうえお**";
+  assert.strictEqual(Array.from(exact.decision).length, 204);
   assert.deepStrictEqual(check(exact), []);
   const over = readPlainSample();
-  over.decision = "あ".repeat(116) + "**いうえおか**";
-  assertHasProblem(check(over), /「decision」が（記号を除いて）120文字を超えています/);
+  over.decision = "あ".repeat(196) + "**いうえおか**";
+  assertHasProblem(check(over), /「decision」が（記号を除いて）200文字を超えています/);
 });
 
 test("AC-68：記号を含めたもとの長さが上限＋21文字以上なら止まる", function () {
   const entry = readPlainSample();
-  // 記号を含めたもとの長さが 142 文字（上限120＋21 以上）。記号が多すぎるデータを止める
-  entry.decision = "あ".repeat(100) + "==い==" + "**う**" + "あ".repeat(31);
-  assert.ok(Array.from(entry.decision).length >= 141);
-  assertHasProblem(check(entry), /記号を含めて 140 文字を超えています/);
+  // 記号を含めたもとの長さが 222 文字（上限200＋21 以上）。記号が多すぎるデータを止める
+  entry.decision = "あ".repeat(180) + "==い==" + "**う**" + "あ".repeat(31);
+  assert.ok(Array.from(entry.decision).length >= 221);
+  assertHasProblem(check(entry), /記号を含めて 220 文字を超えています/);
 });
 
 test("AC-72：takeaway が空・61文字（記号を除く）・2文・改行つきなら止まる。60文字ちょうどの1文は通る", function () {
@@ -210,20 +210,20 @@ test("AC-64・AC-73：figure2 の形（alt がない・知らない項目）も 
   assertHasProblem(check(extra), /「figure2」に、決まっていない項目「src」/);
 });
 
-test("本文の合計（記号を除く）が300未満・1,500超なら止まる", function () {
+test("AC-79：本文の合計（記号を除く）が300未満・3,000超なら止まる", function () {
   const short = readSample();
   short.problem = ["（テスト用）短い。"];
   short.result = ["（テスト用）短い。"];
   short.takeaway = "短い。";
   delete short.pick;
   short.lines = [{ speaker: "アオイ", text: "短い。" }, { speaker: "Yu", text: "短い。" }];
-  assertHasProblem(check(short), /本文の合計が 300〜1500 文字/);
+  assertHasProblem(check(short), /本文の合計が 300〜3000 文字/);
   const long = readPlainSample();
-  long.problem = ["あ".repeat(200), "あ".repeat(200), "あ".repeat(200)];
-  long.result = ["あ".repeat(120), "あ".repeat(120), "あ".repeat(120)];
-  long.lines.forEach(function (line) { line.text = "あ".repeat(80); });
-  long.lines = long.lines.concat(long.lines);
-  assertHasProblem(check(long), /本文の合計が 300〜1500 文字/);
+  long.problem = ["あ".repeat(300), "あ".repeat(300), "あ".repeat(300), "あ".repeat(300), "あ".repeat(300)];
+  long.result = ["あ".repeat(200), "あ".repeat(200), "あ".repeat(200), "あ".repeat(200)];
+  long.lines.forEach(function (line) { line.text = "あ".repeat(100); });
+  long.lines = long.lines.concat(long.lines).concat(long.lines).slice(0, 10);
+  assertHasProblem(check(long), /本文の合計が 300〜3000 文字/);
 });
 
 test("本文の合計は記号を除いて数え、図の説明は数えない", function () {

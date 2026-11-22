@@ -5,8 +5,9 @@
  * 〔v3〕このファイルは旧形式（format なし）の日の表示。新しい形（format 2）の日は diary_story_view.js が、
  *       ここの部品（紺の帯・節・吹き出し・出口など）を使って表示する。
  *       〔v4〕3版目（format 3）の日も diary_story3_view.js が同じ部品を使う。
+ * 本文の最後の出口（オープンチャット・Zenn）は diary_exit_view.js に分けた。
  * 主な関数：showDiaryEntry（1件を表示）、showDiaryNotFound（「この日の日記は見つかりませんでした」を表示）
- * 使うもの：diary_day.js・diary_parts.js・diary_hook_view.js・diary_speakers.js。diary_entry_main.js から使われる。
+ * 使うもの：diary_day.js・diary_parts.js・diary_hook_view.js・diary_speakers.js・diary_read_time.js（3版目の読む目安）。diary_entry_main.js から使われる。
  * tests/diary_views.test.js でテストする。
  */
 
@@ -21,15 +22,15 @@ if (typeof module !== "undefined" && module.exports) {
   globalThis.createSpeakerFace = require("./diary_speakers.js").createSpeakerFace;
   globalThis.HUMAN_SPEAKER = require("./diary_speakers.js").HUMAN_SPEAKER;
   globalThis.writePlainText = require("./diary_markup_view.js").writePlainText;
+  globalThis.createExitBox = require("./diary_exit_view.js").createExitBox;
+  globalThis.formatReadTimeLabel = require("./diary_read_time.js").formatReadTimeLabel;
 }
+
+// 3版目の印（"format": 3）。この日だけ、紺の帯に「読む目安 約N分」を出す
+const ENTRY_FORMAT3 = 3;
 
 // ブラウザのタブの題名の後ろにつける文字
 const DIARY_TITLE_SUFFIX = "｜経営会議の日記";
-// オープンチャットのボタンの id。URLは diary_entry_main.js が link_button.js で入れる（正しいURLのときだけ出す）
-const DIARY_OPENCHAT_BUTTON_ID = "diary-openchat";
-// Zenn の説明＋文字リンクのまとまりの id と、リンクの id。URLは diary_entry_main.js が入れる（正しいURLのときだけまとまりごと出す）
-const DIARY_ZENN_BOX_ID = "diary-zenn-box";
-const DIARY_ZENN_LINK_ID = "diary-zenn";
 // 吹き出しの見分け方の説明（凡例）
 const DIARY_LINES_LEGEND = "右の紺色の吹き出しはYu（人間）、左のグレーの吹き出しはAIの役員です。";
 
@@ -67,6 +68,10 @@ function createEntryHead(entry, paths) {
   const byline = makeDiaryElement("p", "d-byline", "");
   byline.appendChild(makeDiaryElement("span", "", "記録："));
   byline.appendChild(makeDiaryElement("b", "", "秘書"));
+  if (entry.format === ENTRY_FORMAT3) {
+    // 〔v5〕読む前に長さが分かると身構えにくい。押せない飾り（データの項目は増やさず、画面で計算する）
+    byline.appendChild(makeDiaryElement("span", "d-readtime", formatReadTimeLabel(entry)));
+  }
   inner.appendChild(byline);
   inner.appendChild(createDiaryHook(entry, paths.faceFile));
   head.appendChild(inner);
@@ -202,53 +207,6 @@ function createDecisionsSection(decisions) {
 }
 
 /**
- * 出口の枠の中に置く、Zenn の説明の1行と文字のリンクを作る。ボタンではなく文字のリンク（ボタンは2つまでの決まりのため）。
- * 正しいURLがあるときだけ diary_entry_main.js が出すので、最初はまとまりごと隠しておく。
- * @returns {HTMLElement} 説明とリンクを入れたまとまり
- * @example createZennNote()
- */
-function createZennNote() {
-  const note = makeDiaryElement("div", "d-zenn", "");
-  note.id = DIARY_ZENN_BOX_ID;
-  note.hidden = true;
-  note.appendChild(makeDiaryElement("p", "", "会議で決めたことの作り方は、記事にまとめています。"));
-  const link = makeDiaryElement("a", "text-link", "作り方の記事を読む（Zenn）");
-  link.id = DIARY_ZENN_LINK_ID;
-  link.target = "_blank";
-  link.rel = "noopener";
-  note.appendChild(link);
-  return note;
-}
-
-/**
- * 本文の最後の出口（「見るだけの参加もOK。」・緑のボタン・一覧へ戻る・その下に Zenn の説明と文字リンク）を作る。
- * Zenn の説明とリンクも最初は隠しておき、正しいURLがあるときだけ diary_entry_main.js が一緒に出す。
- * 緑のボタンは最初は隠しておき、正しいURLがあるときだけ diary_entry_main.js が出す。
- * @param {string} listPage 一覧ページの場所
- * @returns {HTMLElement} 出口の要素
- * @example createExitBox("./")
- */
-function createExitBox(listPage) {
-  const wrap = makeDiaryElement("div", "d-cta", "");
-  const box = makeDiaryElement("div", "d-cta-box", "");
-  box.appendChild(makeDiaryElement("p", "", "見るだけの参加もOK。"));
-  const actions = makeDiaryElement("div", "actions", "");
-  const openchat = makeDiaryElement("a", "btn btn-line", "オープンチャットで続きを話そう");
-  openchat.id = DIARY_OPENCHAT_BUTTON_ID;
-  openchat.target = "_blank";
-  openchat.rel = "noopener";
-  openchat.hidden = true;
-  const back = makeDiaryElement("a", "btn btn-sub", "一覧へ戻る");
-  back.href = listPage;
-  actions.appendChild(openchat);
-  actions.appendChild(back);
-  box.appendChild(actions);
-  box.appendChild(createZennNote());
-  wrap.appendChild(box);
-  return wrap;
-}
-
-/**
  * 日記1件を、決まった並びで表示し、タブの題名を「N日目 見出し｜経営会議の日記」にする。
  * @param {HTMLElement} area 表示する場所
  * @param {object} entry 検査を通った日記1件
@@ -300,9 +258,11 @@ function showDiaryNotFound(area, paths) {
 
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）
 if (typeof module !== "undefined" && module.exports) {
+  const exitParts = require("./diary_exit_view.js");
   // 〔v3〕部品は、新しい形の表示（diary_story_view.js）でも同じものを使う
   module.exports = {
-    showDiaryEntry, showDiaryNotFound, DIARY_OPENCHAT_BUTTON_ID, DIARY_ZENN_BOX_ID, DIARY_ZENN_LINK_ID, DIARY_TITLE_SUFFIX,
+    showDiaryEntry, showDiaryNotFound, DIARY_OPENCHAT_BUTTON_ID: exitParts.DIARY_OPENCHAT_BUTTON_ID, DIARY_ZENN_BOX_ID: exitParts.DIARY_ZENN_BOX_ID,
+    DIARY_ZENN_LINK_ID: exitParts.DIARY_ZENN_LINK_ID, DIARY_TITLE_SUFFIX,
     createEntryHead, createDiarySection, createTextList, createLinesSection, createExitBox
   };
 }

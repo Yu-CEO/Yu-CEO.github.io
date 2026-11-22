@@ -2,7 +2,7 @@
  * diary_validate_format3.js：3版目（"format": 3）の日記1件が決まった形か、公開してはいけない書き方がないかを調べる。画面には触れない
  * 2版目との違い：太字・ハイライト（** と ==）が書ける項目がある／今日の学び takeaway／2枚目の図 figure2／入口画像 hero／文字数は記号を除いて数える。
  * 主な関数：findFormat3Problems（日記1件の問題点を日本語の一覧で返す。空なら正しい）、countFormat3Characters（本文の合計の文字数）
- * 強調の数・本文の合計の文字数の数え方は diary_format3_counts.js に、図（figure・figure2）と入口画像（hero）の説明の検査は diary_validate_format3_media.js に分けた。
+ * 強調の数・本文の合計の文字数の数え方は diary_format3_counts.js に、図（figure・figure2・figure3）と入口画像（hero）の説明の検査は diary_validate_format3_media.js に、項目ごとの検査の組み立て（checkFormat3Fields・Texts・Media・Counts）と項目の名前・上限の定数は diary_validate_format3_parts.js に分けた。
  * 使うもの：diary_markup.js（強調の読み取り）・diary_validate.js の部品（checkUnknownFields・checkPick など）・diary_safety.js・diary_speakers.js。
  * diary_format.js から使われる。tests/diary_validate_format3.test.js でテストする。形の見分けと日付の決まりは diary_format.js が調べる。
  */
@@ -15,44 +15,34 @@ if (typeof module !== "undefined" && module.exports) {
   const oldFormatParts = require("./diary_validate.js");
   globalThis.countCharacters = oldFormatParts.countCharacters;
   globalThis.checkUnknownFields = oldFormatParts.checkUnknownFields;
-  globalThis.checkPick = oldFormatParts.checkPick;
   // 図・入口画像の検査（diary_validate_format3_media.js）が、ここの関数 checkPlainText を使うため（ブラウザでは同じ名前が最初から共有される）
   globalThis.checkPlainText = checkPlainText;
-  const mediaParts = require("./diary_validate_format3_media.js");
-  globalThis.checkFigureDescription = mediaParts.checkFigureDescription;
-  globalThis.checkHeroDescription = mediaParts.checkHeroDescription;
   const markupParts = require("./diary_markup.js");
   globalThis.parseMarkup = markupParts.parseMarkup;
   globalThis.stripMarkup = markupParts.stripMarkup;
   globalThis.countVisibleCharacters = markupParts.countVisibleCharacters;
   globalThis.countMarkupUses = markupParts.countMarkupUses;
   globalThis.hasMarkupSymbols = markupParts.hasMarkupSymbols;
-  const countParts = require("./diary_format3_counts.js");
-  globalThis.checkMarkupCounts = countParts.checkMarkupCounts;
-  globalThis.checkFormat3Total = countParts.checkFormat3Total;
+  // 全体の検査の組み立て（diary_validate_format3_parts.js）が、ここの検査の部品を使うため。先に globalThis に置いてから読み込む
+  globalThis.checkMarkedText = checkMarkedText;
+  globalThis.checkMarkedList = checkMarkedList;
+  globalThis.checkMarkedLines = checkMarkedLines;
+  globalThis.checkTakeaway = checkTakeaway;
+  const wholeParts = require("./diary_validate_format3_parts.js");
+  globalThis.checkFormat3Fields = wholeParts.checkFormat3Fields;
+  globalThis.checkFormat3Texts = wholeParts.checkFormat3Texts;
+  globalThis.checkFormat3Media = wholeParts.checkFormat3Media;
+  globalThis.checkFormat3Counts = wholeParts.checkFormat3Counts;
 }
 
-// 3版目の日記に書いてよい項目の名前。これ以外の項目があると形の誤りにする
-const FORMAT3_ALLOWED_FIELDS = [
-  "format", "date", "title", "summary", "problem", "lines", "decision", "result", "takeaway", "pick", "figure", "figure2", "hero"
-];
-// 旧形式だけの項目。3版目に混ざっていたら、分かりやすい理由で止める
-const FORMAT3_OLD_ONLY_FIELDS = ["agenda", "decisions", "lessons"];
 // セリフ1つに書いてよい項目の名前
 const FORMAT3_LINE_FIELDS = ["speaker", "text"];
 // 文字の長さの上限（記号を除いた、読者に見える文字数）
-const FORMAT3_MAX_TITLE = 40;
-const FORMAT3_MAX_SUMMARY = 120;
-const FORMAT3_MAX_DECISION = 120;
 const FORMAT3_MAX_TAKEAWAY = 60;
 // 記号を含めたもとの長さの歯止め（上限＋この文字数）。記号を大量に並べたデータを止めるため。強調は多くても数か所なので20文字あれば足りる
 const FORMAT3_MARKUP_ALLOWANCE = 20;
-// 文の配列の決まり：min〜max 個・1つあたり maxLength 文字まで
-const FORMAT3_LIST_RULES = {
-  problem: { min: 1, max: 3, maxLength: 200 },
-  result: { min: 1, max: 3, maxLength: 120 }
-};
-const FORMAT3_LINES_RULE = { min: 2, max: 8, maxLength: 80 };
+// 吹き出し1つは100字まで（スマホ幅360pxで約6行に収まる長さ）
+const FORMAT3_LINES_RULE = { min: 2, max: 10, maxLength: 100 };
 // 今日の学びが1文かを見るための、文の終わりの記号
 const FORMAT3_SENTENCE_ENDINGS = "。！？";
 
@@ -219,23 +209,6 @@ function checkTakeaway(takeaway, problems) {
 }
 
 /**
- * 項目の名前が決まったものだけかを調べる。旧形式の項目は「混ざっている」という理由にする。
- * @param {object} entry 日記1件
- * @param {string[]} problems 問題を足していく一覧
- * @returns {void}
- * @example checkFormat3Fields({ format: 3, agenda: [] }, problems)
- */
-function checkFormat3Fields(entry, problems) {
-  Object.keys(entry).forEach(function (fieldName) {
-    if (FORMAT3_OLD_ONLY_FIELDS.includes(fieldName)) {
-      problems.push("3版目の日記に、旧形式の項目「" + fieldName + "」が混ざっています");
-    } else if (!FORMAT3_ALLOWED_FIELDS.includes(fieldName)) {
-      problems.push("決まっていない項目「" + fieldName + "」があります");
-    }
-  });
-}
-
-/**
  * 3版目の日記1件の問題点を、日本語の説明の一覧で返す。空の配列なら、正しい。
  * format が 3 かどうか・日付が「2版目の最後の日」の次の日以降かどうかは、呼び出す側（diary_format.js）が調べる。
  * @param {*} entry 日記1件（JSONを読み込んだもの）
@@ -254,21 +227,11 @@ function findFormat3Problems(entry, fileDate) {
   } else if (entry.date !== fileDate) {
     problems.push("「date」がファイル名の日付と違います");
   }
-  checkPlainText(entry.title, "「title」", FORMAT3_MAX_TITLE, problems);
-  checkPlainText(entry.summary, "「summary」", FORMAT3_MAX_SUMMARY, problems);
-  checkMarkedList(entry.problem, "problem", FORMAT3_LIST_RULES.problem, problems);
-  checkMarkedLines(entry.lines, problems);
-  checkMarkedText(entry.decision, "「decision」", FORMAT3_MAX_DECISION, problems);
-  checkMarkedList(entry.result, "result", FORMAT3_LIST_RULES.result, problems);
-  checkTakeaway(entry.takeaway, problems);
-  checkPick(entry.pick, entry.lines, problems);
-  checkFigureDescription(entry.figure, "figure", problems);
-  checkFigureDescription(entry.figure2, "figure2", problems);
-  checkHeroDescription(entry.hero, problems);
+  checkFormat3Texts(entry, problems);
+  checkFormat3Media(entry, problems);
   // 強調の数と合計の文字数は、ほかの形が正しいときだけ数える（形が崩れていると正しく数えられないため）
   if (problems.length === 0) {
-    checkMarkupCounts(entry, problems);
-    checkFormat3Total(entry, problems);
+    checkFormat3Counts(entry, problems);
   }
   return problems;
 }

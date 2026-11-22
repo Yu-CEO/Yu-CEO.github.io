@@ -15,7 +15,8 @@ if (typeof module !== "undefined" && module.exports) {
 
 // 本文の合計の文字数（見出し・抜粋・問題・意見・決定・結果・今日の学び）。記号を除いて数える。図の説明は数えない
 const FORMAT3_MIN_TOTAL = 300;
-const FORMAT3_MAX_TOTAL = 1500;
+// 〔v5〕上限は3,000字（約2,500字の日記に、見出し・抜粋・今日の学びと書き足しの余裕 約2割を足した値。2版目の1,500字は変えない）
+const FORMAT3_MAX_TOTAL = 3000;
 // ハイライトは1記事に1か所まで・太字はブロックごとに1か所まで（書き方ルールの「強調は絞る」を機械で止める）
 const FORMAT3_MAX_MARK_PER_ENTRY = 1;
 const FORMAT3_MAX_STRONG_PER_BLOCK = 1;
@@ -82,7 +83,7 @@ function countFormat3Characters(entry) {
 }
 
 /**
- * 本文の合計の文字数が 300〜1,500 文字かを調べ、外れていれば問題を足す。形が正しいデータだけに使う。
+ * 本文の合計の文字数が 300〜3,000 文字かを調べ、外れていれば問題を足す。形が正しいデータだけに使う。
  * @param {object} entry 3版目の日記1件
  * @param {string[]} problems 問題を足していく一覧
  * @returns {void}
