@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 170" role="img" aria-labelledby="t">
+<title id="t">決定と、その結果</title>
+<defs>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="170" rx="12" fill="#f2f3f5"/>
+<rect x="85" y="10" width="130" height="28" rx="14" fill="#0f1626"/>
+<text x="150" y="24" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#ffffff">Yuの決定</text>
+<rect x="40" y="46" width="220" height="44" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="150" y="68" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">案Aも案Bも入れる</text>
+<line x1="150" y1="92" x2="150" y2="108" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="40" y="112" width="220" height="48" rx="10" fill="#ffffff" stroke="#a14a00" stroke-width="1.5"/>
+<text x="150" y="128" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#a14a00">11月22日に公開</text>
+<text x="150" y="146" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" fill="#0f1626">読む目安と道しるべ付き</text>
+</svg>

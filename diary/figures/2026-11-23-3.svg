@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 170" role="img" aria-labelledby="t">
+<title id="t">2つの案と、役員の意見</title>
+<rect width="300" height="170" rx="12" fill="#f2f3f5"/>
+<rect x="10" y="10" width="135" height="28" rx="14" fill="#ffffff" stroke="#d9dbe0"/>
+<text x="77" y="24" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#5b5f66">案A</text>
+<rect x="155" y="10" width="135" height="28" rx="14" fill="#ffffff" stroke="#d9dbe0"/>
+<text x="222" y="24" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#5b5f66">案B</text>
+<rect x="10" y="46" width="135" height="64" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="77" y="64" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">札・区切り・目安</text>
+<text x="77" y="92" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#5b5f66">足りる</text>
+<rect x="155" y="46" width="135" height="64" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="222" y="64" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">付いてくる道しるべ</text>
+<text x="222" y="92" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#5b5f66">見送り</text>
+<rect x="30" y="122" width="240" height="38" rx="10" fill="#fff3c4" stroke="#a14a00" stroke-width="1.5"/>
+<text x="150" y="141" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#a14a00">Yuは両方入れる</text>
+</svg>
