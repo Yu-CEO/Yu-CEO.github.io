@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 232" role="img" aria-labelledby="t">
+<title id="t">決定と、その結果</title>
+<defs>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="232" rx="12" fill="#f2f3f5"/>
+<rect x="85" y="8" width="130" height="26" rx="13" fill="#0f1626"/>
+<text x="150" y="21" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#ffffff">Yuの決定</text>
+<rect x="30" y="40" width="240" height="40" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="150" y="60" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="700" fill="#0f1626">役員を2日で2人足す</text>
+<line x1="150" y1="82" x2="150" y2="98" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="14" y="102" width="272" height="120" rx="10" fill="#ffffff" stroke="#a14a00" stroke-width="1.5"/>
+<text x="150" y="118" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#a14a00">ソフトは、関門を通って公開</text>
+<rect x="22" y="130" width="62" height="26" rx="8" fill="#f2f3f5" stroke="#d9dbe0"/>
+<text x="53" y="143" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0f1626">①要求仕様</text>
+<rect x="90" y="130" width="62" height="26" rx="8" fill="#f2f3f5" stroke="#d9dbe0"/>
+<text x="121" y="143" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0f1626">②デザイン</text>
+<rect x="158" y="130" width="62" height="26" rx="8" fill="#f2f3f5" stroke="#d9dbe0"/>
+<text x="189" y="143" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0f1626">③実装</text>
+<rect x="226" y="130" width="54" height="26" rx="8" fill="#f2f3f5" stroke="#d9dbe0"/>
+<text x="253" y="143" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0f1626">④レビュー</text>
+<rect x="22" y="164" width="62" height="26" rx="8" fill="#f2f3f5" stroke="#d9dbe0"/>
+<text x="53" y="177" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0f1626">⑤動作確認</text>
+<rect x="90" y="164" width="62" height="26" rx="8" fill="#fff3c4" stroke="#a14a00"/>
+<text x="121" y="177" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="700" fill="#a14a00">⑥安全審査</text>
+<rect x="158" y="164" width="62" height="26" rx="8" fill="#f2f3f5" stroke="#d9dbe0"/>
+<text x="189" y="177" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0f1626">⑦自動検査</text>
+<rect x="226" y="164" width="54" height="26" rx="8" fill="#f2f3f5" stroke="#d9dbe0"/>
+<text x="253" y="177" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0f1626">⑧公開</text>
+<text x="150" y="208" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#5b5f66">①から順に通ります</text>
+</svg>
