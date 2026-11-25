@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" role="img" aria-labelledby="t">
+<title id="t">どこで知られるか、3つの場所の比べ</title>
+<rect width="300" height="200" rx="12" fill="#f2f3f5"/>
+<text x="150" y="20" font-family="sans-serif" text-anchor="middle" font-size="13" font-weight="700" fill="#0f1626">どこで知られる？</text>
+<rect x="10" y="34" width="86" height="150" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="53" y="54" font-family="sans-serif" text-anchor="middle" font-size="13" font-weight="700" fill="#0f1626">動画</text>
+<text x="53" y="90" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#0f1626">当たれば</text>
+<text x="53" y="106" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#0f1626">伸びる</text>
+<text x="53" y="136" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#5b5f66">でも運しだい</text>
+<rect x="107" y="30" width="96" height="158" rx="10" fill="#fff3c4" stroke="#a14a00" stroke-width="2.5"/>
+<text x="155" y="54" font-family="sans-serif" text-anchor="middle" font-size="13" font-weight="700" fill="#a14a00">X</text>
+<text x="155" y="90" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#0f1626">毎日、同じ人に</text>
+<text x="155" y="106" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#0f1626">会える</text>
+<text x="155" y="136" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#5b5f66">主力にする</text>
+<rect x="214" y="34" width="76" height="150" rx="10" fill="#ffffff" stroke="#d9dbe0" stroke-width="1.5"/>
+<text x="252" y="54" font-family="sans-serif" text-anchor="middle" font-size="13" font-weight="700" fill="#0f1626">Zenn</text>
+<text x="252" y="90" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#0f1626">検索で</text>
+<text x="252" y="106" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#0f1626">長く残る</text>
+<text x="252" y="136" font-family="sans-serif" text-anchor="middle" font-size="11" fill="#5b5f66">続ける</text>
+</svg>
