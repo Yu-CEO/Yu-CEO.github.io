@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 232" role="img" aria-labelledby="t">
+<title id="t">決定と、いまの結果</title>
+<defs>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="232" rx="12" fill="#f2f3f5"/>
+<rect x="85" y="8" width="130" height="26" rx="13" fill="#0f1626"/>
+<text x="150" y="21" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="700" fill="#ffffff">Yuの決定</text>
+<rect x="20" y="40" width="260" height="70" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="150" y="58" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0f1626">両方やる</text>
+<text x="150" y="80" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">お金はココナラ</text>
+<text x="150" y="98" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">話のネタはTikTok</text>
+<line x1="150" y1="112" x2="150" y2="130" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="20" y="134" width="260" height="88" rx="10" fill="#ffffff" stroke="#a14a00" stroke-width="1.5"/>
+<text x="150" y="154" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#a14a00">いまの結果</text>
+<text x="150" y="180" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">提案文と台本を下書き</text>
+<text x="150" y="204" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">募集の1ページ目は合うものなし</text>
+</svg>
