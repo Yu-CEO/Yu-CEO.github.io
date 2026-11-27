@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 170" role="img" aria-labelledby="t">
+<title id="t">迷ったのは、入口の作り方</title>
+<rect width="300" height="170" rx="12" fill="#f2f3f5"/>
+<rect x="12" y="14" width="132" height="142" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="78" y="36" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0f1626">明るい顔の1枚目</text>
+<line x1="24" y1="52" x2="132" y2="52" stroke="#c8ccd4" stroke-width="1"/>
+<text x="78" y="84" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">指を止める力</text>
+<rect x="156" y="14" width="132" height="142" rx="10" fill="#fff3c4" stroke="#a14a00" stroke-width="2"/>
+<text x="222" y="36" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700" fill="#0f1626">漫画</text>
+<line x1="168" y1="52" x2="276" y2="52" stroke="#a14a00" stroke-width="1"/>
+<text x="222" y="74" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">連載の顔になる</text>
+<text x="222" y="98" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">対立を描ける</text>
+<text x="222" y="122" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0f1626">手間は増える</text>
+<text x="222" y="143" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="700" fill="#a14a00">まず試す</text>
+</svg>
