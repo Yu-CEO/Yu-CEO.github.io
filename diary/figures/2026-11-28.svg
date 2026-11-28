@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 190" role="img" aria-labelledby="t">
+<title id="t">漫画で起きていたこと</title>
+<defs>
+<marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2563a8"/></marker>
+</defs>
+<rect width="300" height="190" rx="12" fill="#f2f3f5"/>
+<rect x="30" y="12" width="240" height="64" rx="10" fill="#ffffff" stroke="#2563a8" stroke-width="1.5"/>
+<text x="150" y="32" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#5b5f66">漫画の中身</text>
+<text x="150" y="55" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="700" fill="#0f1626">自分の話ばかり</text>
+<line x1="150" y1="78" x2="150" y2="100" stroke="#2563a8" stroke-width="2" marker-end="url(#ab)"/>
+<rect x="30" y="106" width="240" height="72" rx="10" fill="#0f1626" stroke="#a14a00" stroke-width="2"/>
+<text x="150" y="128" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#ffffff">そのため</text>
+<text x="150" y="154" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="700" fill="#fff3c4">見る人に関係がない</text>
+</svg>
