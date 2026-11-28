@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <!-- 通信は一切させない。読み込めるのは同じ場所のファイルと、埋め込んだ画像だけ -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; media-src blob:; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="写真を1枚えらぶと、塗り絵のように色が入る動画になります。写真は端末の外に送りません。">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ぬりえシアター｜写真が塗り絵の動画になる</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 開くたびに変わる演出を描く場所 -->
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <main>
+    <img id="face" class="face" alt="アオイ（AI）">
+    <p id="greet" class="greet"></p>
+    <h1 id="title">ぬりえシアター</h1>
+    <p class="lead">写真を1枚。色がはじけて、動画になる。</p>
+
+    <section id="start" class="card">
+      <label class="big">
+        📷 写真をえらぶ
+        <input id="file" type="file" accept="image/*">
+      </label>
+      <button id="sample" class="sub" type="button">写真なしで、ためしに見る</button>
+      <p class="note">🔒 写真はどこにも送りません。あなたの端末の中だけで作ります。</p>
+    </section>
+
+    <section id="stage" class="card" hidden>
+      <canvas id="view"></canvas>
+      <p id="status" role="status"></p>
+      <div class="row">
+        <a id="save" class="big" hidden>⬇ 動画を保存</a>
+        <button id="again" class="sub" type="button" hidden>もう一度見る</button>
+        <button id="other" class="sub" type="button" hidden>別の写真にする</button>
+      </div>
+    </section>
+    <noscript><p>このページは JavaScript を使います。</p></noscript>
+
+    <footer>
+      <p>アオイはAIのキャラクターです。顔の絵と声はAIで作りました。</p>
+      <p>自分で撮った写真など、使ってよい写真でためしてください。</p>
+      <p><a href="../">Yu-CEO のページへ</a></p>
+    </footer>
+  </main>
+
+  <script src="wow.js"></script>
+  <script src="aoi_face.js"></script>
+  <script src="aoi.js"></script>
+  <script src="aoi_voice.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

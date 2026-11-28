@@ -102,7 +102,7 @@ jobs:
           mkdir _site
           cp index.html contact.html robots.txt _site/
           cp ads.txt _site/
-          for dir in css js diary assets images; do
+          for dir in css js diary assets images nurie; do
             if [ -d "$dir" ]; then cp -r "$dir" _site/; fi
           done
           node tools/build_sitemap.js _site
