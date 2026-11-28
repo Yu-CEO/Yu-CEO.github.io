@@ -254,3 +254,12 @@
 /* ===== カードの一番上の入口画像（入口の「最新の日記」・日記一覧）。16:9・幅いっぱい・角丸 ===== */
 .d-card-hero{display:block;width:100%;height:auto;aspect-ratio:16 / 9;margin:0 0 12px;border-radius:calc(var(--diary-card-radius) - 6px)}
 .d-card-hero[hidden]{display:none}
+
+/* ===== 読みやすさ（2026-11-28）：日記は丸ゴシック系の字にする。外部のフォントは読み込まず、端末にある字を使う ===== */
+body{font-family:"Hiragino Maru Gothic ProN","BIZ UDPGothic",system-ui,-apple-system,"Hiragino Sans","Meiryo",sans-serif;letter-spacing:.02em}
+/* 概要は1文を1行のかたまりに */
+.d-lead{white-space:pre-line;font-weight:700;line-height:1.9}
+/* 結果は1項目ずつ白い札にして、文の羅列に見えないようにする */
+.d-results li{padding:12px 14px 12px 30px;border:1px solid var(--color-gray);border-left:4px solid var(--diary-accent);border-radius:10px}
+.d-results li::before{display:none}
+.d-results li{padding-left:14px}

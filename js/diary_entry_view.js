@@ -64,7 +64,8 @@ function createEntryHead(entry, paths) {
   inner.appendChild(createDayBand(entry.date));
   inner.appendChild(makeDiaryElement("p", "d-date", formatDateJa(entry.date)));
   inner.appendChild(makeDiaryElement("h1", "d-h1", entry.title));
-  inner.appendChild(makeDiaryElement("p", "d-lead", entry.summary));
+  // 概要は1文ごとに改行して、かたまりで読めるようにする（改行は css の white-space:pre-line で効く）
+  inner.appendChild(makeDiaryElement("p", "d-lead", entry.summary.replace(/。(?=.)/g, "。" + String.fromCharCode(10))));
   const byline = makeDiaryElement("p", "d-byline", "");
   byline.appendChild(makeDiaryElement("span", "", "記録："));
   byline.appendChild(makeDiaryElement("b", "", "秘書"));
