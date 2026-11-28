@@ -1,0 +1,18 @@
+/*
+ * home_officers.css：AI役員の区画（顔の並び・会議で実際に出た発言・Yu の紹介）。
+ * 色の値は home_base.css。中身は js/officer_data.js と js/officer_view.js。
+ */
+.faces{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px;margin:18px 0 0}
+.faces button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;border:0;background:none;cursor:pointer;font-size:12px;font-weight:700;line-height:1.4;min-width:0}
+.faces img{width:100%;max-width:60px;aspect-ratio:1;border-radius:50%;background:var(--card);border:2.5px solid var(--line);transition:transform .2s}
+.faces button[aria-pressed="true"] img{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent);transform:scale(1.06)}
+.say{margin:14px 0 0;padding:14px 16px 4px;min-height:188px;border:2.5px solid var(--ink);border-radius:var(--radius);background:var(--card)}
+.say-who{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-weight:800;font-size:var(--fs-sub)}
+.say-ai{padding:0 8px;border-radius:6px;background:var(--ink);color:var(--card);font-size:11px;font-weight:800;line-height:1.8}
+.say blockquote{margin:8px 0 4px;font-size:19px;font-weight:800;line-height:1.6;overflow-wrap:anywhere}
+.say a{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:700;color:var(--accent);text-underline-offset:4px}
+.boss{display:flex;gap:14px;align-items:center;margin-top:24px;padding:14px;border-radius:var(--radius);background:var(--accent-soft)}
+.boss picture{flex:none}
+.boss img{display:block;width:76px;height:76px;border-radius:50%;object-fit:cover;object-position:50% 30%;border:2.5px solid var(--ink)}
+.boss p{font-size:13px;line-height:1.6}
+.boss strong{display:block;font-size:15px}

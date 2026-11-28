@@ -11,7 +11,7 @@
 const TOOLS_DATA = [
   {
     name: "ぬりえシアター",
-    description: "写真を1枚えらぶと、塗り絵のように色が入る動画になります（写真は端末の外へ送りません）",
+    description: "写真が、色の入っていく動画になります",
     url: "https://yu-ceo.github.io/nurie/",
     status: "公開中",
     image: "assets/tool_nurie.jpg",
@@ -19,7 +19,7 @@ const TOOLS_DATA = [
   },
   {
     name: "おかね収支シミュレーター",
-    description: "NISAの積立とマンションの毎月の収支を、数字を入れるだけで計算できます",
+    description: "数字を入れると、NISAの積立とマンションの毎月の収支を計算します",
     url: "https://yu-ceo.github.io/okane-simulator/",
     status: "公開中",
     image: "assets/tool_simulator.jpg",
@@ -27,7 +27,7 @@ const TOOLS_DATA = [
   },
   {
     name: "ショート動画のかんたん診断",
-    description: "縦のショート動画を選ぶだけで、冒頭3秒や無音など6つの項目を、伸びる動画の目安と比べます（動画は端末の外へ送りません）",
+    description: "冒頭3秒や無音など6項目を目安と比べます。動画は端末の外に送りません",
     url: "https://yu-ceo.github.io/video-check/",
     status: "公開中",
     image: "assets/tool_video_check.jpg",
@@ -35,7 +35,7 @@ const TOOLS_DATA = [
   },
   {
     name: "為替の動く幅（学習用）",
-    description: "米ドル／円が過去にどれくらいの幅で動いたかを見て学べます。売買のタイミングや方向を示すものではありません",
+    description: "米ドル／円の過去の値幅を学べます。売買の時期や方向は示しません",
     url: "https://yu-ceo.github.io/fx-simulator/",
     status: "公開中",
     image: "assets/tool_fx_simulator.jpg",

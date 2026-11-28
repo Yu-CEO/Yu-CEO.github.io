@@ -170,6 +170,18 @@ function reportToolboxProblems(result) {
 }
 
 /**
+ * ジャンルの見出し（押すと開く行）。名前と件数を出す。
+ * @param {{ label: string, items: object[] }} group ジャンルのまとまり
+ * @returns {HTMLElement} summary 要素
+ */
+function createToolboxGenreTitle(group) {
+  const summary = createToolboxElement("summary", "", "");
+  summary.appendChild(createToolboxElement("span", "tb-genre-title", group.label));
+  summary.appendChild(createToolboxElement("small", "tb-genre-count", group.items.length + "件"));
+  return summary;
+}
+
+/**
  * 道具箱のデータを検査し、ジャンルごとのカードを並べ、PR表示と注意書きを出し分ける。表示できる道具が0件ならパネルごと隠す。
  * @param {*} items 道具の一覧（toolbox_data.js の TOOLBOX_DATA）
  * @param {*} aspList ASPの一覧（site_config.js の ASP_LIST）
@@ -188,8 +200,9 @@ function showToolbox(items, aspList) {
 
   genresArea.textContent = "";
   groupToolboxByGenre(result.validItems).forEach(function (group) {
-    const section = createToolboxElement("section", "tb-genre", "");
-    section.appendChild(createToolboxElement("h3", "tb-genre-title", group.label));
+    // ジャンルごとに閉じておく（details＝押すと開く部品）。PR表示と注意書きは外に出して、いつも見える
+    const section = createToolboxElement("details", "tb-genre", "");
+    section.appendChild(createToolboxGenreTitle(group));
     const list = createToolboxElement("ul", "tb-list", "");
     group.items.forEach(function (item) {
       list.appendChild(createToolboxCard(item));

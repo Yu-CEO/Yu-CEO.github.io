@@ -1,6 +1,6 @@
 /*
  * style.css：入口ページの共通の見た目（基本・固定バー・全画面パネル・ボタン・ツール・LINE・注意書き・動き）
- * index.html から読み込まれる。色・大きさの値は variables.css、ヒーローだけの見た目は hero.css。
+ * diary/ と contact.html から読み込まれる（入口ページは css/home_*.css）。色・大きさの値は variables.css、ヒーローだけの見た目は hero.css。
  * 構成：②固定バー ③パネル共通 ⑤ボタン ⑥ツール ⑦LINE ⑧注意書き ⑨動き（①は variables.css、④は hero.css）
  * スマホ幅（360px）を基準にし、640px以上ではボタンを横に並べる。外部のフォント・画像は読み込まない。
  */
@@ -10,7 +10,7 @@
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0;
-  background:var(--color-white);
+  background:var(--color-paper);
   color:var(--color-text);
   font-family:system-ui,-apple-system,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",sans-serif;
   line-height:1.7;
@@ -34,13 +34,12 @@ a{color:inherit}
   justify-content:space-between;
   background:var(--bar-bg);
   color:var(--bar-text);
-  -webkit-backdrop-filter:blur(10px);
-  backdrop-filter:blur(10px);       /* 後ろのパネルをぼかして、文字を読みやすくする */
+  border-bottom:1px solid var(--color-line);
 }
 .bar-logo{
-  font-weight:600;
+  font-weight:800;
   font-size:var(--fs-bar-logo);
-  letter-spacing:.2em;
+  gap:8px;
   text-decoration:none;
   min-height:44px;                  /* 指で押せる高さ */
   display:flex;
@@ -56,6 +55,9 @@ a{color:inherit}
   padding:0 2px;
 }
 .bar-link:hover{text-decoration:underline}
+/* 入口ページと同じ：「Yu」の左に差し色の丸、TikTok は丸い枠 */
+.bar-logo::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--diary-accent)}
+.bar-link{padding:0 14px;border:1.5px solid var(--color-text);border-radius:999px;font-size:13px}
 
 /* ===== ③ 全画面パネル（共通） ===== */
 .panel{
@@ -109,7 +111,7 @@ a{color:inherit}
 .btn-pill:focus-visible,
 .bar a:focus-visible{outline:3px solid var(--color-focus);outline-offset:3px}
 .btn-main{background:var(--color-btn-main);color:var(--color-btn-main-text)}
-.btn-sub{background:var(--color-btn-sub);color:var(--color-btn-sub-text);border-color:var(--color-line)}
+.btn-sub{background:var(--color-btn-sub);color:var(--color-btn-sub-text);border-color:var(--color-text)}
 /* ヒーロー用（暗い背景の上で読める配色。緑はLINEパネルだけなので使わない） */
 .btn-hero-main{background:var(--hero-btn-main);color:var(--hero-btn-main-text)}
 .btn-hero-sub{background:var(--hero-btn-sub-bg);color:var(--hero-btn-sub-text);border-color:var(--hero-btn-sub-border)}

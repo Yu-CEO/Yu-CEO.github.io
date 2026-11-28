@@ -1,9 +1,8 @@
 /*
  * hero_image.js：画像が読み込めなかったときに、その画像だけを隠す
- * ヒーローの肖像（assets/yu.jpg）では、隠すと枠の中が代わりの色（夜の紺）になり、文字やボタンはそのまま使える。
- * ツールのスクリーンショットでも同じ関数を使う（tools_view.js）。
+ * ツールのスクリーンショットで使う（tools_view.js）。画像が消えても、名前と説明はそのまま読める。
  * 主な関数：hideWhenBroken（画像の要素を受け取る）、hideImageIfBroken（id で画像を探して hideWhenBroken を呼ぶ）
- * main.js・tools_view.js から使われる。
+ * tools_view.js から使われる。
  */
 
 /**

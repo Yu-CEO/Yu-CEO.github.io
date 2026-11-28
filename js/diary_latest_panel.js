@@ -1,156 +1,100 @@
 /*
- * diary_latest_panel.js：入口ページの「最新の日記」パネルと、ヒーローの主役ボタン「今日の会議を読む」を出す
- * 最新1件の入口画像・N日目・日付・見出し・今日の学び（ある日だけ）・抜粋・登場した話者の小さな顔と、「読む」の行き先を入れる。
- * 最新の前の3件は小さなカード（diary_recent_view.js）で下に並べる。
- * 日記が1件もない・読み込めない（ファイルを直接開いたときなど）・形が正しくないときは、パネルと主役ボタンを隠したままにし、
- * 「無料ツールを見る」の大きなボタンをそのまま主役にする（index.html で最初からそうしてある）。
- * 主な関数：showLatestDiary（読み込みから表示までの流れ）、fillLatestCard（カードの中身を入れる）、getHeroMainLabel（主役ボタンの文字）
- * 使うもの：diary_load.js・diary_day.js・diary_parts.js・diary_hero_view.js・diary_markup.js・diary_recent_view.js。main.js から使われる。tests/diary_views.test.js・tests/diary_recent.test.js でテストする。
+ * diary_latest_panel.js：入口の日記の区画（最新1件の札・本数・読み込み中／失敗／0件の表示）
+ * 最新1件の入口画像（ない日は「N日目」の面）・日付・見出し・抜粋と、その日のページへのリンクを入れる。前の3件は diary_recent_view.js。
+ * 最新の1件が読めないときは、古い日記を「最新」と見せないで、失敗の表示と「もう一度読み込む」を出す。
+ * 主な関数：showLatestDiary（読み込みから表示までの流れ）、fillLatestCard（札の中身を入れる）、showDiaryState（状態の切り替え）
+ * 使うもの：diary_load.js・diary_day.js・diary_parts.js・diary_hero_view.js・diary_recent_view.js。main.js から使われる。
+ * tests/diary_views.test.js・tests/diary_recent.test.js でテストする。
  */
 
 // Node.js（テスト）では、ほかのファイルの関数を require で読み込んで、ブラウザと同じ名前で使えるようにする
 if (typeof module !== "undefined" && module.exports) {
   globalThis.loadDiaryIndex = require("./diary_load.js").loadDiaryIndex;
   globalThis.loadCheckedEntry = require("./diary_load.js").loadCheckedEntry;
-  globalThis.formatDayLong = require("./diary_day.js").formatDayLong;
-  globalThis.stripMarkup = require("./diary_markup.js").stripMarkup;
+  globalThis.formatDayShort = require("./diary_day.js").formatDayShort;
+  globalThis.formatDateDot = require("./diary_day.js").formatDateDot;
   globalThis.showRecentDiaries = require("./diary_recent_view.js").showRecentDiaries;
   globalThis.makeDiaryElement = require("./diary_parts.js").makeDiaryElement;
-  globalThis.createDiaryMetaRow = require("./diary_parts.js").createDiaryMetaRow;
-  globalThis.createFacesRow = require("./diary_parts.js").createFacesRow;
   globalThis.createDiaryHero = require("./diary_hero_view.js").createDiaryHero;
 }
 
-// index.html に書いた部品の id
+// index.html に書いた部品の id（状態ごとの箱と、札・本数）
 const LATEST_DIARY_IDS = {
-  panel: "diary-latest",
+  ok: "diary-ok",
+  loading: "diary-loading",
+  failed: "diary-failed",
+  empty: "diary-empty",
   card: "diary-latest-card",
-  readButton: "diary-latest-read",
-  heroMain: "hero-main",
-  toolsBig: "hero-tools",
-  toolsPill: "hero-tools-pill"
+  countArea: "diary-count-area",
+  count: "diary-count"
 };
-// 主役ボタンの文字。最新の日記が今日の日付なら前者、昨日以前なら後者（古い日記を「今日」と言わないため）
-const HERO_MAIN_LABEL_TODAY = "今日の会議を読む";
-const HERO_MAIN_LABEL_LATEST = "最新の会議を読む";
-// 最新の前の日記を、小さなカードで何件出すか（最新と同じ日記を2回出さないため、最新は含めない）
+// 状態の名前（箱の id の表のキーと同じ）
+const DIARY_STATES = ["ok", "loading", "failed", "empty"];
+// 前の日記を何件出すか（最新は含めない）
 const RECENT_DIARY_COUNT = 3;
-// 今日の学びがある日のカードに付ける印（抜粋を2行に減らす。css/diary_recent.css）
-const CARD_HAS_TAKEAWAY_CLASS = "has-take";
 
 /**
- * 主役ボタンの文字を決める（画面に触れない）。
- * @param {string} latestDate 最新の日記の日付
- * @param {string} today 端末の今日の日付（"YYYY-MM-DD"）
- * @returns {string} 最新が今日なら「今日の会議を読む」、そうでなければ「最新の会議を読む」
- * @example getHeroMainLabel("2026-11-21", "2026-11-21") // "今日の会議を読む"
- */
-function getHeroMainLabel(latestDate, today) {
-  if (latestDate === today) {
-    return HERO_MAIN_LABEL_TODAY;
-  }
-  return HERO_MAIN_LABEL_LATEST;
-}
-
-/**
- * 「今日の学び」の小さな枠を作る。
- * @param {string} takeaway 今日の学び（太字・ハイライトの記号つきの文字）
- * @returns {HTMLElement} 枠の要素
- * @example createTakeaway("先に答えを置く。")
- */
-function createTakeaway(takeaway) {
-  const box = makeDiaryElement("div", "take-mini", "");
-  box.appendChild(makeDiaryElement("small", "", "今日の学び"));
-  box.appendChild(makeDiaryElement("p", "", stripMarkup(takeaway)));
-  return box;
-}
-
-/**
- * 最新の日記のカードの中身（入口画像・N日目・日付・見出し・今日の学び・抜粋・小さな顔）を入れる。
- * @param {HTMLElement} card カードの要素
- * @param {object} entry 検査を通った日記1件
- * @param {string} faceFile speakers.svg の場所
- * @param {string} heroFolder diary/heroes/ の場所（hero のない日は使わない）
- * @param {string} [entryHref] その日のページの場所。渡すと見出しがリンクになり、カードのどこを触ってもその日のページへ行く（css/diary.css の .d-card-link）
+ * 日記の区画の状態を切り替える（選んだ箱だけ見せる）。
+ * @param {string} state "ok"・"loading"・"failed"・"empty" のどれか
  * @returns {void}
- * @example fillLatestCard(card, entry, "assets/speakers.svg", "diary/heroes/", "diary/entry.html?date=2026-11-21")
+ * @example showDiaryState("loading")
  */
-function fillLatestCard(card, entry, faceFile, heroFolder, entryHref) {
-  card.textContent = "";
-  card.className = "diary-card";
-  // 入口画像はカードの一番上。hero のない日は何も足さない
-  const heroImage = createDiaryHero(entry, heroFolder, "latest");
-  if (heroImage !== null) {
-    card.appendChild(heroImage);
-  }
-  card.appendChild(createDiaryMetaRow(entry.date));
-  const heading = makeDiaryElement("h3", "", "");
-  if (typeof entryHref === "string" && entryHref !== "") {
-    // 見出しのリンクを、CSS でカード全体に広げる（カードを触れば日記が開く）
-    const link = makeDiaryElement("a", "d-card-link", entry.title);
-    link.href = entryHref;
-    heading.appendChild(link);
-  } else {
-    heading.textContent = entry.title;
-  }
-  card.appendChild(heading);
-  // 今日の学びは書いてある日だけ出す（無い日は枠ごと出さない）
-  if (typeof entry.takeaway === "string" && entry.takeaway !== "") {
-    card.className += " " + CARD_HAS_TAKEAWAY_CLASS;
-    card.appendChild(createTakeaway(entry.takeaway));
-  }
-  card.appendChild(makeDiaryElement("p", "d-summary", entry.summary));
-  card.appendChild(createFacesRow(entry, faceFile));
-}
-
-/**
- * 部品を id で集める。1つでも無ければ null（id の書き間違いに気づけるよう、コンソールに日本語で出す）。
- * @returns {Object<string,HTMLElement>|null} 部品の表
- */
-function findLatestParts() {
-  const parts = {};
-  let missing = false;
-  Object.keys(LATEST_DIARY_IDS).forEach(function (key) {
-    parts[key] = document.getElementById(LATEST_DIARY_IDS[key]);
-    if (parts[key] === null) {
-      missing = true;
+function showDiaryState(state) {
+  DIARY_STATES.forEach(function (name) {
+    const box = document.getElementById(LATEST_DIARY_IDS[name]);
+    if (box !== null) {
+      box.hidden = name !== state;
     }
   });
-  if (missing) {
-    console.warn("「最新の日記」の部品が index.html に見つかりません。id の書き間違いがないか確かめてください。");
-    return null;
+}
+
+// 「日記N本。」を出す。本数が分からないとき（読み込めないとき）は null を渡して隠す
+function showDiaryCount(count) {
+  const area = document.getElementById(LATEST_DIARY_IDS.countArea);
+  const number = document.getElementById(LATEST_DIARY_IDS.count);
+  if (area === null || number === null) {
+    return;
   }
-  return parts;
+  area.hidden = count === null;
+  if (count !== null) {
+    number.textContent = String(count);
+  }
+}
+
+// 札の一番上：入口画像。ない日・読めないときは「N日目」の面を出す
+function appendLatestPicture(card, entry, heroFolder) {
+  const fallback = makeDiaryElement("span", "noimg", formatDayShort(entry.date));
+  const image = createDiaryHero(entry, heroFolder, "latest");
+  if (image !== null) {
+    card.appendChild(image);
+    fallback.hidden = true;
+    // 画像そのものは diary_hero_view.js が隠すので、ここでは代わりの面を出すだけ
+    image.addEventListener("error", function () {
+      fallback.hidden = false;
+    });
+  }
+  card.appendChild(fallback);
 }
 
 /**
- * 最新の日記をパネルに出し、ヒーローの主役ボタンを「今日の会議を読む」にする（「無料ツールを見る」は小さな丸ボタンへ）。
+ * 最新の日記の札の中身（入口画像・日付・見出し・抜粋・「読む」の見た目）を入れる。
+ * @param {HTMLElement} card 札の要素（全体が1つのリンク）
  * @param {object} entry 検査を通った日記1件
- * @param {object[]} recentEntries 最新の前の日記（検査を通った分だけ。0件でもよい）
- * @param {{ faceFile: string, entryPage: string, heroFolder: string, today: string }} paths 場所の設定と今日の日付
- * @returns {boolean} 表示できたら true（index.html に部品がないときは false）
- * @example revealLatestDiary(entry, [], paths)
+ * @param {string} heroFolder diary/heroes/ の場所
+ * @param {string} entryHref その日のページの場所
+ * @returns {void}
+ * @example fillLatestCard(card, entry, "diary/heroes/", "diary/entry.html?date=2026-11-21")
  */
-function revealLatestDiary(entry, recentEntries, paths) {
-  const parts = findLatestParts();
-  if (parts === null) {
-    return false;
-  }
-  // 日付は検査で YYYY-MM-DD の形と確かめ済みなので、そのまま場所に使ってよい
-  const entryHref = paths.entryPage + "?date=" + entry.date;
-  fillLatestCard(parts.card, entry, paths.faceFile, paths.heroFolder, entryHref);
-  parts.readButton.href = entryHref;
-  parts.readButton.setAttribute("aria-label", "読む：" + formatDayLong(entry.date) + " " + entry.title);
-  showRecentDiaries(recentEntries, paths);
-  const label = getHeroMainLabel(entry.date, paths.today);
-  parts.heroMain.textContent = label;
-  parts.heroMain.href = entryHref;
-  parts.heroMain.setAttribute("aria-label", label + "：" + formatDayLong(entry.date) + " " + entry.title);
-  parts.heroMain.hidden = false;
-  parts.toolsBig.hidden = true;
-  parts.toolsPill.hidden = false;
-  parts.panel.hidden = false;
-  return true;
+function fillLatestCard(card, entry, heroFolder, entryHref) {
+  card.textContent = "";
+  card.setAttribute("href", entryHref);
+  appendLatestPicture(card, entry, heroFolder);
+  const body = makeDiaryElement("span", "body", "");
+  body.appendChild(makeDiaryElement("span", "meta", "最新｜" + formatDateDot(entry.date)));
+  body.appendChild(makeDiaryElement("h3", "", entry.title));
+  body.appendChild(makeDiaryElement("p", "d-summary", entry.summary));
+  body.appendChild(makeDiaryElement("span", "read", "読む ›"));
+  card.appendChild(body);
 }
 
 /**
@@ -170,35 +114,50 @@ function loadRecentEntries(folder, dates) {
   });
 }
 
+// 最新の1件を読んで札と前の3件を出す。読めなければ失敗の表示にする
+function showEntries(folder, paths, dates) {
+  return loadCheckedEntry(folder, dates[0], dates).then(function (entry) {
+    const card = document.getElementById(LATEST_DIARY_IDS.card);
+    if (entry === null || card === null) {
+      showDiaryState("failed");
+      return false;
+    }
+    return loadRecentEntries(folder, dates).then(function (recentEntries) {
+      // 日付は検査で YYYY-MM-DD の形と確かめ済みなので、そのまま場所に使ってよい
+      fillLatestCard(card, entry, paths.heroFolder, paths.entryPage + "?date=" + entry.date);
+      showRecentDiaries(recentEntries, paths);
+      showDiaryCount(dates.length);
+      showDiaryState("ok");
+      return true;
+    });
+  });
+}
+
 /**
- * 最新の日記を読み込んで、パネルとボタンを出す。出せないときは隠したまま（index.html で最初から隠してある）。
- * 最新の1件が正しくないときは、古い日記で代わりにせず、パネルごと隠す（最新でない日記を「最新」と見せないため）。
+ * 日記を読み込んで区画に出す。0件なら「最初の日記は…」、読み込めなければ失敗の表示。
  * @param {string} folder diary/entries/ の場所
- * @param {{ faceFile: string, entryPage: string, heroFolder: string, today: string }} paths 場所の設定と今日の日付
- * @returns {Promise<boolean>} 出せたら true
- * @example showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" })
+ * @param {{ entryPage: string, heroFolder: string }} paths 場所の設定
+ * @returns {Promise<boolean>} 最新の日記を出せたら true
+ * @example showLatestDiary("diary/entries/", { entryPage: "diary/entry.html", heroFolder: "diary/heroes/" })
  */
 function showLatestDiary(folder, paths) {
-  let knownDates = [];
-  return loadDiaryIndex(folder)
-    .then(function (dates) {
-      if (dates === null || dates.length === 0) {
-        return null;
-      }
-      knownDates = dates;
-      return loadCheckedEntry(folder, dates[0], dates);
-    })
-    .then(function (entry) {
-      if (entry === null) {
-        return false;
-      }
-      return loadRecentEntries(folder, knownDates).then(function (recentEntries) {
-        return revealLatestDiary(entry, recentEntries, paths);
-      });
-    });
+  showDiaryState("loading");
+  showDiaryCount(null);
+  return loadDiaryIndex(folder).then(function (dates) {
+    if (dates === null) {
+      showDiaryState("failed");
+      return false;
+    }
+    if (dates.length === 0) {
+      showDiaryCount(0);
+      showDiaryState("empty");
+      return false;
+    }
+    return showEntries(folder, paths, dates);
+  });
 }
 
 // Node.js（テスト）から require で使えるようにする（ブラウザでは何もしない）
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { showLatestDiary, fillLatestCard, getHeroMainLabel, RECENT_DIARY_COUNT };
+  module.exports = { showLatestDiary, fillLatestCard, showDiaryState, RECENT_DIARY_COUNT };
 }

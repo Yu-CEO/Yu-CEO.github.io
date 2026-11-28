@@ -1,0 +1,28 @@
+/*
+ * home_motion.css：紙ふぶき・下から出てくる動き・PC幅の並び・動きを減らす設定。入口の css の最後に読み込む。
+ * 紙ふぶきの落ちる動きは js/confetti.js、出てくる区画の印は js/reveal_motion.js。
+ */
+.confetti{position:fixed;top:-20px;left:0;z-index:40;width:9px;height:14px;pointer-events:none}
+.reveal{transition:opacity .5s,transform .5s}
+.reveal.off{opacity:0;transform:translateY(24px)}
+
+/* PC幅：最初の画面を2列（左に文とボタン、右に絵） */
+@media (min-width:880px){
+  :root{--max:1000px}
+  .hero{padding:48px 0}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1fr;column-gap:48px;grid-template-rows:auto 1fr;align-items:start}
+  .hero-text{grid-column:1;grid-row:1}
+  .hero-art{grid-column:2;grid-row:1 / 3}
+  .hero-cta{grid-column:1;grid-row:2}
+  .canvas{margin:0}
+  .canvas svg{max-height:none}
+  h1{font-size:44px}
+  section:not(.hero) .wrap,.note p{max-width:672px}
+}
+
+/* 動きを減らす設定の人には、線の動き・紙ふぶき・浮き上がりを止める（塗る操作は使える） */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  .confetti{display:none}
+  .reveal.off{opacity:1;transform:none}
+}

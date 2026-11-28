@@ -60,13 +60,10 @@ test("AC-2（案B）：contact.html に、仕様 2-3 の 1〜8 の文が全部�
   assert.ok(html.includes("id=\"contact-form-button\""));
 });
 
-test("AC-1：ホームのヒーローの中、丸ボタンの下に「お問い合わせ」があり、contact.html（同じサイト）へのリンク", function () {
+test("AC-1：ホームの締めくくりに、contact.html（同じサイト）への「感想・仕事の相談を送る」ボタンがある", function () {
   const html = readPortalFile("index.html");
-  const pillsAt = html.indexOf("id=\"hero-line\"");
-  const contactAt = html.indexOf("id=\"hero-contact\"");
-  const heroEnd = html.indexOf("</header>");
-  assert.ok(pillsAt > 0 && contactAt > pillsAt && contactAt < heroEnd, "「お問い合わせ」が丸ボタンの下・ヒーローの中にありません");
-  assert.ok(/<a class="btn-contact" id="hero-contact" href="contact.html">お問い合わせ<\/a>/.test(html));
+  assert.ok(/<a class="btn btn-ink" id="end-contact" href="contact\.html">感想・仕事の相談を送る ›<\/a>/.test(html));
+  assert.ok(html.indexOf('id="end-contact"') > html.indexOf('id="toolbox"'));
 });
 
 test("AC-6：HTML・JS・CSS・README にメールアドレス・電話番号の形が無い", function () {

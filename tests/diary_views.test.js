@@ -66,23 +66,23 @@ function installFakeFetch(index, entries) {
 }
 
 /**
- * 入口ページの「最新の日記」の部品（最初は隠してある）を、にせの画面に用意する。
+ * 入口ページの日記の区画の部品（状態の箱・札・本数・前の日記の列）を、にせの画面に用意する。
  * @returns {object} 部品の組
  */
 function setUpLatestPanel() {
-  const parts = {
-    "diary-latest": createFakeElement("section"),
-    "diary-latest-card": createFakeElement("article"),
-    "diary-latest-read": createFakeElement("a"),
-    "hero-main": createFakeElement("a"),
-    "hero-tools": createFakeElement("a"),
-    "hero-tools-pill": createFakeElement("a")
-  };
-  parts["diary-latest"].hidden = true;
-  parts["hero-main"].hidden = true;
-  parts["hero-tools-pill"].hidden = true;
+  const parts = {};
+  ["diary-ok", "diary-loading", "diary-failed", "diary-empty", "diary-latest-card", "diary-count-area", "diary-count", "diary-recent-list"].forEach(function (id) {
+    parts[id] = createFakeElement("div");
+  });
   installFakeDocument(parts);
   return parts;
+}
+
+// 4つの状態の箱のうち、出ているものの id の一覧
+function shownStates(parts) {
+  return ["diary-ok", "diary-loading", "diary-failed", "diary-empty"].filter(function (id) {
+    return parts[id].hidden === false;
+  });
 }
 
 test("AC-4：一覧は渡した順（新しい順）にカードが並び、カード全体がその日のページへのリンクになる", function () {
@@ -242,34 +242,27 @@ test("AC-9：見つからないときは「この日の日記は見つかりま�
   assert.strictEqual(doc.title, "見つかりませんでした｜経営会議の日記");
 });
 
-test("AC-1・AC-29：入口ページに最新の日記（新しい日付）を出し、「読む」は同じタブでその日のページへ。主役ボタンが「最新の会議を読む」になる", async function () {
+test("AC-1・AC-29：入口ページに最新の日記（新しい日付）を出し、札は同じタブでその日のページへ。本数も出る", async function () {
   const parts = setUpLatestPanel();
   installFakeFetch(["2026-11-15", "2026-11-16"], { "2026-11-15": readSample("2026-11-15"), "2026-11-16": readSample("2026-11-16") });
-  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
-  assert.strictEqual(shown, true);
-  assert.strictEqual(parts["diary-latest"].hidden, false);
-  assert.strictEqual(parts["hero-main"].hidden, false);
-  assert.strictEqual(parts["hero-main"].textContent, "最新の会議を読む");
-  assert.strictEqual(parts["hero-main"].href, "diary/entry.html?date=2026-11-16");
-  assert.strictEqual(parts["hero-tools"].hidden, true);
-  assert.strictEqual(parts["hero-tools-pill"].hidden, false);
-  assert.strictEqual(parts["diary-latest-read"].href, "diary/entry.html?date=2026-11-16");
-  assert.strictEqual(parts["diary-latest-read"].target, undefined);
-  assert.strictEqual(findByClass(parts["diary-latest-card"], "d-day").textContent, "3日目");
-  assert.ok(findByClass(parts["diary-latest-card"], "d-summary"));
-  // カードを触っても日記が開くよう、見出しがその日のページへのリンクになっている
-  const cardLink = findByClass(parts["diary-latest-card"], "d-card-link");
-  assert.strictEqual(cardLink.href, "diary/entry.html?date=2026-11-16");
-  assert.strictEqual(cardLink.target, undefined);
+  assert.strictEqual(await showLatestDiary("diary/entries/", { entryPage: "diary/entry.html", heroFolder: "diary/heroes/" }), true);
+  assert.deepStrictEqual(shownStates(parts), ["diary-ok"]);
+  const card = parts["diary-latest-card"];
+  assert.strictEqual(card.getAttribute("href"), "diary/entry.html?date=2026-11-16");
+  assert.strictEqual(card.target, undefined);
+  assert.strictEqual(findByClass(card, "meta").textContent, "最新｜2026.11.16");
+  assert.ok(findByClass(card, "d-summary"));
+  assert.strictEqual(parts["diary-count"].textContent, "2");
+  assert.strictEqual(parts["diary-count-area"].hidden, false);
 });
 
-test("AC-3：日記が0件・読み込めない・最新の日記の形が壊れているときは、パネルも主役ボタンも隠したまま（「無料ツールを見る」が主役のまま）", async function () {
+test("AC-3：日記が0件なら「最初の日記は…」と0本。読み込めない・最新の日記の形が壊れているときは失敗の表示で、本数は出さない", async function () {
   const broken = readSample("2026-11-16");
   delete broken.title;
   const cases = [
-    { index: [], entries: {} },
-    { index: null, entries: {} },
-    { index: ["2026-11-15", "2026-11-16"], entries: { "2026-11-15": readSample("2026-11-15"), "2026-11-16": broken } }
+    { index: [], entries: {}, state: "diary-empty", countHidden: false },
+    { index: null, entries: {}, state: "diary-failed", countHidden: true },
+    { index: ["2026-11-15", "2026-11-16"], entries: { "2026-11-15": readSample("2026-11-15"), "2026-11-16": broken }, state: "diary-failed", countHidden: true }
   ];
   const originalWarn = console.warn;
   console.warn = function () {};
@@ -277,21 +270,18 @@ test("AC-3：日記が0件・読み込めない・最新の日記の形が壊れ
     for (const item of cases) {
       const parts = setUpLatestPanel();
       installFakeFetch(item.index, item.entries);
-      const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
-      assert.strictEqual(shown, false);
-      assert.strictEqual(parts["diary-latest"].hidden, true);
-      assert.strictEqual(parts["hero-main"].hidden, true);
-      assert.notStrictEqual(parts["hero-tools"].hidden, true);
+      assert.strictEqual(await showLatestDiary("diary/entries/", { entryPage: "diary/entry.html", heroFolder: "diary/heroes/" }), false);
+      assert.deepStrictEqual(shownStates(parts), [item.state]);
+      assert.strictEqual(parts["diary-count-area"].hidden, item.countHidden);
     }
   } finally {
     console.warn = originalWarn;
   }
 });
 
-test("AC-3：ファイルを直接開いたときのように fetch が使えなくても、止まらずに隠したまま", async function () {
+test("AC-3：ファイルを直接開いたときのように fetch が使えなくても、止まらずに失敗の表示になる", async function () {
   const parts = setUpLatestPanel();
   delete global.fetch;
-  const shown = await showLatestDiary("diary/entries/", { faceFile: "assets/speakers.svg", entryPage: "diary/entry.html", heroFolder: "diary/heroes/", today: "2026-11-21" });
-  assert.strictEqual(shown, false);
-  assert.strictEqual(parts["diary-latest"].hidden, true);
+  assert.strictEqual(await showLatestDiary("diary/entries/", { entryPage: "diary/entry.html", heroFolder: "diary/heroes/" }), false);
+  assert.deepStrictEqual(shownStates(parts), ["diary-failed"]);
 });

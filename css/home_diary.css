@@ -1,0 +1,23 @@
+/*
+ * home_diary.css：日記の区画（夜の面）。最新1件の札・前の3件・読み込み中と失敗と0件の表示。
+ * 色の値は home_base.css。中身は js/diary_latest_panel.js と js/diary_recent_view.js が入れる。
+ */
+.night{background:var(--night);color:var(--card)}
+.night .kicker{color:var(--accent-lite)}
+.night .desc{color:var(--night-sub)}
+.latest{display:block;margin-top:18px;border-radius:var(--radius);background:var(--card);color:var(--ink);overflow:hidden;text-decoration:none}
+.latest .d-card-hero{display:block;width:100%;height:auto;aspect-ratio:16 / 9;object-fit:cover;background:var(--night-shot)}
+.latest .noimg{display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:16 / 9;background:var(--night-shot);color:var(--card);font-weight:900;font-size:28px}
+.latest .body{display:block;padding:14px 16px 16px}
+.latest .meta{display:block;font-size:var(--fs-note);font-weight:700;color:var(--ink-sub)}
+.latest h3{margin:4px 0 6px;font-size:19px;overflow-wrap:anywhere}
+.latest p{font-size:var(--fs-sub);color:var(--ink-sub);overflow-wrap:anywhere}
+.latest .read{display:flex;align-items:center;justify-content:center;min-height:48px;margin-top:12px;border-radius:999px;background:var(--ink);color:var(--card);font-weight:800}
+.past{margin:20px 0 0;padding:0;list-style:none}
+.past a{display:flex;gap:12px;align-items:center;min-height:64px;padding:10px 0;border-bottom:1px solid var(--night-line);text-decoration:none;font-size:var(--fs-sub);line-height:1.55}
+.past small{flex:none;width:4.8em;color:var(--accent-lite);font-weight:800;font-size:var(--fs-note)}
+.past span{min-width:0;overflow-wrap:anywhere}
+.state{margin-top:18px;padding:28px 16px;border:1.5px dashed var(--night-dash);border-radius:var(--radius);text-align:center;font-size:var(--fs-sub)}
+.state .btn{margin-top:14px}
+.skel{height:200px;margin-top:18px;border-radius:var(--radius);background:linear-gradient(100deg,var(--night-card) 40%,var(--night-card-light) 50%,var(--night-card) 60%) 0 0 / 300% 100%;animation:skel 1.4s linear infinite}
+@keyframes skel{to{background-position:-300% 0}}

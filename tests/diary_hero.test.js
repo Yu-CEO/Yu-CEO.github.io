@@ -125,17 +125,19 @@ test("入口画像：読み込めない（error）ときは、画像だけが隠
   assert.strictEqual(createdImage.hidden, true);
 });
 
-test("入口画像：入口の「最新の日記」カードは、一番上に飾り扱い（alt なし）の画像。hero なしなら出さない", function () {
+test("入口画像：入口の「最新の日記」カードは、一番上に飾り扱い（alt なし）の画像。hero なし・読めないときは「N日目」の面", function () {
   installFakeDocument({});
-  const card = createFakeElement("article");
-  fillLatestCard(card, readEntry(true), "assets/speakers.svg", "diary/heroes/");
+  const card = createFakeElement("a");
+  fillLatestCard(card, readEntry(true), "diary/heroes/", "diary/entry.html");
   assert.strictEqual(card.children[0].tagName, "img");
   assert.strictEqual(card.children[0].src, "diary/heroes/" + HERO_DATE + ".jpg");
   assert.strictEqual(card.children[0].alt, "");
   assert.strictEqual(card.children[0].className, "d-card-hero");
-  fillLatestCard(card, readEntry(false), "assets/speakers.svg", "diary/heroes/");
-  assert.strictEqual(findImages(card).filter(function (image) { return image.className === "d-card-hero"; }).length, 0);
-  assert.strictEqual(card.children[0].className, "d-meta");
+  assert.strictEqual(card.children[1].hidden, true);
+  fillLatestCard(card, readEntry(false), "diary/heroes/", "diary/entry.html");
+  assert.strictEqual(findImages(card).length, 0);
+  assert.strictEqual(card.children[0].className, "noimg");
+  assert.notStrictEqual(card.children[0].hidden, true);
 });
 
 test("入口画像：日記一覧のカードは、一番上に飾り扱い（alt なし）の lazy な画像。hero のない日のカードは今までどおり", function () {

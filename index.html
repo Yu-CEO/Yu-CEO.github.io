@@ -3,13 +3,11 @@
 <head>
 <meta charset="utf-8">
 <!--
-  index.html：入口ページの骨組みだけを書くファイル（上から ①ヒーロー ②最新の日記（これまでの会議つき） ②' 無料ツールの1枚のパネル（場所） ③LINEのパネル ③' Yuの道具箱 ④注意書き）。
-  見た目は css/variables.css（色・大きさの値）・css/style.css（共通）・css/hero.css（ヒーロー）・css/hero_advice.css（ヒーローの場面）・css/diary.css（日記）・css/diary_recent.css（今日の学び・これまでの会議）、設定（URL）は js/site_config.js、ツールのデータは js/tools_data.js、
-  データの検査は js/tools_validate.js、パネルの表示は js/tools_view.js、ボタンの出し分けは js/link_button.js、
-  ヒーローの「役員が Yu に提案・指摘する場面」は js/board_quotes_data.js（名言の一覧）・js/board_quote_pick.js（選ぶ）・js/hero_advice.js（表示と「N日目」）と css/hero_advice.css、Yu の写真の読み込み失敗の対応は js/hero_image.js、背景の交互の色は js/panel_tone.js、動きは js/reveal_motion.js、
-  URLの # の場所への移動は js/hash_jump.js、最新の日記は js/diary_latest_panel.js・js/diary_recent_view.js（と diary_*.js）、
-  「最新の日記」パネルの Zenn の文字リンク（id=diary-zenn）は js/main.js が URL を入れて出し分ける、
-  道具箱は js/toolbox_data.js（データ）・toolbox_validate.js（検査）・toolbox_link.js（リンクの出し方）・toolbox_beacon.js（計測用画像）・toolbox_view.js（表示）と css/toolbox.css、流れは js/main.js。
+  index.html：入口ページの骨組みだけを書くファイル。上から ①何の人か＋指で塗れる絵＋ぬりえのボタン ②AI役員 ③日記 ④無料の道具 ⑤LINE ⑥道具箱（PR） ⑦締めくくり ⑧注意書き。
+  見た目は css/home_base.css（色と大きさの値・共通）・home_hero.css・home_officers.css・home_diary.css・home_tools.css・toolbox.css・home_motion.css。
+  塗れる絵は js/paint_data.js・paint_view.js（開くたびの色と絵は daily_pick.js、紙ふぶきは confetti.js）、日数は company_days.js、
+  役員の発言は officer_data.js・officer_view.js、日記は diary_latest_panel.js・diary_recent_view.js（と diary_*.js）、
+  道具は tools_data.js・tools_validate.js・tools_view.js、設定（URL）は site_config.js、道具箱は toolbox_*.js、流れは main.js。
   最新の日記は diary/entries/ のデータを読み込むので、公開サイト（https）か手元のサーバーで開いたときだけ出る。
   ブラウザで直接開くだけで動く（サーバー・インターネット接続は不要。外部のファイルは読み込まない）。
   例外は画像だけ：道具箱の紹介リンクのカードに置く、ASPの計測用の小さな画像（1×1。js/site_config.js の ASP_LIST のホストに限る）と、
@@ -42,149 +40,143 @@
 <meta name="google-site-verification" content="DRMRNizrtKxoNGWkSGP-5yyrqOF_DW4ScWJ_Nh_0c70">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Yu｜AI仮想会社の社長</title>
-<!-- 変数（variables.css）を先に読み込む。ほかのCSSがその値を使うため -->
-<link rel="stylesheet" href="css/variables.css">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/hero.css">
-<link rel="stylesheet" href="css/hero_advice.css">
-<link rel="stylesheet" href="css/diary.css">
-<link rel="stylesheet" href="css/diary_recent.css">
+<!-- home_base.css（色と大きさの値）を先に読み込む。home_motion.css（PC幅・動きを減らす設定）は最後 -->
+<link rel="stylesheet" href="css/home_base.css">
+<link rel="stylesheet" href="css/home_hero.css">
+<link rel="stylesheet" href="css/home_officers.css">
+<link rel="stylesheet" href="css/home_diary.css">
+<link rel="stylesheet" href="css/home_tools.css">
 <link rel="stylesheet" href="css/toolbox.css">
-<link rel="stylesheet" href="css/bright.css">
+<link rel="stylesheet" href="css/home_motion.css">
 </head>
 <body>
 
-<!-- 上部の固定バー：左に「Yu」（ページの先頭へ）、右に TikTok。URLは js/site_config.js から main.js が入れる -->
 <nav class="bar" aria-label="サイトのメニュー">
-  <a class="bar-logo" href="#top">Yu</a>
-  <a class="bar-link" id="bar-tiktok" target="_blank" rel="noopener" hidden>TikTokを見る</a>
+  <a class="bar-logo" href="#top"><i aria-hidden="true"></i>Yu</a>
+  <a class="bar-link" id="bar-tiktok" target="_blank" rel="noopener" hidden>TikTok</a>
 </nav>
 
 <main>
-  <!-- ① ヒーロー：小見出し・表示名・「AI会社を始めて N 日目」・役員が Yu に提案／指摘する場面・主役ボタン・プロフィール文・丸ボタン。文言を変えるときはここを直す -->
-  <header class="panel hero" id="top">
-    <p class="hero-eyebrow">Yu｜AI仮想会社の社長　@yu_from_l2w</p>
-    <h1 class="hero-title"><span>会社員が、AI役員と</span><span>自分の会社を作る。</span><span>意外と、やれる。</span></h1>
-    <!-- 数字は js/hero_advice.js が入れて表示する（初めての人にも通じるよう「Day N」ではなくこの言い方にした） -->
-    <p class="hero-days" id="hero-days" hidden>今日で、AI会社を始めて<b id="hero-days-number"></b>日目</p>
-    <!-- 場面（css/hero_advice.css・js/hero_advice.js）。ランダムに選んだ役員を大きく出し、Yu に「提案」か「指摘」をしている場面にする。
-         最初は no-quote の印つき（名言を選べないときは、役員の顔の列と説明だけを残し、空の吹き出しを出さないため）。
-         Yu の写真は、受け取る側として右下に小さく出す。WebP を先に使い、使えないブラウザだけ yu.jpg を使う。
-         width・height は画像の縦横のピクセル数（表示の大きさは CSS が決める。読み込み前に場所を取っておくため） -->
-    <!-- ぬりえシアターの入口（最初の画面に置く） -->
-    <div class="nurie-card">
-      <h2>🎨 写真が、塗り絵の動画になる</h2>
-      <p>1枚えらぶだけ。写真はどこにも送りません。</p>
-      <a href="nurie/">ぬりえシアターで遊ぶ</a>
-    </div>
-    <div class="hero-stage" id="hero-stage">
-      <div class="talk no-quote" id="hero-talk">
-        <p class="talk-eyebrow" id="talk-eyebrow"></p>
-        <div class="talk-row">
-          <div class="talk-who"><span id="talk-face-holder"></span><span class="talk-name" id="talk-name"></span></div>
-          <!-- 吹き出し全体がリンク。押すと、その名言が出た日の日記へ飛ぶ（2026-11-21 追加。href は js/hero_advice.js が入れる） -->
-          <a class="talk-bubble" id="talk-bubble-link" href="diary/"><p class="talk-text" id="talk-text"></p><span class="talk-more" aria-hidden="true">この日の話を読む ›</span></a>
-        </div>
-        <div class="talk-to">
-          <span class="talk-tag" id="talk-tag"></span>
-          <span class="talk-yu">
-            <span class="talk-yu-photo" aria-hidden="true">
-              <picture>
-                <source srcset="assets/yu.webp" type="image/webp">
-                <img id="hero-image" src="assets/yu.jpg" alt="" width="787" height="1400" fetchpriority="high">
-              </picture>
-            </span>
-            <span>Yu<small>人間・社長</small></span>
-          </span>
-        </div>
-        <div class="talk-board" id="talk-board" role="img" aria-label="AI役員8人（秘書・CMO・プロデューサー・ブランドディレクター・アオイ・CFO・CTO・CISO）"></div>
-        <p class="scene-cap">役員とアオイはAIのキャラクター。人間はYuだけです。</p>
-        <div class="quote-foot"><a id="hero-quote-link" href="diary/">この日の話を読む</a></div>
+  <!-- ① 何の人か ＋ ぬりえシアターの入口。文言を変えるときはここを直す -->
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div class="hero-text">
+        <p class="who">会社員 Yu｜AI仮想会社の社長 <b id="company-days" hidden></b></p>
+        <h1><span class="hero-line"><span class="nowrap-unit">会社員が、</span><span class="nowrap-unit">AI役員と</span></span><span class="hero-line"><em>会社を作ってる。</em></span></h1>
+        <p class="lead">面倒な作業をAIと消しながら、小さな道具を作っています。下の絵は、その1つ「ぬりえ」のお試しです。</p>
       </div>
-    </div>
-    <div class="actions">
-      <!-- 主役ボタン：最新の日記へ（js/diary_latest_panel.js が文字と行き先を入れて表示）。日記を出せないときは隠れたままで、下の「無料ツールを見る」が主役 -->
-      <a class="btn btn-hero-main" id="hero-main" href="diary/" hidden>今日の会議を読む</a>
-      <!-- 最初の主役：行き先（無料ツールのパネル、または「ただいま準備中です」）は main.js が入れる。日記が出せたら隠し、下の丸ボタンに置き換わる -->
-      <a class="btn btn-hero-main" id="hero-tools" href="#tool-area">無料ツールを見る</a>
-      <a class="btn btn-hero-sub" id="hero-openchat" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
-    </div>
-    <p class="hero-profile">会社員エンジニア（国家資格あり）。AI役員と、自分の会社を作る実録です。うまくいかない日も記録しています。</p>
-    <!-- 中央の控えめな丸いボタン（最大4つ・2つずつ2行）。TikTok・Zenn・LINE は URL が正しいときだけ、「無料ツールを見る」は主役が日記になったときだけ表示される -->
-    <div class="hero-pills">
-      <a class="btn-pill" id="hero-tiktok" target="_blank" rel="noopener" hidden>TikTokを見る</a>
-      <a class="btn-pill" id="hero-tools-pill" href="#tool-area" hidden>無料ツールを見る</a>
-      <!-- 2行目：Zenn の記事と LINE 公式アカウント。URL が正しいときだけ表示される（js/main.js） -->
-      <a class="btn-pill" id="hero-zenn" target="_blank" rel="noopener" hidden>Zennの記事</a>
-      <a class="btn-pill" id="hero-line" target="_blank" rel="noopener" hidden>LINE友だち追加</a>
-    </div>
-    <!-- お問い合わせ：丸ボタンの下に、枠線だけの控えめなリンクを1つ。同じサイトの contact.html へ移る（フォームのURLは js/site_config.js の CONTACT_FORM_URL） -->
-    <div class="hero-contact">
-      <a class="btn-contact" id="hero-contact" href="contact.html">お問い合わせ</a>
-    </div>
-  </header>
-
-  <!-- ② 最新の日記（ヒーローのすぐ下）。中身は js/diary_latest_panel.js が入れる。日記を出せないときは隠したまま -->
-  <section class="panel diary-panel" id="diary-latest" aria-labelledby="diary-latest-title" hidden>
-    <div class="panel-body reveal">
-      <p class="eyebrow">DIARY</p>
-      <h2 class="panel-title" id="diary-latest-title"><span>経営会議の</span><span>日記</span></h2>
-      <article class="diary-card" id="diary-latest-card"></article>
-      <!-- 最新の前の3件。1件も出せないときは隠したまま（js/diary_recent_view.js） -->
-      <div class="recent" id="diary-recent" hidden>
-        <p class="sub-head">これまでの会議</p>
-        <ol class="rc-list" id="diary-recent-list"></ol>
+      <div class="hero-art">
+        <!-- 線画は js/paint_view.js が作る -->
+        <div class="canvas" id="canvas">
+          <svg id="art" viewBox="0 0 360 260" role="img" aria-label="塗り絵の絵"></svg>
+          <div class="done" id="paint-done" role="status" hidden>
+            <strong>ほら、意外とやれた。</strong>
+            <span>下のボタンで、あなたの写真でも。</span>
+          </div>
+          <div class="hint">
+            <span id="paint-hint" aria-live="polite">指でさわると色がつく</span>
+            <button type="button" id="paint-auto">おまかせで塗る</button>
+          </div>
+        </div>
       </div>
-      <a class="text-link" id="diary-zenn" target="_blank" rel="noopener" hidden>作り方の記事を読む（Zenn）</a>
-    </div>
-    <div class="actions">
-      <a class="btn btn-main" id="diary-latest-read" href="diary/">読む</a>
-      <a class="btn btn-sub" href="diary/">一覧を見る</a>
+      <div class="hero-cta">
+        <a class="btn btn-main" href="nurie/">自分の写真で動画を作る ›</a>
+        <p class="safe">無料・登録なし・保存できる。写真はどこにも送りません</p>
+      </div>
     </div>
   </section>
 
-  <!-- この会社の進め方と役員の紹介（顔は js/officer_talk.js が並べる） -->
-  <section class="company" aria-labelledby="company-title">
-    <h2 id="company-title">この会社の進め方</h2>
-    <ol><li>Yuが困りごとを持ってくる</li><li>AI役員の意見が割れる</li><li>Yuが決める。結果も出す</li></ol>
-    <div class="company-say" aria-live="polite"><b id="officer-name"></b><span id="officer-line"></span></div>
-    <div class="company-faces" id="officer-faces"></div>
-    <p>顔を押すと、ひとこと話します。役員とアオイはAIのキャラクターです。</p>
-  </section>
-  <!-- ②' 無料ツール。3枚だったパネルを1枚（1ツール＝1行）にまとめた。中身は js/tools_view.js が作って、この中に入れる -->
-  <div id="tool-area"></div>
-
-  <!-- ③ LINEのパネル。上がメイン（オープンチャット）、下がサブ（公式アカウント）。2つとも出せないときはパネルごと隠す -->
-  <section class="panel" id="line-panel" aria-labelledby="line-title">
-    <div class="panel-body reveal">
-      <div class="line-mark" aria-hidden="true">LINE</div>
-      <p class="eyebrow">COMMUNITY</p>
-      <h2 class="panel-title" id="line-title"><span>AI役員会議の、</span><span>その先へ。</span></h2>
-      <p class="panel-desc"><span class="nowrap-unit">会議の裏側や新しいツールのお知らせを届けます。</span><span class="nowrap-unit">見るだけの参加もOK。</span></p>
+  <!-- ② AI役員。顔のボタンは js/officer_view.js が並べる -->
+  <section id="officers" aria-labelledby="officers-title">
+    <div class="wrap reveal">
+      <p class="kicker">会議のメンバー</p>
+      <h2 id="officers-title"><span class="nowrap-unit">相談相手は、</span><span class="nowrap-unit">AIの役員たち。</span></h2>
+      <p class="desc">けっこう止められます。顔を押すと、会議の日記に載った発言が読めます。</p>
+      <div class="faces" id="officer-faces"></div>
+      <div class="say" aria-live="polite">
+        <p class="say-who"><span id="officer-name"></span><span class="say-ai">AIの発言</span></p>
+        <blockquote id="officer-line"></blockquote>
+        <a id="officer-link" href="diary/">日記を読む ›</a>
+      </div>
+      <div class="boss">
+        <picture>
+          <source srcset="assets/yu.webp" type="image/webp">
+          <img src="assets/yu.jpg" alt="Yuのアバター（AIで作った画像）" width="787" height="1400" loading="lazy">
+        </picture>
+        <p><strong>決めるのは、人間のYuだけ。</strong>役員とアオイはAI。この画像もAIで作ったアバターです。</p>
+      </div>
     </div>
-    <div class="actions">
+  </section>
+
+  <!-- ③ 日記。状態（読み込み中・失敗・0件・通常）は js/diary_latest_panel.js が切り替える -->
+  <section class="night" id="diary-latest" aria-labelledby="diary-title">
+    <div class="wrap reveal">
+      <p class="kicker">経営会議の日記</p>
+      <h2 id="diary-title"><span class="nowrap-unit">うまくいかない日も、</span><span class="nowrap-unit">そのまま。</span></h2>
+      <!-- 「売上は、まだ0」と日付は自動で変わらないので、受注したら手で直す -->
+      <p class="desc"><span id="diary-count-area" hidden>日記<span id="diary-count"></span>本。</span>売上は、まだ0です<span class="nowrap-unit">（2026.11.28時点）。</span></p>
+
+      <div id="diary-ok" hidden>
+        <a class="latest" id="diary-latest-card" href="diary/"></a>
+        <ol class="past" id="diary-recent-list"></ol>
+      </div>
+      <div class="skel" id="diary-loading" role="status" aria-label="日記を読み込んでいます" hidden></div>
+      <div class="state" id="diary-failed" hidden>日記を読み込めませんでした。<br>通信の状態を確かめて、もう一度お試しください。<button type="button" class="btn" id="diary-retry">もう一度読み込む</button></div>
+      <div class="state" id="diary-empty" hidden>最初の日記は、次の会議のあとに出ます。</div>
+
+      <p class="links">
+        <a href="diary/">全部の日記 ›</a>
+        <a id="diary-zenn" target="_blank" rel="noopener" hidden>作り方の記事（Zenn）›</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ④ 無料の道具。行は js/tools_view.js が js/tools_data.js から作る -->
+  <section class="tools" id="tools" aria-labelledby="tools-title">
+    <div class="wrap reveal">
+      <p class="kicker">無料の道具</p>
+      <h2 id="tools-title">会議から生まれた道具</h2>
+      <ul class="tool-list" id="tool-list"></ul>
+    </div>
+  </section>
+
+  <!-- ⑤ LINE。2つとも出せないときは区画ごと隠す -->
+  <section class="line-area" id="line-panel" aria-labelledby="line-title">
+    <div class="wrap reveal">
+      <p class="kicker">LINE</p>
+      <h2 id="line-title">続きは、LINEで。</h2>
+      <p class="desc"><span class="nowrap-unit">会議の裏話と、新しい道具のお知らせ。</span><span class="nowrap-unit">見るだけでもOKです。</span></p>
       <a class="btn btn-line" id="line-openchat" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
-      <a class="btn btn-sub" id="line-official" target="_blank" rel="noopener" hidden>LINE友だち追加</a>
+      <p class="links"><a id="line-official" target="_blank" rel="noopener" hidden>お知らせだけなら公式アカウント ›</a></p>
     </div>
   </section>
 
-  <!-- ③' Yuの道具箱。カードは js/toolbox_view.js が作って入れる。表示できる道具が0件ならパネルごと隠したまま -->
-  <section class="panel toolbox-panel" id="toolbox" aria-labelledby="toolbox-title" hidden>
-    <div class="panel-body reveal">
-      <p class="eyebrow">Yuの道具箱</p>
-      <h2 class="panel-title" id="toolbox-title">実際に使っている物だけ。</h2>
+  <!-- ⑥ Yuの道具箱。中身は js/toolbox_view.js が作る。表示できる道具が0件なら区画ごと隠したまま -->
+  <section id="toolbox" aria-labelledby="toolbox-title" hidden>
+    <div class="wrap reveal">
+      <p class="kicker">Yuの道具箱</p>
+      <h2 id="toolbox-title">実際に使っている物だけ。</h2>
       <!-- PR表示：紹介リンクが1件以上あるときだけ toolbox_view.js が出す -->
       <p class="tb-pr-notice" id="toolbox-pr" hidden><span class="tb-pr" aria-hidden="true">PR</span><span>この区画には広告（PR）を含みます</span></p>
-      <div class="tb-genres" id="toolbox-genres"></div>
+      <div id="toolbox-genres"></div>
       <!-- 道具箱の注意書き。文は toolbox_view.js が、表示中の道具に合わせて入れる -->
       <p class="tb-disclaimer" id="toolbox-disclaimer"></p>
     </div>
   </section>
+
+  <!-- ⑦ 締めくくり。お問い合わせは同じサイトの contact.html（フォームのURLは js/site_config.js の CONTACT_FORM_URL） -->
+  <section class="end" aria-labelledby="end-title">
+    <div class="wrap reveal">
+      <h2 id="end-title"><span class="nowrap-unit">自分は、</span><span class="nowrap-unit">意外ともっとやれる。</span></h2>
+      <p class="desc"><span class="nowrap-unit">そう思える驚きを、増やしていきます。</span></p>
+      <a class="btn btn-ink" id="end-contact" href="contact.html">感想・仕事の相談を送る ›</a>
+    </div>
+  </section>
 </main>
 
-<!-- ④ 共通の注意書き。文言を変えるときは、ここを直す -->
+<!-- ⑧ 共通の注意書き。文言を変えるときは、ここを直す -->
 <footer class="note" id="note">
-  <p>このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
+  <p>このサイトの計算ツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。</p>
   <p>このサイトでは、第三者配信の広告サービス（Google AdSense）を使っています。Google などの広告配信事業者は、Cookie を使って、このサイトやほかのサイトへの過去のアクセスをもとに広告を出すことがあります。パーソナライズ広告は <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google の広告設定</a> で無効にできます。広告は、ブラウザの「トラッキングしない」の設定に関係なく表示されます。</p>
   <p>このサイトでは、ページごとの閲覧数と、どのサイトから来たかを知るために、アクセス解析サービス（GoatCounter と、Google タグマネージャー・Google アナリティクス）を使っています。ページを開くと、これらのサービスと通信し、見ているページの場所・来る前のサイト名・IPアドレス・ブラウザの種類などが届きます。Google のサービスは Cookie を使うことがあります。個人を特定する情報は集めません。ブラウザで「トラッキングしない」を設定している場合は計測しません。</p>
 </footer>
@@ -197,17 +189,21 @@
 <script src="js/hero_image.js" defer></script>
 <script src="js/tools_view.js" defer></script>
 <script src="js/link_button.js" defer></script>
-<script src="js/panel_tone.js" defer></script>
 <script src="js/reveal_motion.js" defer></script>
 <script src="js/hash_jump.js" defer></script>
+<script src="js/daily_pick.js" defer></script>
+<script src="js/confetti.js" defer></script>
+<script src="js/paint_data.js" defer></script>
+<script src="js/paint_view.js" defer></script>
 <script src="js/diary_day.js" defer></script>
+<script src="js/company_days.js" defer></script>
+<script src="js/officer_data.js" defer></script>
+<script src="js/officer_view.js" defer></script>
 <script src="js/diary_safety.js" defer></script>
 <script src="js/diary_speakers.js" defer></script>
 <script src="js/diary_validate.js" defer></script>
 <script src="js/diary_validate_story.js" defer></script>
 <script src="js/diary_markup.js" defer></script>
-<script src="js/board_quotes_data.js" defer></script>
-<script src="js/board_quote_pick.js" defer></script>
 <script src="js/diary_format3_counts.js" defer></script>
 <script src="js/diary_validate_format3_media.js" defer></script>
 <script src="js/diary_validate_format3_parts.js" defer></script>
@@ -217,7 +213,6 @@
 <script src="js/diary_load.js" defer></script>
 <script src="js/diary_parts.js" defer></script>
 <script src="js/diary_hero_view.js" defer></script>
-<script src="js/hero_advice.js" defer></script>
 <script src="js/diary_recent_view.js" defer></script>
 <script src="js/diary_latest_panel.js" defer></script>
 <script src="js/toolbox_data.js" defer></script>
@@ -225,8 +220,6 @@
 <script src="js/toolbox_link.js" defer></script>
 <script src="js/toolbox_beacon.js" defer></script>
 <script src="js/toolbox_view.js" defer></script>
-<script src="js/bright_open.js" defer></script>
-<script src="js/officer_talk.js" defer></script>
 <script src="js/main.js" defer></script>
 <!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
 <script src="js/adsense_loader.js" defer></script>

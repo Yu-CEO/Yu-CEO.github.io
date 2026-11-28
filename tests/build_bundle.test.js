@@ -149,13 +149,11 @@ test("軽量化：リポジトリの3ページは、すべての script に defe
   });
 });
 
-test("軽量化：ヒーローの肖像は WebP を先に使い（jpg は予備）、幅・高さと fetchpriority=\"high\" が付いている", function () {
+test("軽量化：Yu の画像は WebP を先に使い（jpg は予備）、幅・高さつきで、下の区画なので後で読み込む", function () {
   const html = fs.readFileSync(path.join(PORTAL_FOLDER, "index.html"), "utf8");
-  assert.ok(/<picture>\s*<source srcset="assets\/yu\.webp" type="image\/webp">\s*<img id="hero-image" src="assets\/yu\.jpg"/.test(html));
-  const heroTag = html.match(/<img id="hero-image"[^>]*>/)[0];
-  assert.ok(heroTag.includes('width="787"') && heroTag.includes('height="1400"'), heroTag);
-  assert.ok(heroTag.includes('fetchpriority="high"'), heroTag);
-  assert.ok(!heroTag.includes('loading="lazy"'), "最初に見える画像を後回しにしています");
+  assert.ok(/<picture>\s*<source srcset="assets\/yu\.webp" type="image\/webp">\s*<img src="assets\/yu\.jpg"/.test(html));
+  const tag = html.match(/<img src="assets\/yu\.jpg"[^>]*>/)[0];
+  assert.ok(tag.includes('width="787"') && tag.includes('height="1400"') && tag.includes('loading="lazy"'), tag);
 });
 
 test("軽量化：assets/yu.webp は yu.jpg と同じ 787×1400 で、yu.jpg より小さく、EXIF・XMP などの埋め込み情報がない", function () {

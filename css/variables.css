@@ -1,50 +1,51 @@
 /*
- * variables.css：入口ページのデザインの変数（色・文字の大きさ・余白・ボタン・肖像・スクリーンショットの値）
- * index.html から最初に読み込まれ、style.css・hero.css が var(...) で使う。値はデザインの確定版に合わせている。
+ * variables.css：日記・お問い合わせのページのデザインの変数（色・文字の大きさ・余白・ボタン・肖像・スクリーンショットの値）
+ * diary/ と contact.html から最初に読み込まれる。配色は入口ページ（css/home_base.css）と同じ画用紙と墨（入口ページはこのファイルを読み込まない）。
  * 色・大きさを変えるときは、このファイルだけを直す（ほかのCSSには色や文字の大きさを直接書かない）。
  */
 
 /* ===== ① デザインの変数（色・大きさを変えるときはここだけ直す） ===== */
 :root{
   /* 色：明るいパネル */
+  --color-paper:#fbf8f1;          /* ページの地（画用紙） */
   --color-white:#ffffff;          /* パネルの背景（白） */
-  --color-gray:#f2f3f5;           /* パネルの背景（薄いグレー）。白と交互に使う */
-  --color-text:#16171a;           /* 明るいパネルの文字（ほぼ黒） */
-  --color-text-sub:#5b5f66;       /* 説明文・注意書き（白・グレーの上でもコントラスト4.5:1以上） */
-  --color-line:#d9dbe0;           /* 白ボタン・状態ラベルの枠 */
+  --color-gray:#f1ece0;           /* 薄い面（画用紙より少し濃い色） */
+  --color-text:#17142b;           /* 明るいパネルの文字（ほぼ黒） */
+  --color-text-sub:#4d4963;       /* 説明文・注意書き（白・グレーの上でもコントラスト4.5:1以上） */
+  --color-line:#e4ded0;           /* 区切り線・枠 */
   /* 色：固定バー */
-  --bar-bg:rgba(10,11,14,.62);    /* 半透明の黒。後ろのパネルが少し透ける */
-  --bar-text:#ffffff;
+  --bar-bg:#fbf8f1;    /* 画用紙色のバー（入口ページと同じ） */
+  --bar-text:#17142b;
   /* 色：ヒーロー（夜の紺の面） */
-  --hero-bg-dark:#0a0e17;         /* 背景（夜の紺に近い黒） */
+  --hero-bg-dark:#17142b;         /* 見出しの帯の墨色 */
   --hero-text:#ffffff;            /* 文字 */
-  --hero-text-sub:#c3c8d2;        /* 説明文（背景に対して約11:1） */
-  --hero-accent:#7cc4ff;          /* 差し色（小見出し・細い線・再生の三角）。背景に対して約10:1 */
-  --hero-grid:rgba(150,185,255,.08);    /* 背景のグリッド線 */
-  --hero-glow:rgba(124,196,255,.20);    /* ほのかな光（青） */
-  --hero-glow-2:rgba(150,130,255,.14);  /* ほのかな光（紫） */
+  --hero-text-sub:#c9c5de;        /* 説明文（帯に対して約10.7:1） */
+  --hero-accent:#ff9cc0;          /* 差し色（帯の上。約9.2:1） */
+  --hero-grid:transparent;    /* 背景のグリッドは使わない */
+  --hero-glow:transparent;    /* 光は使わない */
+  --hero-glow-2:transparent;  /* 光は使わない */
   --color-hero-fallback:#1a2234;  /* 肖像の画像が読めないときの、枠の中の色（明るい側） */
   --color-hero-fallback-2:#0d1220;/* 同じく、枠の中の色（暗い側）。2色でななめのグラデーションにする */
-  --hero-frame-border:rgba(124,196,255,.38);  /* 肖像の枠の細い線 */
+  --hero-frame-border:rgba(255,255,255,.30);  /* 墨色の面の細い線 */
   --hero-frame-halo:rgba(124,196,255,.05);    /* 肖像の枠の外側のうっすらした光 */
   --hero-frame-shadow:rgba(0,0,0,.55);        /* 肖像の下の影 */
   --hero-pill-border:rgba(255,255,255,.38);   /* 丸い「TikTokを見る」の枠 */
   --hero-pill-bg:rgba(255,255,255,.04);       /* 丸い「TikTokを見る」の背景（ほぼ透明） */
   --hero-pill-bg-hover:rgba(255,255,255,.12); /* 同じく、マウスを乗せたとき */
   /* 色：ボタン */
-  --color-btn-main:#16171a;       /* 主ボタン（黒塗り） */
+  --color-btn-main:#17142b;       /* 主ボタン（墨の塗り） */
   --color-btn-main-text:#ffffff;
   --color-btn-sub:#ffffff;        /* 2つ目のボタン（白） */
-  --color-btn-sub-text:#16171a;
+  --color-btn-sub-text:#17142b;
   --hero-btn-main:#ffffff;        /* ヒーローの主ボタン（暗い背景の上なので白塗り） */
-  --hero-btn-main-text:#16171a;
+  --hero-btn-main-text:#17142b;
   --hero-btn-sub-bg:rgba(255,255,255,.04);     /* ヒーローの副ボタンの背景（ほぼ透明） */
   --hero-btn-sub-text:#ffffff;
   --hero-btn-sub-border:rgba(255,255,255,.7);  /* ヒーローの副ボタンの白い枠 */
-  --color-line-green:#00843d;     /* LINEパネルの緑（濃いめ）。白文字で約4.8:1。LINEパネルの中だけで使う */
+  --color-line-green:#00743a;     /* LINEのボタンの緑。白文字で約5.9:1 */
   --color-line-green-text:#ffffff;
   --color-published:#127a3e;      /* 状態「公開中」の点と文字 */
-  --color-focus:#3b82f6;          /* キーボード操作のときの枠の色 */
+  --color-focus:#2f6fed;          /* キーボード操作のときの枠の色 */
   /* 影 */
   --shot-shadow:0 6px 20px rgba(16,18,24,.12), 0 1px 3px rgba(16,18,24,.08); /* スクリーンショットの薄い影 */
   /* 文字の大きさ（スマホ基準。PC幅では clamp（最小・画面幅に比例・最大の3つで決める書き方）で大きくなる） */
@@ -74,7 +75,7 @@
   --hero-grid-size:32px;          /* 背景のグリッドの間隔（デザインの値） */
   /* ボタン */
   --btn-height:52px;              /* 指で押しやすいよう44px以上 */
-  --btn-radius:12px;
+  --btn-radius:999px;
   --btn-max:300px;                /* PC幅で横に2つ並べるときの1つの幅 */
   --pill-height:44px;             /* ヒーロー中央の丸い「TikTokを見る」。指で押せる最小の44px */
   /* ヒーローの「役員が Yu に提案・指摘する場面」（css/hero_advice.css）。色は日記の入口画像（design/portal_diary/make_hero.py）と同じ */
@@ -122,14 +123,14 @@
 
   /* ===== 日記（一覧・1件のページ・入口の「最新の日記」パネル） ===== */
   /* 色 */
-  --diary-accent:#2563a8;         /* 明るい面の差し色（N日目・読む・節の番号・Yuの名前）。白で約6:1 */
+  --diary-accent:#c2185b;         /* 明るい面の差し色（白で約5.9:1・画用紙で約5.5:1） */
   --diary-card-bg:#ffffff;        /* カードの背景 */
-  --diary-card-border:#e3e5e9;    /* カードの細い枠 */
+  --diary-card-border:#e4ded0;    /* カードの細い枠 */
   --diary-card-shadow:0 2px 10px rgba(16,18,24,.06); /* カードの薄い影 */
-  --diary-yu-bg:#0f1626;          /* Yu（人間）の吹き出し・顔の背景＝ヒーローと同じ夜の紺 */
+  --diary-yu-bg:#17142b;          /* Yu（人間）の吹き出し・顔の背景＝ヒーローと同じ夜の紺 */
   --diary-yu-text:#ffffff;
   --diary-glass:rgba(255,255,255,.06);        /* 紺の帯の中の箱（今日の一言・今日の決定） */
-  --diary-glass-border:rgba(124,196,255,.30); /* 同じく、細い枠 */
+  --diary-glass-border:rgba(255,156,192,.35); /* 同じく、細い枠 */
   --av-ring:#ffffff;              /* 小さな顔を重ねるときの白いふち */
   /* 話者の色（名前の文字・顔の丸の背景）。白・グレーの上でどれもコントラスト4.5:1以上 */
   --sp-secretary:#5b5f66;         /* 秘書 */
@@ -140,7 +141,7 @@
   --sp-cfo:#466f0d;               /* CFO（LINEの緑と見分けるため黄みのオリーブ） */
   --sp-cto:#1d4ed8;               /* CTO */
   --sp-ciso:#9f1239;              /* CISO */
-  --sp-yu:#7cc4ff;                /* Yu（紺の面の上で使うとき） */
+  --sp-yu:#ff9cc0;                /* Yu（紺の面の上で使うとき） */
   /* 文字の大きさ */
   --fs-diary-day:clamp(40px, 12vw, 72px);         /* 1件のページの帯の「N」（細字） */
   --fs-diary-day-label:clamp(14px, 4vw, 18px);    /* 帯の「AI会社を始めて」「日目」 */
@@ -173,26 +174,26 @@
   --fs-diary-story:clamp(15px, 4.2vw, 17px);    /* 01 何が問題だったか の段落 */
   --diary-story-leading:1.95;                   /* 段落の行間（読み物なので本文より少し広く） */
   --diary-para-gap:14px;                        /* 段落と段落のあいだ */
-  --diary-story-rule:#d9dbe0;                   /* 段落の左の細い線（前提の説明の目印） */
-  --diary-decision-bg:#0f1626;                  /* 03 Yuの決定の箱（Yuの吹き出しと同じ夜の紺） */
+  --diary-story-rule:#e4ded0;                   /* 段落の左の細い線（前提の説明の目印） */
+  --diary-decision-bg:#17142b;                  /* 03 Yuの決定の箱（Yuの吹き出しと同じ夜の紺） */
   --diary-decision-text:#ffffff;
-  --diary-decision-label:#7cc4ff;               /* 箱の中の「DECISION」 */
+  --diary-decision-label:#ff9cc0;               /* 箱の中の「DECISION」 */
   --fs-diary-decision:clamp(17px, 4.7vw, 20px); /* 決定の文（本文より一段大きく・太く） */
   --diary-decision-pad:18px;                    /* 決定の箱の内側 */
   --diary-flow-height:32px;                     /* 道しるべの札（押せない飾りなので44pxは不要） */
-  --diary-flow-bg:#f2f3f5;
-  --diary-flow-text:#5b5f66;
+  --diary-flow-bg:#f1ece0;
+  --diary-flow-text:#4d4963;
   --fs-diary-flow:12px;
   --diary-fig-max:420px;                        /* 図の最大幅（PC）。スマホは本文の幅いっぱい */
   --diary-fig-bg:#ffffff;                       /* 図の白いふち */
-  --diary-fig-border:#e3e5e9;                   /* 図の細い枠 */
+  --diary-fig-border:#e4ded0;                   /* 図の細い枠 */
   --diary-fig-pad:10px;                         /* 図のふちの幅 */
   --diary-fig-radius:16px;                      /* 図の角の丸み */
   --fs-diary-caption:13px;                      /* 図の下の説明（caption） */
-  --diary-result-mark:#2563a8;                  /* 04 結果と学びの印（旧形式の「失敗・学び」のオレンジと分ける） */
+  --diary-result-mark:#c2185b;                  /* 04 結果と学びの印（旧形式の「失敗・学び」のオレンジと分ける） */
   /* 〔v4〕3版目：太字・ハイライト・今日の学び（css/diary_entry.css の .f3 と .d-take で使う） */
   --diary-strong-weight:700;                    /* 本文（400）の中の太字 */
-  --diary-strong-on-dark:#7cc4ff;               /* もとが太い文（紺の箱の決定・帯の決定・今日の一言）の中の太字の色。紺の上で約9:1 */
+  --diary-strong-on-dark:#ff9cc0;               /* もとが太い文（紺の箱の決定・帯の決定・今日の一言）の中の太字の色。紺の上で約9:1 */
   --diary-mark-bg:#ffdf6b;                      /* ハイライト（黄色のマーカー）。文字 #16171a との差 約13:1。白・グレー・紺のどこでも同じ */
   --diary-mark-text:#16171a;
   --diary-mark-pad:0 .18em;                     /* マーカーの左右のすき間 */
@@ -206,9 +207,9 @@
   --diary-take-pad:18px 18px 18px 22px;         /* 枠の内側 */
   /* 〔v5〕3版目すべて（css/diary_format3.css の .f3 で使う）。見た目の正解は design/portal_diary_v5/design_notes.md（CEO承認 2026-11-22） */
   --diary-section-gap-long:56px;                /* 節と節のあいだ（旧形式・2版目は 40px のまま）。「ここから次の話」をはっきりさせる */
-  --diary-sec-rule:#e3e5e9;                     /* 節の頭の細い区切り線（カードの枠と同じ色） */
+  --diary-sec-rule:#e4ded0;                     /* 節の頭の細い区切り線（カードの枠と同じ色） */
   --fs-diary-sec-title-long:clamp(19px, 5.2vw, 22px); /* 節の見出し。流し読みでも見出しが目に入る大きさ */
-  --diary-sec-num-bg:#2563a8;                   /* 番号の札の背景（日記の差し色。白い文字で約6:1） */
+  --diary-sec-num-bg:#c2185b;                   /* 番号の札の背景（日記の差し色。白い文字で約6:1） */
   --diary-sec-num-text:#ffffff;
   --diary-sec-num-h:24px;                       /* 番号の札の高さ（押せない飾り） */
   --diary-para-gap-long:1.15em;                 /* 段落のあいだ。1段落＝1場面の切れ目を見せる */
@@ -216,12 +217,12 @@
   --diary-line-indent-sm:12px;                  /* 480px以下で、吹き出しの反対側の空き（通常は 28px） */
   --av-size-line-sm:34px;                       /* 480px以下で、吹き出しの横の顔（通常は 40px） */
   --diary-bubble-pad-sm:10px 12px;              /* 480px以下で、吹き出しの内側（通常は 10px 14px） */
-  --diary-readtime-text:#c3c8d2;                /* 紺の帯の「読む目安」。紺の上で約10:1 */
-  --diary-sticky-bg:rgba(255,255,255,.94);      /* 付いてくる道しるべの背景 */
-  --diary-sticky-line:#e3e5e9;                  /* 同じく、下の線 */
-  --diary-flow-now-bg:#2563a8;                  /* 今読んでいる節の札 */
+  --diary-readtime-text:#c9c5de;                /* 紺の帯の「読む目安」。紺の上で約10:1 */
+  --diary-sticky-bg:rgba(251,248,241,.95);      /* 付いてくる道しるべの背景 */
+  --diary-sticky-line:#e4ded0;                  /* 同じく、下の線 */
+  --diary-flow-now-bg:#c2185b;                  /* 今読んでいる節の札 */
   --diary-flow-now-text:#ffffff;
-  --diary-progress:#2563a8;                     /* 読んだ量の線（高さ2px） */
+  --diary-progress:#c2185b;                     /* 読んだ量の線（高さ2px） */
   --diary-progress-height:2px;
   --diary-sticky-offset:56px;                   /* 節へ移ったときに、付いてくる道しるべ（約48px）に見出しが隠れないようにずらす分（固定バー＋道しるべ） */
 

@@ -1,0 +1,24 @@
+/*
+ * home_tools.css：無料の道具の一覧・LINE の区画・締めくくり・ページ最下部の注意書き。
+ * 色の値は home_base.css。道具の行は js/tools_view.js が作る。
+ */
+.tools{border-top:1px solid var(--line)}
+.tool-list{margin:20px 0 0;padding:0;list-style:none}
+.tool-list a,.tool-list .tl-preparing{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);text-decoration:none}
+.tool-list .tl-shot{flex:none;width:84px;height:64px;object-fit:cover;object-position:top;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+.tool-list .tl-text{min-width:0;flex:1}
+.tool-list .tl-name{display:block;font-size:15px;font-weight:700;line-height:1.5}
+.tool-list .tl-desc{display:block;font-size:var(--fs-note);color:var(--ink-sub);line-height:1.6}
+.tool-list .tl-status{display:block;font-size:var(--fs-note);font-weight:700}
+.tool-list .first a{margin-bottom:4px;padding:12px;border:2.5px solid var(--ink);border-radius:16px;background:var(--card);box-shadow:5px 5px 0 var(--accent)}
+.tool-list .tl-arrow{flex:none;font-size:22px;color:var(--accent)}
+
+.line-area{background:var(--accent-soft);text-align:center}
+.line-area .btn{margin-top:12px}
+
+.end{text-align:center}
+.end h2{font-size:clamp(28px,8vw,40px)}
+.end .btn{margin-top:14px}
+
+.note{padding:28px 0 calc(64px + env(safe-area-inset-bottom));border-top:1px solid var(--line);font-size:var(--fs-note);color:var(--ink-sub)}
+.note p{max-width:var(--max);margin:0 auto 10px;padding:0 var(--gutter)}

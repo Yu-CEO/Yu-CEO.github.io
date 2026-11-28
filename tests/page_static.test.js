@@ -23,8 +23,7 @@ const STYLE_CSS = fs.readdirSync(CSS_FOLDER)
 const JS_FOLDER = path.join(PORTAL_FOLDER, "js");
 
 const DISPLAY_NAME = "Yu｜AI仮想会社の社長";
-const PROFILE_TEXT = "会社員エンジニア（国家資格あり）。AI役員と、自分の会社を作る実録です。うまくいかない日も記録しています。";
-const DISCLAIMER_TEXT = "このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。";
+const DISCLAIMER_TEXT = "このサイトの計算ツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。";
 
 /**
  * HTMLのタグを取り除き、文字だけをつなげる（途中に <span> が入った文言も、そのままの文で比べられるようにする）。
@@ -65,27 +64,38 @@ function assertNoExternalLoads(html, fileName) {
   });
 }
 
-test("AC-1：タブの名前・小見出し・表示名・プロフィール文が文言どおり", function () {
+test("AC-1：タブの名前・小見出し・見出し・説明が文言どおりで、資格の表記と最初の画面のLINEボタンがない", function () {
   assert.ok(INDEX_HTML.includes("<title>" + DISPLAY_NAME + "</title>"));
   const text = stripTags(INDEX_HTML);
-  assert.ok(text.includes("@yu_from_l2w"));
-  assert.ok(text.includes(DISPLAY_NAME));
-  assert.ok(text.includes(PROFILE_TEXT));
+  assert.ok(text.includes("会社員 Yu｜AI仮想会社の社長"));
+  assert.ok(text.includes("会社員が、AI役員と会社を作ってる。"));
+  assert.ok(text.includes("面倒な作業をAIと消しながら、小さな道具を作っています。"));
+  assert.ok(!text.includes("国家資格"));
+  const hero = INDEX_HTML.slice(INDEX_HTML.indexOf('id="top"'), INDEX_HTML.indexOf('id="officers"'));
+  assert.ok(!/LINE|line-/.test(hero));
+});
+
+test("2026-11-28：「売上は、まだ0」を日付つきで出し、見送った文言（相談の受付・LINEの別の名前）はない", function () {
+  const text = stripTags(INDEX_HTML);
+  assert.ok(text.includes("売上は、まだ0です（2026.11.28時点）。"));
+  assert.ok(!text.includes("表計算の自動化の相談を受けます"));
+  assert.ok(!text.includes("別の名前で参加できます"));
 });
 
 test("AC-10：注意書きが文言どおりある", function () {
   assert.ok(stripTags(INDEX_HTML).includes(DISCLAIMER_TEXT));
 });
 
-test("AC-36：LINEパネルの見出し・説明が文言どおりで、仮の文言は残っていない", function () {
+test("AC-36：LINEの区画の見出し・説明が文言どおりで、仮の文言は残っていない", function () {
   const text = stripTags(INDEX_HTML);
-  assert.ok(text.includes("AI役員会議の、その先へ。"));
-  assert.ok(text.includes("会議の裏側や新しいツールのお知らせを届けます。見るだけの参加もOK。"));
+  assert.ok(text.includes("続きは、LINEで。"));
+  assert.ok(text.includes("会議の裏話と、新しい道具のお知らせ。見るだけでもOKです。"));
   assert.ok(!text.includes("LINEで、つづきを。"));
 });
 
-test("AC-37：LINEの緑は濃い緑 #00843d で、以前の明るい緑は残っていない", function () {
-  assert.ok(STYLE_CSS.includes("#00843d"));
+test("AC-37：LINEの緑は濃い緑 #00743a（入口・日記で同じ）で、以前の明るい緑は残っていない", function () {
+  assert.ok(STYLE_CSS.includes("--line-green:#00743a"));
+  assert.ok(STYLE_CSS.includes("--color-line-green:#00743a"));
   assert.ok(!STYLE_CSS.toLowerCase().includes("#06c755"));
 });
 
@@ -144,7 +154,7 @@ test("AC-38：デザイン確認用のスイッチが入っていない", functi
 
 test("AC-2・AC-39・AC-29：外部へのリンクはすべて新しいタブ・rel=\"noopener\" つき", function () {
   const blankLinks = INDEX_HTML.match(/<a [^>]*target="_blank"[^>]*>/g) || [];
-  assert.ok(blankLinks.length >= 5, "固定バー・ヒーロー・LINEのリンクが足りません");
+  assert.ok(blankLinks.length >= 5, "固定バー・日記・LINE・注意書きのリンクが足りません");
   blankLinks.forEach(function (tag) {
     assert.ok(tag.includes('rel="noopener"'), "rel=\"noopener\" がありません：" + tag);
   });
