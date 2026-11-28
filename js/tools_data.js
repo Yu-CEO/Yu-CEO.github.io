@@ -10,6 +10,14 @@
 
 const TOOLS_DATA = [
   {
+    name: "ぬりえシアター",
+    description: "写真を1枚えらぶと、塗り絵のように色が入る動画になります（写真は端末の外へ送りません）",
+    url: "https://yu-ceo.github.io/nurie/",
+    status: "公開中",
+    image: "assets/tool_nurie.jpg",
+    imageAlt: "ぬりえシアターの最初の画面"
+  },
+  {
     name: "おかね収支シミュレーター",
     description: "NISAの積立とマンションの毎月の収支を、数字を入れるだけで計算できます",
     url: "https://yu-ceo.github.io/okane-simulator/",
