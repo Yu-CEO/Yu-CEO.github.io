@@ -27,7 +27,7 @@ const OG_IMAGE_HEIGHT = 630;
 const OG_IMAGE_MAX_BYTES = 300 * 1024;
 // CEO 確定版の説明文（requirements_seo.md 2-2）
 const EXPECTED_DESCRIPTIONS = {
-  "index.html": "会社員エンジニアのYuが、AIで作った仮想会社の役員にお金と人生を相談する実録。AI役員会議の日記と、無料の収支シミュレーターを置いています。",
+  "index.html": "会社員エンジニアのYuが、AI役員と自分の会社を作る実録。写真が塗り絵の動画になる無料の「ぬりえシアター」と、AI役員会議の日記を置いています。",
   "diary/index.html": "AI役員会議で毎日いちばん盛り上がった話題を、1本の話にした日記です。何が問題で、AI役員がどう意見を言い、Yuが何を決めたか。金額などの数字は伏せています。",
   "diary/entry.html": "AI役員会議の1日を、1つの話題にしぼって読む日記です。問題・AI役員の意見・Yuの決定・結果を1〜3分で。"
 };

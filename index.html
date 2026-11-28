@@ -25,9 +25,9 @@
 <!-- ページの情報を送る範囲：ほかのサイトへ移るときに送るのはサイト名だけ（?date= などを送らない） -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <!-- 共有カードと検索用の説明（requirements_seo.md）。画面には出ない。画像・URL は https://yu-ceo.github.io/ で始まる絶対URL。 -->
-<meta name="description" content="会社員エンジニアのYuが、AIで作った仮想会社の役員にお金と人生を相談する実録。AI役員会議の日記と、無料の収支シミュレーターを置いています。">
+<meta name="description" content="会社員エンジニアのYuが、AI役員と自分の会社を作る実録。写真が塗り絵の動画になる無料の「ぬりえシアター」と、AI役員会議の日記を置いています。">
 <meta property="og:title" content="Yu｜AI仮想会社の社長">
-<meta property="og:description" content="会社員エンジニアのYuが、AIで作った仮想会社の役員にお金と人生を相談する実録。AI役員会議の日記と、無料の収支シミュレーターを置いています。">
+<meta property="og:description" content="会社員エンジニアのYuが、AI役員と自分の会社を作る実録。写真が塗り絵の動画になる無料の「ぬりえシアター」と、AI役員会議の日記を置いています。">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Yu｜AI仮想会社の社長">
 <meta property="og:locale" content="ja_JP">
@@ -50,6 +50,7 @@
 <link rel="stylesheet" href="css/diary.css">
 <link rel="stylesheet" href="css/diary_recent.css">
 <link rel="stylesheet" href="css/toolbox.css">
+<link rel="stylesheet" href="css/bright.css">
 </head>
 <body>
 
@@ -62,14 +63,20 @@
 <main>
   <!-- ① ヒーロー：小見出し・表示名・「AI会社を始めて N 日目」・役員が Yu に提案／指摘する場面・主役ボタン・プロフィール文・丸ボタン。文言を変えるときはここを直す -->
   <header class="panel hero" id="top">
-    <p class="hero-eyebrow">@yu_from_l2w</p>
-    <h1 class="hero-title"><span>Yu｜</span><span>AI仮想会社の社長</span></h1>
+    <p class="hero-eyebrow">Yu｜AI仮想会社の社長　@yu_from_l2w</p>
+    <h1 class="hero-title"><span>会社員が、AI役員と</span><span>自分の会社を作る。</span><span>意外と、やれる。</span></h1>
     <!-- 数字は js/hero_advice.js が入れて表示する（初めての人にも通じるよう「Day N」ではなくこの言い方にした） -->
     <p class="hero-days" id="hero-days" hidden>今日で、AI会社を始めて<b id="hero-days-number"></b>日目</p>
     <!-- 場面（css/hero_advice.css・js/hero_advice.js）。ランダムに選んだ役員を大きく出し、Yu に「提案」か「指摘」をしている場面にする。
          最初は no-quote の印つき（名言を選べないときは、役員の顔の列と説明だけを残し、空の吹き出しを出さないため）。
          Yu の写真は、受け取る側として右下に小さく出す。WebP を先に使い、使えないブラウザだけ yu.jpg を使う。
          width・height は画像の縦横のピクセル数（表示の大きさは CSS が決める。読み込み前に場所を取っておくため） -->
+    <!-- ぬりえシアターの入口（最初の画面に置く） -->
+    <div class="nurie-card">
+      <h2>🎨 写真が、塗り絵の動画になる</h2>
+      <p>1枚えらぶだけ。写真はどこにも送りません。</p>
+      <a href="nurie/">ぬりえシアターで遊ぶ</a>
+    </div>
     <div class="hero-stage" id="hero-stage">
       <div class="talk no-quote" id="hero-talk">
         <p class="talk-eyebrow" id="talk-eyebrow"></p>
@@ -102,7 +109,7 @@
       <a class="btn btn-hero-main" id="hero-tools" href="#tool-area">無料ツールを見る</a>
       <a class="btn btn-hero-sub" id="hero-openchat" target="_blank" rel="noopener" hidden>オープンチャットに参加</a>
     </div>
-    <p class="hero-profile">会社員エンジニア（国家資格あり）。AIで仮想会社を設立し、AI役員にお金と人生を相談しています。うまくいかない日も全部記録。<span class="nowrap-unit">毎日19時投稿／22時ライブ</span></p>
+    <p class="hero-profile">会社員エンジニア（国家資格あり）。AI役員と、自分の会社を作る実録です。うまくいかない日も記録しています。</p>
     <!-- 中央の控えめな丸いボタン（最大4つ・2つずつ2行）。TikTok・Zenn・LINE は URL が正しいときだけ、「無料ツールを見る」は主役が日記になったときだけ表示される -->
     <div class="hero-pills">
       <a class="btn-pill" id="hero-tiktok" target="_blank" rel="noopener" hidden>TikTokを見る</a>
@@ -136,6 +143,14 @@
     </div>
   </section>
 
+  <!-- この会社の進め方と役員の紹介（顔は js/officer_talk.js が並べる） -->
+  <section class="company" aria-labelledby="company-title">
+    <h2 id="company-title">この会社の進め方</h2>
+    <ol><li>Yuが困りごとを持ってくる</li><li>AI役員の意見が割れる</li><li>Yuが決める。結果も出す</li></ol>
+    <div class="company-say" aria-live="polite"><b id="officer-name"></b><span id="officer-line"></span></div>
+    <div class="company-faces" id="officer-faces"></div>
+    <p>顔を押すと、ひとこと話します。役員とアオイはAIのキャラクターです。</p>
+  </section>
   <!-- ②' 無料ツール。3枚だったパネルを1枚（1ツール＝1行）にまとめた。中身は js/tools_view.js が作って、この中に入れる -->
   <div id="tool-area"></div>
 
@@ -210,6 +225,8 @@
 <script src="js/toolbox_link.js" defer></script>
 <script src="js/toolbox_beacon.js" defer></script>
 <script src="js/toolbox_view.js" defer></script>
+<script src="js/bright_open.js" defer></script>
+<script src="js/officer_talk.js" defer></script>
 <script src="js/main.js" defer></script>
 <!-- アクセス解析は最後に読み込む（失敗しても、ほかの表示に影響させないため） -->
 <script src="js/adsense_loader.js" defer></script>

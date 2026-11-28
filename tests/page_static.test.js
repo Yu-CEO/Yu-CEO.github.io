@@ -23,7 +23,7 @@ const STYLE_CSS = fs.readdirSync(CSS_FOLDER)
 const JS_FOLDER = path.join(PORTAL_FOLDER, "js");
 
 const DISPLAY_NAME = "Yu｜AI仮想会社の社長";
-const PROFILE_TEXT = "会社員エンジニア（国家資格あり）。AIで仮想会社を設立し、AI役員にお金と人生を相談しています。うまくいかない日も全部記録。毎日19時投稿／22時ライブ";
+const PROFILE_TEXT = "会社員エンジニア（国家資格あり）。AI役員と、自分の会社を作る実録です。うまくいかない日も記録しています。";
 const DISCLAIMER_TEXT = "このサイトのツールは、入力された数字をもとに計算するだけのものです。特定の商品や売買をすすめるものではなく、将来の結果を約束するものでもありません。計算は端末の中だけで行い、入力内容はどこにも送信されません。実際の判断はご自身の責任で、必要に応じて専門家にご相談ください。";
 
 /**
